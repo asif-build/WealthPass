@@ -1,0 +1,165 @@
+{% extends 'core/base.html' %}
+
+{% block extra_css %}
+<style>
+.loan-page {
+  background: var(--black);
+  min-height: 100vh;
+  display: flex;
+  padding-top: 76px;
+}
+.loan-left {
+  flex: 1.1;
+  padding: 120px 80px;
+  border-right: 1px solid var(--border);
+}
+.loan-right {
+  flex: 1;
+  padding: 120px 64px;
+  background: var(--black-soft);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.loan-card {
+  width: 100%;
+  max-width: 480px;
+  border: 1px solid var(--border-gold);
+  background: var(--black-lifted);
+  padding: 52px;
+  border-radius: var(--radius-sm);
+}
+
+.approval-list { margin-top: 48px; display: flex; flex-direction: column; gap: 0; }
+.approval-item {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 15px;
+  color: var(--white-muted);
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.approval-item:last-child { border-bottom: none; }
+
+.nbfc-card {
+  border: 1px solid var(--border);
+  padding: 28px;
+  margin-top: 48px;
+  border-radius: var(--radius-sm);
+}
+
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding: 20px 0;
+}
+.table-row:last-of-type { border-bottom: none; }
+.table-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--white-faint);
+}
+.table-value {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--white);
+}
+.table-value.gold { color: var(--gold); }
+
+@media (max-width: 1024px) {
+  .loan-page { flex-direction: column; }
+  .loan-left, .loan-right { padding: 80px 24px; border-right: none; }
+  .loan-right { border-top: 1px solid var(--border); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="loan-page">
+
+  <!-- LEFT -->
+  <div class="loan-left">
+    <div class="scroll-reveal">
+      <div class="label" style="color: var(--gold); margin-bottom: 40px;">WHY YOU ARE APPROVED</div>
+      <h2 style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 42px; line-height: 1.2; color: var(--white);">
+        Your claim is verified.<br>The loan is secured.
+      </h2>
+      <div class="gold-rule"></div>
+      <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); line-height: 1.85; max-width: 440px; margin-top: 24px;">
+        SwiftCredit NBFC is lending ₹{{ loan_amount }} against your confirmed ₹{{ total_assets }} claim. They carry near-zero risk. So they say yes — in seconds.
+      </p>
+
+      <div class="approval-list">
+        <div class="approval-item">— Government-verified claim</div>
+        <div class="approval-item">— Fraud score 2 / 100</div>
+        <div class="approval-item">— Aadhaar-confirmed identity</div>
+        <div class="approval-item">— Eligible nominee status confirmed</div>
+      </div>
+
+      <div class="nbfc-card">
+        <div class="label" style="margin-bottom: 12px; color: var(--white);">SWIFTCREDIT NBFC</div>
+        <p style="font-family: var(--font-sans); font-weight: 300; font-size: 13px; color: var(--white-faint);">RBI Registered &middot; License NBFC-2019-1234</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="loan-right">
+    <div class="loan-card scroll-reveal">
+      <div class="label" style="color: var(--gold); margin-bottom: 12px;">BRIDGE LOAN</div>
+      <h3 style="font-family: var(--font-serif); font-weight: 400; font-size: 36px; color: var(--white); margin-bottom: 4px;">Instant Approval</h3>
+      <div class="gold-rule"></div>
+
+      <div style="margin-top: 8px;">
+        <div class="table-row">
+          <div class="table-label">VERIFIED CLAIM</div>
+          <div class="table-value">₹{{ total_assets }}</div>
+        </div>
+        <div class="table-row">
+          <div class="table-label">LOAN AMOUNT</div>
+          <div class="table-value gold">₹{{ loan_amount }}</div>
+        </div>
+        <div class="table-row">
+          <div class="table-label">INTEREST RATE</div>
+          <div class="table-value">0%</div>
+        </div>
+        <div class="table-row">
+          <div class="table-label">TENURE</div>
+          <div class="table-value">90 Days</div>
+        </div>
+        <div class="table-row">
+          <div class="table-label">REPAYMENT</div>
+          <div class="table-value" style="font-size: 15px; text-align: right; max-width: 200px;">Automatic on claim release</div>
+        </div>
+      </div>
+
+      <form action="{% url 'accept_loan' session_id=session_id %}" method="POST" id="loan-form" style="margin-top: 40px;">
+        {% csrf_token %}
+        <label class="custom-checkbox-wrapper" style="margin-bottom: 32px;">
+          <input type="checkbox" class="custom-checkbox-input" id="loan-affidavit" required>
+          <div class="custom-checkbox-box"></div>
+          <div class="custom-checkbox-text">
+            I authorise SwiftCredit NBFC to disburse ₹{{ loan_amount }} to my registered bank account and automatically recover it upon claim release.
+          </div>
+        </label>
+
+        <button type="submit" class="btn-primary btn-full" id="loan-btn" style="height: 60px; font-size: 12px;" disabled>
+          ACCEPT & RECEIVE ₹{{ loan_amount }} <span class="arrow">&rarr;</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('loan-affidavit').addEventListener('change', function() {
+  document.getElementById('loan-btn').disabled = !this.checked;
+});
+</script>
+{% endblock %}

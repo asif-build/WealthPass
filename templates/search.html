@@ -1,0 +1,194 @@
+{% extends 'core/base.html' %}
+{% block extra_css %}
+<style>
+.search-page { min-height: 100vh; display: flex; padding-top: 76px; background: var(--black); }
+.search-left { flex: 1; padding: 120px 80px; position: relative; }
+.search-right { flex: 1.2; padding: 120px 80px; background: var(--black-soft); border-left: 1px solid var(--border); }
+@media (max-width: 1024px) {
+  .search-page { flex-direction: column; }
+  .search-left, .search-right { padding: 80px 24px; }
+  .search-right { border-left: none; border-top: 1px solid var(--border); }
+}
+
+.sticky-statement { position: sticky; top: 120px; }
+.trust-list { margin-top: 60px; display: flex; flex-direction: column; gap: 16px; }
+.trust-item { font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted); line-height: 2.2; }
+
+.form-container { max-width: 520px; margin: 0 auto; }
+.form-section-title { font-family: var(--font-sans); font-weight: 500; font-size: 10px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 24px; text-transform: uppercase; }
+.form-rule { height: 1px; background: var(--gold); opacity: 0.3; margin: 24px 0 40px; }
+
+.drag-zone {
+  border: 1px dashed var(--border-gold);
+  background: rgba(201,168,76,0.03);
+  border-radius: var(--radius-lg);
+  padding: 48px 32px;
+  text-align: center;
+  transition: var(--medium);
+  cursor: pointer;
+  margin-bottom: 48px;
+}
+.drag-zone:hover { background: rgba(201,168,76,0.06); }
+.file-added { border-color: var(--verified); background: rgba(74,124,89,0.05); }
+
+.error-state {
+  display: none;
+  border-left: 2px solid var(--danger);
+  padding: 16px 20px;
+  background: rgba(122,48,48,0.08);
+  font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--danger);
+  margin-top: 24px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="search-page">
+  <div class="search-left">
+    <div class="sticky-statement scroll-reveal">
+      <div class="label" style="color: var(--white-faint); margin-bottom: 40px;">STEP 01</div>
+      <h2 style="font-family: var(--font-serif); font-weight: 400; font-size: 52px; color: var(--white); line-height: 1.1;">Find what belongs<br>to your family</h2>
+      <div class="gold-rule"></div>
+      <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); line-height: 1.85; max-width: 400px; margin-top: 24px;">
+        Enter the deceased's details below. We cross-reference five government databases and return results in under nine seconds.
+      </p>
+      
+      <div class="trust-list">
+        <div class="trust-item">— End-to-end encrypted</div>
+        <div class="trust-item">— Session only. Never stored.</div>
+        <div class="trust-item">— Consent-based access only.</div>
+        <div class="trust-item">— No data sold. No exceptions.</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="search-right">
+    <div class="form-container scroll-reveal">
+      <form action="{% url 'search' %}" method="POST" enctype="multipart/form-data" id="search-form">
+        {% csrf_token %}
+        
+        <div class="form-section-title">ABOUT THE DECEASED</div>
+        <div class="form-rule"></div>
+        
+        <div class="input-group">
+          <label class="input-label">FULL NAME</label>
+          <input type="text" name="deceased_name" class="form-input" required>
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label">PAN NUMBER</label>
+          <input type="text" name="pan_number" class="form-input" style="text-transform: uppercase;" required>
+          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 12px; color: var(--white-faint); margin-top: 8px;">10-character PAN — e.g. ABCDE1234F</div>
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label">DEATH CERTIFICATE NUMBER</label>
+          <input type="text" name="death_certificate_no" class="form-input" required>
+        </div>
+        
+        <label class="input-label" style="margin-bottom: 12px;">UPLOAD DEATH CERTIFICATE</label>
+        <div class="drag-zone" id="drag-zone" onclick="document.getElementById('file-upload').click()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="stroke: var(--gold); stroke-width: 1.5; margin-bottom: 16px;">
+            <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15M17 8L12 3M12 3L7 8M12 3V15" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div style="font-family: var(--font-sans); font-weight: 400; font-size: 16px; color: var(--white); margin-bottom: 8px;" id="file-title">Drop certificate here</div>
+          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 13px; color: var(--white-faint);" id="file-sub">JPG, PNG or PDF — max 10MB</div>
+        </div>
+        <input type="file" name="death_certificate_file" id="file-upload" style="display: none;" accept=".pdf,.png,.jpg,.jpeg">
+        
+        <div style="margin-bottom: 48px;"></div>
+        
+        <div class="form-section-title">YOUR DETAILS</div>
+        <div class="form-rule"></div>
+        
+        <div class="input-group">
+          <label class="input-label">YOUR FULL NAME</label>
+          <input type="text" name="claimant_name" class="form-input" required>
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label">AADHAAR (LAST 4 DIGITS)</label>
+          <input type="text" name="aadhaar_last4" class="form-input" maxlength="4" required>
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label">RELATION TO DECEASED</label>
+          <select name="relation" class="form-select" required>
+            <option value="" disabled selected>Select relationship...</option>
+            <option value="Spouse">Spouse</option>
+            <option value="Son">Son</option>
+            <option value="Daughter">Daughter</option>
+            <option value="Father">Father</option>
+            <option value="Mother">Mother</option>
+            <option value="Brother">Brother</option>
+            <option value="Sister">Sister</option>
+          </select>
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label">MOBILE NUMBER</label>
+          <input type="text" name="mobile" class="form-input" required>
+          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 12px; color: var(--white-faint); margin-top: 8px;">For OTP identity verification</div>
+        </div>
+        
+        <label class="custom-checkbox-wrapper" style="margin-bottom: 40px; margin-top: 48px;">
+          <input type="checkbox" id="affidavit" class="custom-checkbox-input" required>
+          <div class="custom-checkbox-box"></div>
+          <div class="custom-checkbox-text">
+            I declare all submitted information is genuine. I understand that false declaration is punishable under IPC Section 420 and 468.
+          </div>
+        </label>
+        
+        <button type="submit" class="btn-primary btn-full" id="submit-btn" disabled>
+          SCAN ALL DATABASES <span class="arrow">&rarr;</span>
+        </button>
+        
+        <div class="error-state" id="form-error"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('search-form');
+  const fileInput = document.getElementById('file-upload');
+  const dragZone = document.getElementById('drag-zone');
+  const fileTitle = document.getElementById('file-title');
+  const fileSub = document.getElementById('file-sub');
+  const checkbox = document.getElementById('affidavit');
+  const submitBtn = document.getElementById('submit-btn');
+
+  // File upload logic
+  fileInput.addEventListener('change', (e) => {
+    if(e.target.files.length > 0) {
+      dragZone.classList.add('file-added');
+      fileTitle.textContent = "✓ " + e.target.files[0].name;
+      fileTitle.style.color = "var(--verified)";
+      fileSub.textContent = "Document secured";
+    }
+  });
+
+  // Checkbox logic for submit
+  form.addEventListener('input', () => {
+    if(checkbox.checked && form.checkValidity()) {
+      submitBtn.disabled = false;
+    } else {
+      submitBtn.disabled = true;
+    }
+  });
+
+  // Form submission basic validation (PAN)
+  form.addEventListener('submit', (e) => {
+    const pan = form.querySelector('[name="pan_number"]').value.toUpperCase();
+    const errorDiv = document.getElementById('form-error');
+    if(!pan.match(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)) {
+      e.preventDefault();
+      errorDiv.style.display = 'block';
+      errorDiv.textContent = 'Invalid PAN format. Please use format ABCDE1234F.';
+      setTimeout(() => { errorDiv.style.display = 'none'; }, 4000);
+    }
+  });
+});
+</script>
+{% endblock %}

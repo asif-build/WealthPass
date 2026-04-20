@@ -1,0 +1,212 @@
+{% extends 'core/base.html' %}
+
+{% block extra_css %}
+<style>
+.verify-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 24px;
+  background: var(--black);
+}
+.verify-container {
+  width: 100%;
+  max-width: 580px;
+}
+
+/* Step Indicator */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  position: relative;
+}
+.step-line {
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  height: 1px;
+  background: var(--border);
+  z-index: 1;
+}
+.step-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--black);
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 2;
+}
+.step-dot.done { background: var(--gold); border-color: var(--gold); }
+.step-dot.current { background: var(--black); border: 2px solid var(--gold); }
+.step-label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--white-faint);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.check-item {
+  border-bottom: 1px solid var(--border);
+  padding: 28px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: var(--slow);
+}
+.check-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.status-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+}
+.status-icon.pending {
+  border: 1px solid var(--border-gold);
+  border-top-color: var(--gold);
+  animation: spin 1s linear infinite;
+}
+.status-icon.done {
+  border: 1px solid rgba(74,124,89,0.4);
+  color: var(--verified);
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.result-text {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--verified);
+  margin-top: 8px;
+  display: none;
+}
+
+.success-card {
+  border: 1px solid rgba(74,124,89,0.3);
+  background: rgba(74,124,89,0.06);
+  padding: 48px;
+  text-align: center;
+  margin-top: 40px;
+  border-radius: var(--radius-sm);
+  display: none;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: var(--slow);
+}
+.success-card.visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="verify-page">
+  <div class="verify-container">
+    
+    <div class="step-indicator">
+      <div class="step-line"></div>
+      <div class="step-dot done"></div>
+      <div class="step-dot current"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+    <div class="step-label">VERIFICATION — STEP 02 OF 05</div>
+    
+    <h1 style="font-family: var(--font-serif); font-weight: 400; font-size: 48px; color: var(--white); margin-bottom: 8px;">Verifying your documents</h1>
+    <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted);">Cross-referencing four government systems</p>
+    
+    <div class="gold-rule" style="margin-bottom: 60px;"></div>
+    
+    <div class="check-list">
+      <div class="check-item" id="item-1">
+        <div class="status-icon pending" id="icon-1"></div>
+        <div>
+          <div class="label">CIVIL REGISTRATION SYSTEM</div>
+          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-faint); margin-top: 4px;">Death certificate {{ request.session.claim_data.death_cert_no|default:"DL-2026-847" }}</div>
+          <div class="result-text" id="result-1">→ Registered and verified ✓</div>
+        </div>
+      </div>
+      
+      <div class="check-item" id="item-2">
+        <div class="status-icon pending" id="icon-2"></div>
+        <div>
+          <div class="label">DECEASED AADHAAR STATUS — UIDAI</div>
+          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-faint); margin-top: 4px;">Checking if Aadhaar mapping is active</div>
+          <div class="result-text" id="result-2">→ Deactivated after death — confirmed ✓</div>
+        </div>
+      </div>
+      
+      <div class="check-item" id="item-3">
+        <div class="status-icon pending" id="icon-3"></div>
+        <div>
+          <div class="label">CLAIMANT IDENTITY — AADHAAR OTP</div>
+          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-faint); margin-top: 4px;">Verifying {{ request.session.claim_data.claimant_name|default:"Claimant" }}</div>
+          <div class="result-text" id="result-3">→ Identity confirmed ✓</div>
+        </div>
+      </div>
+      
+      <div class="check-item" id="item-4">
+        <div class="status-icon pending" id="icon-4"></div>
+        <div>
+          <div class="label">AI DOCUMENT AUTHENTICITY SCAN</div>
+          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-faint); margin-top: 4px;">Checking for tampering or alteration</div>
+          <div class="result-text" id="result-4">→ Score 94/100 — No tampering detected ✓</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="success-card" id="success-card">
+      <div style="font-family: var(--font-sans); font-weight: 600; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--verified); margin-bottom: 24px;">VERIFICATION COMPLETE</div>
+      <h2 style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 32px; color: var(--white); margin-bottom: 12px;">Your documents are confirmed.</h2>
+      <p style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-muted); margin-bottom: 40px;">Fraud Risk Score: 2 / 100</p>
+      
+      <a href="{% url 'results' session_id=session_id %}" class="btn-primary btn-full">VIEW DISCOVERED ASSETS &rarr;</a>
+    </div>
+    
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const items = [1, 2, 3, 4];
+  
+  items.forEach((i, index) => {
+    setTimeout(() => {
+      document.getElementById(`item-${i}`).classList.add('visible');
+    }, index * 700);
+    
+    setTimeout(() => {
+      const icon = document.getElementById(`icon-${i}`);
+      icon.classList.remove('pending');
+      icon.classList.add('done');
+      icon.innerHTML = '✓';
+      document.getElementById(`result-${i}`).style.display = 'block';
+      
+      if(i === 4) {
+        setTimeout(() => {
+          const successCard = document.getElementById('success-card');
+          successCard.style.display = 'block';
+          setTimeout(() => { successCard.classList.add('visible'); }, 50);
+        }, 800);
+      }
+    }, (index * 700) + 1500);
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verifying Documents — WealthPass</title>
+  <meta name="description" content="Verifying your documents across government databases. This may take a few moments." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles/global.css" />
+  <link rel="stylesheet" href="../styles/pages.css" />
+</head>
+<body class="verify-page page-transition">
+
+  <!-- APP NAV -->
+  <nav class="app-nav">
+    <a href="../index.html" class="logo">
+      <span class="logo-icon">🛡️</span>
+      <span class="logo-text">WealthPass</span>
+    </a>
+    <div class="steps-indicator">
+      <div class="step-indicator-item completed">
+        <div class="step-dot"></div>
+        <span>Search</span>
+      </div>
+      <span class="step-arrow">→</span>
+      <div class="step-indicator-item active">
+        <div class="step-dot"></div>
+        <span>Verify</span>
+      </div>
+      <span class="step-arrow">→</span>
+      <div class="step-indicator-item">
+        <div class="step-dot"></div>
+        <span>Results</span>
+      </div>
+      <span class="step-arrow">→</span>
+      <div class="step-indicator-item">
+        <div class="step-dot"></div>
+        <span>Loan</span>
+      </div>
+      <span class="step-arrow">→</span>
+      <div class="step-indicator-item">
+        <div class="step-dot"></div>
+        <span>Done</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="verify-main">
+    <div class="verify-wrapper">
+      <div class="verify-header">
+        <h1>Verifying Your Documents</h1>
+        <p>Checking across government databases — please wait</p>
+      </div>
+
+      <!-- Checklist Card -->
+      <div class="verify-card">
+        <div class="check-list" id="check-list">
+
+          <div class="check-item" id="check-0">
+            <div class="check-icon" id="icon-0">⏳</div>
+            <div class="check-text-wrap">
+              <div class="check-main" id="text-0">Connecting to Civil Registration System...</div>
+            </div>
+          </div>
+
+          <div class="check-item" id="check-1">
+            <div class="check-icon" id="icon-1">⏳</div>
+            <div class="check-text-wrap">
+              <div class="check-main" id="text-1">Verifying death certificate...</div>
+              <div class="check-detail" id="detail-1" style="display:none;"></div>
+            </div>
+          </div>
+
+          <div class="check-item" id="check-2">
+            <div class="check-icon" id="icon-2">⏳</div>
+            <div class="check-text-wrap">
+              <div class="check-main" id="text-2">Checking deceased Aadhaar status...</div>
+              <div class="check-detail" id="detail-2" style="display:none;"></div>
+            </div>
+          </div>
+
+          <div class="check-item" id="check-3">
+            <div class="check-icon" id="icon-3">⏳</div>
+            <div class="check-text-wrap">
+              <div class="check-main" id="text-3">Verifying claimant identity...</div>
+              <div class="check-detail" id="detail-3" style="display:none;"></div>
+            </div>
+          </div>
+
+          <div class="check-item" id="check-4">
+            <div class="check-icon" id="icon-4">⏳</div>
+            <div class="check-text-wrap">
+              <div class="check-main" id="text-4">Running AI document authenticity scan...</div>
+              <div class="check-detail" id="detail-4" style="display:none;"></div>
+            </div>
+          </div>
+
+          <div class="check-item" id="check-5">
+            <div class="check-icon" id="icon-5">⏳</div>
+            <div class="check-text-wrap">
+              <div class="check-main" id="text-5">Checking national fraud database...</div>
+              <div class="check-detail" id="detail-5" style="display:none;"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Result Box (shown after all checks) -->
+      <div class="verify-result" id="verify-result">
+        <div class="verify-result-icon" id="result-icon">✅</div>
+        <div class="verify-result-title" id="result-title">VERIFICATION COMPLETE</div>
+        <div class="verify-result-score" id="result-score">Fraud Risk Score: 2 / 100 — Very Low Risk</div>
+        <a href="results.html" class="cta-btn" id="result-cta" style="margin-top:0; font-size: 0.95rem; padding: 14px 32px;">
+          View Discovered Assets →
+        </a>
+      </div>
+
+      <!-- Fraud Alert Box (alternate) -->
+      <div class="verify-result failed" id="fraud-result" style="display:none;">
+        <div class="verify-result-icon">⚠️</div>
+        <div class="verify-result-title">VERIFICATION FAILED</div>
+        <div class="verify-result-score" style="color: var(--color-danger);">
+          Our system detected inconsistencies. This case has been flagged for review.
+        </div>
+        <div style="font-size:0.78rem; color: var(--color-text-muted); margin: 12px 0;">
+          Reference: WP-ALERT-2026-<span id="fraud-ref">7843</span>
+        </div>
+        <div style="font-size:0.82rem; color: var(--color-text-secondary); font-family: var(--font-secondary);">
+          Our team will contact you within 24 hours.
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../scripts/verify.js"></script>
+</body>
+</html>

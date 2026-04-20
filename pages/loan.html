@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bridge Loan — WealthPass</title>
+  <meta name="description" content="Get an instant bridge loan against your verified unclaimed assets. 0% interest for 90 days." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles/global.css" />
+  <link rel="stylesheet" href="../styles/pages.css" />
+</head>
+<body class="loan-page page-transition">
+
+  <!-- APP NAV -->
+  <nav class="app-nav">
+    <a href="../index.html" class="logo">
+      <span class="logo-icon">🛡️</span>
+      <span class="logo-text">WealthPass</span>
+    </a>
+    <div class="steps-indicator">
+      <div class="step-indicator-item completed">
+        <div class="step-dot"></div>
+        <span>Search</span>
+      </div>
+      <span class="step-arrow">→</span>
+      <div class="step-indicator-item completed">
+        <div class="step-dot"></div>
+        <span>Verify</span>
+      </div>
+      <span class="step-arrow">→</span>
+      <div class="step-indicator-item completed">
+        <div class="step-dot"></div>
+        <span>Results</span>
+      </div>
+      <span class="step-arrow">→</span>
+      <div class="step-indicator-item active">
+        <div class="step-dot"></div>
+        <span>Loan</span>
+      </div>
+      <span class="step-arrow">→</span>
+      <div class="step-indicator-item">
+        <div class="step-dot"></div>
+        <span>Done</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="loan-main">
+
+    <div class="loan-header">
+      <h1>Bridge Loan — Instant Approval</h1>
+      <p>Get money while your claims are processing</p>
+      <span class="powered-by">Powered by SwiftCredit NBFC ⚡</span>
+    </div>
+
+    <!-- Main Loan Card -->
+    <div class="loan-card">
+      <div class="loan-row">
+        <span class="loan-row-label">Verified Claim Amount</span>
+        <span class="loan-row-value success">₹6,80,000</span>
+      </div>
+      <div class="loan-row">
+        <span class="loan-row-label">Loan Offered</span>
+        <span class="loan-row-value large">₹48,000</span>
+      </div>
+      <div class="loan-row">
+        <span class="loan-row-label">Interest Rate</span>
+        <span class="loan-row-value success">0% for 90 days</span>
+      </div>
+      <div class="loan-row">
+        <span class="loan-row-label">Tenure</span>
+        <span class="loan-row-value">90 Days</span>
+      </div>
+      <div class="loan-row">
+        <span class="loan-row-label">Repayment</span>
+        <span class="loan-row-value" style="font-size:0.85rem; color: var(--color-text-secondary);">Auto-deducted when claim releases</span>
+      </div>
+    </div>
+
+    <!-- Why Approved -->
+    <div class="why-approved">
+      <div class="why-approved-title">Why You're Approved</div>
+      <div class="approved-item">
+        <span class="tick-icon">✅</span>
+        <span>Claim verified with EPFO, LIC, and SBI government databases</span>
+      </div>
+      <div class="approved-item">
+        <span class="tick-icon">✅</span>
+        <span>Death certificate authenticated via Civil Registration System</span>
+      </div>
+      <div class="approved-item">
+        <span class="tick-icon">✅</span>
+        <span>Nominee / heir status confirmed and legally verified</span>
+      </div>
+      <div class="approved-item">
+        <span class="tick-icon">✅</span>
+        <span>Fraud Risk Score: 2 / 100 — Exceptionally low risk</span>
+      </div>
+    </div>
+
+    <!-- NBFC Partner -->
+    <div class="nbfc-card">
+      <div class="nbfc-logo">🏦</div>
+      <div>
+        <div class="nbfc-name">SwiftCredit NBFC</div>
+        <div class="nbfc-license">RBI Registered NBFC &nbsp;|&nbsp; License No: NBFC-2019-1234</div>
+      </div>
+    </div>
+
+    <!-- Affidavit Checkbox -->
+    <label class="affidavit-checkbox" for="affidavit-check">
+      <input type="checkbox" id="affidavit-check" />
+      <div class="affidavit-text">
+        I declare that all submitted information is genuine and true to the best of my knowledge. I understand that false declaration is punishable under <strong>IPC Section 420</strong> (Cheating) and <strong>IPC Section 468</strong> (Forgery).
+      </div>
+    </label>
+
+    <!-- CTA Button -->
+    <a href="success.html" class="cta-btn disabled" id="loan-cta" style="width:100%; justify-content:center; border-radius:12px; height:58px; font-size:1.05rem;">
+      ✅ Accept &amp; Get ₹48,000 Now
+    </a>
+
+    <p class="loan-privacy">
+      Money will be transferred to your verified bank account within 2 hours via IMPS.<br />
+      Zero hidden charges. Auto-repaid when your claim settles.
+    </p>
+
+  </main>
+
+  <script src="../scripts/loan.js"></script>
+</body>
+</html>

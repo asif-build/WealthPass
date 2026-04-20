@@ -1,0 +1,269 @@
+{% extends 'core/base.html' %}
+
+{% block extra_css %}
+<style>
+.results-page {
+  background: radial-gradient(circle at top center, #ffffff 0%, var(--black-lifted) 100%);
+  min-height: 100vh;
+}
+.results-header {
+  padding: 160px 0 100px;
+  border-bottom: 1px solid var(--border-soft);
+  text-align: center;
+}
+.total-block {
+  text-align: center;
+  padding: 140px 0;
+  border-bottom: 1px solid var(--border-soft);
+  background: linear-gradient(to bottom, transparent, rgba(5, 150, 105, 0.03) 50%, transparent);
+}
+.total-label {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 32px;
+}
+.total-num {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: 140px;
+  color: var(--gold);
+  line-height: 1;
+  display: block;
+  text-shadow: 0 4px 64px rgba(5, 150, 105, 0.2);
+}
+.asset-card {
+  border-bottom: 1px solid var(--border-soft);
+  padding: 80px 0;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 80px;
+  align-items: center;
+  transition: var(--slow);
+  position: relative;
+}
+.asset-card::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--gold);
+  opacity: 0;
+  transition: var(--slow);
+}
+.asset-card:hover {
+  background: linear-gradient(90deg, rgba(5, 150, 105, 0.04) 0%, transparent 50%);
+}
+.asset-card:hover::before {
+  opacity: 1;
+}
+
+.asset-right { text-align: right; }
+.asset-amount {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: 72px;
+  color: var(--white);
+  line-height: 1;
+  margin: 24px 0;
+}
+
+.doc-list { margin-top: 32px; }
+.doc-item {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--white-muted);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-soft);
+  letter-spacing: 0.02em;
+}
+.doc-item:last-child { border-bottom: none; }
+
+.next-steps { margin-top: 32px; }
+.next-step {
+  display: flex;
+  gap: 24px;
+  padding: 12px 0;
+  align-items: flex-start;
+}
+.step-num-small {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: 20px;
+  color: var(--gold-dark);
+  flex-shrink: 0;
+  min-width: 24px;
+}
+
+.action-btns { display: flex; flex-direction: column; gap: 16px; margin-top: 40px; align-items: flex-end; }
+
+.loan-banner {
+  border: 1px solid var(--border-gold);
+  background: rgba(5, 150, 105, 0.02);
+  padding: 100px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 120px 0;
+}
+.loan-amount-big {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: 96px;
+  color: var(--white);
+  line-height: 1;
+}
+
+@media (max-width: 1024px) {
+  .asset-card { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+  .asset-right { text-align: center; }
+  .action-btns { align-items: center; }
+  .loan-banner { flex-direction: column; gap: 48px; text-align: center; padding: 60px 40px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="results-page">
+  <!-- HEADER -->
+  <section class="results-header scroll-reveal">
+    <div class="container">
+      <div class="label" style="color: var(--gold); margin-bottom: 24px; letter-spacing: 0.25em;">ASSETS DISCOVERED</div>
+      <h1 class="hero-h1" style="font-size: 72px; letter-spacing: 0.05em;">{{ deceased_name }}</h1>
+      <p style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted); margin-top: 24px; letter-spacing: 0.1em; text-transform: uppercase;">
+        Claimant: <span style="color: var(--white);">{{ claimant_name }}</span> &mdash; {{ relation }}
+      </p>
+      <div class="gold-rule center"></div>
+    </div>
+  </section>
+
+  <!-- TOTAL -->
+  <section class="total-block scroll-reveal" style="transition-delay: 0.1s;">
+    <div class="total-label">TOTAL UNCLAIMED CAPITAL</div>
+    <span class="total-num" id="total-counter">₹0</span>
+    <div style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--gold-dark); margin-top: 24px; letter-spacing: 0.1em; text-transform: uppercase;">
+      Secured across {{ classified_assets|length }} institution{{ classified_assets|length|pluralize }}
+    </div>
+  </section>
+
+  <!-- ASSET CARDS -->
+  <div class="container" style="padding-top: 60px;">
+    {% for asset in classified_assets %}
+    <div class="asset-card scroll-reveal" style="transition-delay: 0.2s;">
+      <!-- LEFT -->
+      <div>
+        <div class="label" style="color: var(--gold); margin-bottom: 16px;">
+          {% if asset.color == 'green' %}CLEAR NOMINEE TITLE
+          {% elif asset.color == 'amber' %}LEGAL HEIR PRIORITY
+          {% else %}REQUIRES REVIEW{% endif %}
+        </div>
+        <h2 style="font-family: var(--font-serif); font-weight: 400; font-size: 44px; color: var(--white); margin-bottom: 8px;">{{ asset.institution }}</h2>
+        <div class="gold-rule"></div>
+        <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); line-height: 1.8; max-width: 520px; margin-bottom: 40px;">
+          {{ asset.message }}
+        </p>
+
+        <!-- DOCUMENTS -->
+        <div class="label" style="margin-bottom: 16px; color: var(--white-faint);">REQUIRED DOCUMENTATION</div>
+        <div class="doc-list">
+          {% for doc in asset.documents_needed %}
+          <div class="doc-item">&mdash; {{ doc }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- NEXT STEPS -->
+        <div class="label" style="margin-top: 48px; margin-bottom: 16px; color: var(--white-faint);">PROTOCOL FOR RECOVERY</div>
+        <div class="next-steps">
+          {% for step in asset.next_steps %}
+          <div class="next-step">
+            <div class="step-num-small">0{{ forloop.counter }}</div>
+            <div style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted);">{{ step }}</div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div style="margin-top: 40px; font-family: var(--font-sans); font-weight: 400; font-size: 12px; letter-spacing: 0.1em; color: var(--white-faint); text-transform: uppercase;">
+          Estimated Timeline: <span style="color: var(--white);">{{ asset.time_estimate }}</span>
+        </div>
+        {% if asset.loan_amount %}
+        <div style="font-family: var(--font-sans); font-weight: 400; font-size: 12px; letter-spacing: 0.1em; color: var(--gold); margin-top: 12px; text-transform: uppercase;">
+          &#10003; ₹{{ asset.loan_amount }} Liquidity advance accessible
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- RIGHT -->
+      <div class="asset-right">
+        <div class="badge {% if asset.color == 'green' %}badge-verified{% elif asset.color == 'amber' %}badge-warning{% else %}badge-danger{% endif %}" style="letter-spacing: 0.2em; padding: 10px 24px;">
+          {% if asset.color == 'green' %}VERIFIED STATUS{% elif asset.color == 'amber' %}ACTION REQUIRED{% else %}UNDER REVIEW{% endif %}
+        </div>
+        <div class="asset-amount">₹{{ asset.amount }}</div>
+        <div class="action-btns">
+          <a href="{% url 'loan' session_id=session_id %}" class="btn-primary" style="width: 240px; justify-content: space-between;">
+            INITIATE CLAIM <span>&rarr;</span>
+          </a>
+          <button class="btn-secondary" style="width: 240px;">SECURE FORM</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- BRIDGE LOAN BANNER -->
+    <div class="loan-banner scroll-reveal">
+      <div>
+        <div class="label" style="color: var(--gold); margin-bottom: 24px; letter-spacing: 0.2em;">INSTANT LIQUIDITY ADVANCE</div>
+        <div class="loan-amount-big">₹{{ total_loan }}</div>
+        <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); margin-top: 24px; letter-spacing: 0.05em;">
+          Immediate capital provision while legal processing finalizes.
+        </p>
+      </div>
+      <a href="{% url 'loan' session_id=session_id %}" class="btn-primary" style="padding: 24px 56px; font-size: 12px;">
+        AUTHORIZE ADVANCE &mdash; 60S &rarr;
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+// Count-up animation for total
+document.addEventListener('DOMContentLoaded', () => {
+  // Fix for JavaScript SyntaxError when dealing with formatted numbers or None values
+  const rawTotal = "{{ total_assets|default:'0' }}".replace(/,/g, '');
+  const total = parseFloat(rawTotal) || 0;
+  
+  const el = document.getElementById('total-counter');
+  const duration = 3000; // Slower, more elegant animation
+  const start = performance.now();
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        const animate = (now) => {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          // Quicker start, slower finish easing
+          const eased = 1 - Math.pow(1 - progress, 4);
+          const current = Math.floor(eased * total);
+          el.textContent = '₹' + current.toLocaleString('en-IN');
+          if(progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            el.textContent = '₹' + total.toLocaleString('en-IN'); // ensure precision
+          }
+        };
+        requestAnimationFrame(animate);
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  observer.observe(el);
+});
+</script>
+{% endblock %}

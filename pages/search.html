@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find Hidden Assets — WealthPass</title>
+  <meta name="description" content="Submit your details to scan EPFO, LIC, MF Central, SBI and RBI databases for unclaimed assets." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles/global.css" />
+  <link rel="stylesheet" href="../styles/pages.css" />
+</head>
+<body class="search-page page-transition">
+
+  <!-- APP NAV -->
+  <nav class="app-nav">
+    <a href="../index.html" class="logo">
+      <span class="logo-icon">🛡️</span>
+      <span class="logo-text">WealthPass</span>
+    </a>
+    <div class="steps-indicator">
+      <div class="step-indicator-item active">
+        <div class="step-dot"></div>
+        <span>Search</span>
+      </div>
+      <span class="step-arrow">→</span>
+      <div class="step-indicator-item">
+        <div class="step-dot"></div>
+        <span>Verify</span>
+      </div>
+      <span class="step-arrow">→</span>
+      <div class="step-indicator-item">
+        <div class="step-dot"></div>
+        <span>Results</span>
+      </div>
+      <span class="step-arrow">→</span>
+      <div class="step-indicator-item">
+        <div class="step-dot"></div>
+        <span>Loan</span>
+      </div>
+      <span class="step-arrow">→</span>
+      <div class="step-indicator-item">
+        <div class="step-dot"></div>
+        <span>Done</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="search-main">
+    <div class="search-form-wrapper">
+      <div class="form-header">
+        <h1>Find Hidden Assets</h1>
+        <p>We'll scan <strong>EPFO, LIC, MF Central, SBI</strong> and <strong>RBI</strong> databases simultaneously — in under 4 minutes.</p>
+      </div>
+
+      <form class="form-card" id="search-form" novalidate>
+
+        <!-- SECTION 1: Deceased Details -->
+        <div class="form-section-title">About the Deceased</div>
+
+        <div class="form-group">
+          <label class="form-label" for="deceased-name">Full Name of Deceased</label>
+          <input
+            class="form-input"
+            type="text"
+            id="deceased-name"
+            name="deceased-name"
+            placeholder="e.g. Ramesh Kumar"
+            autocomplete="off"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pan-number">PAN Number</label>
+          <input
+            class="form-input"
+            type="text"
+            id="pan-number"
+            name="pan-number"
+            placeholder="e.g. ABCDE1234F"
+            maxlength="10"
+            autocomplete="off"
+            required
+            style="text-transform: uppercase;"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="death-cert-num">Death Certificate Number</label>
+          <input
+            class="form-input"
+            type="text"
+            id="death-cert-num"
+            name="death-cert-num"
+            placeholder="e.g. DELHI-2026-DR-847291"
+            autocomplete="off"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Upload Death Certificate</label>
+          <div class="file-upload-area" id="upload-area">
+            <input type="file" id="death-cert-file" accept=".pdf,.jpg,.jpeg,.png" />
+            <div class="upload-idle" id="upload-idle">
+              <span class="upload-icon">📎</span>
+              <div class="upload-text">Drag & drop or click to upload</div>
+              <div class="upload-sub">PDF, JPG, PNG • Max 10MB</div>
+            </div>
+            <div class="upload-preview" id="upload-preview">
+              <div class="upload-preview-thumb">📄</div>
+              <div>
+                <div class="upload-preview-name" id="preview-name">document.pdf</div>
+                <div class="upload-preview-size" id="preview-size">2.4 MB • Uploaded</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <!-- SECTION 2: Claimant Details -->
+        <div class="form-section-title">Your Details (Claimant)</div>
+
+        <div class="form-group">
+          <label class="form-label" for="claimant-name">Your Full Name</label>
+          <input
+            class="form-input"
+            type="text"
+            id="claimant-name"
+            name="claimant-name"
+            placeholder="e.g. Meera Kumar"
+            autocomplete="name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="aadhaar-last4">Your Aadhaar (Last 4 digits)</label>
+          <input
+            class="form-input"
+            type="number"
+            id="aadhaar-last4"
+            name="aadhaar-last4"
+            placeholder="e.g. 7823"
+            maxlength="4"
+            min="1000"
+            max="9999"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="relation">Your Relation to Deceased</label>
+          <select class="form-select" id="relation" name="relation" required>
+            <option value="" disabled selected>Select relation</option>
+            <option value="spouse">Spouse</option>
+            <option value="son">Son</option>
+            <option value="daughter">Daughter</option>
+            <option value="father">Father</option>
+            <option value="mother">Mother</option>
+            <option value="brother">Brother</option>
+            <option value="sister">Sister</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="mobile">Mobile Number (for OTP)</label>
+          <input
+            class="form-input"
+            type="tel"
+            id="mobile"
+            name="mobile"
+            placeholder="e.g. 98765 43210"
+            maxlength="10"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn-submit" id="submit-btn">
+          🔍 Scan All Databases
+        </button>
+
+        <p class="form-privacy-note">
+          Your data is encrypted and never stored beyond your session.<br />
+          Consent-based access only via RBI Account Aggregator Framework.
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <script src="../scripts/search.js"></script>
+</body>
+</html>

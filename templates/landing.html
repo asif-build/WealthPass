@@ -1,0 +1,475 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+/* LANDING EXCLUSIVES */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--black);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse 800px 600px at 50% -100px, rgba(201,168,76,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-content {
+  text-align: center;
+  max-width: 800px;
+  position: relative;
+  z-index: 10;
+  padding: 0 24px;
+}
+.hero-top-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--gold);
+  margin-bottom: 40px;
+  display: block;
+}
+.hero h1 { margin-bottom: 40px; }
+.hero-sub {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 1.85;
+  color: var(--white-muted);
+  max-width: 480px;
+  margin: 0 auto 56px;
+}
+
+.numbers-section {
+  padding: var(--section-y) 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--black);
+}
+.numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  max-width: var(--container);
+  margin: 0 auto;
+}
+.number-col {
+  text-align: center;
+  padding: 48px;
+  border-right: 1px solid var(--border);
+}
+.number-col:last-child { border-right: none; }
+.num-val {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: 72px;
+  color: var(--gold);
+  line-height: 1;
+}
+.num-unit { font-size: 36px; }
+
+.inst-strip {
+  padding: 80px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.inst-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: var(--white-faint);
+  text-align: center;
+  margin-bottom: 40px;
+}
+.marquee {
+  display: inline-block;
+  animation: marquee 30s linear infinite;
+  mask: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  -webkit-mask: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+}
+.marquee-item {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--white-faint);
+  opacity: 0.4;
+  margin: 0 48px;
+  transition: var(--slow);
+}
+.marquee-item:hover { opacity: 0.9; color: var(--white); }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+.process-section { padding: var(--section-y) 0; }
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+.process-step {
+  padding: 52px 0;
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+.process-num {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: 120px;
+  color: var(--border);
+  position: absolute;
+  top: 16px;
+  right: 0;
+  line-height: 0.8;
+  z-index: -1;
+}
+
+/* Feature Section */
+.feature-section { padding: var(--section-y) 0; }
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  margin-top: 80px;
+}
+.feature-row {
+  border-top: 1px solid var(--border);
+  padding: 36px 0;
+  display: flex;
+  gap: 32px;
+}
+.feature-num { font-family: var(--font-serif); font-weight: 300; font-size: 20px; color: var(--white-faint); }
+.sticky-preview {
+  position: sticky;
+  top: 120px;
+  background: var(--black-lifted);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-sm);
+  padding: 40px;
+  font-family: monospace;
+  color: var(--white);
+  height: fit-content;
+}
+
+.testimonials {
+  padding: var(--section-y) 0;
+  background: var(--black-soft);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.test-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+.test-card {
+  border-top: 1px solid var(--border);
+  padding-top: 48px;
+  position: relative;
+}
+.test-quote { font-family: var(--font-serif); font-weight: 300; font-size: 120px; color: var(--gold); opacity: 0.3; line-height: 0.8; margin-bottom: 24px; }
+.test-text { font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 22px; color: var(--white); line-height: 1.6; margin-bottom: 32px; }
+
+.compliance { padding: var(--section-y) 0; }
+.comp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.comp-card {
+  border-top: 2px solid var(--border-gold);
+  padding: 40px 32px;
+  background: var(--black-soft);
+}
+.comp-badge { font-family: var(--font-sans); font-weight: 600; font-size: 9px; letter-spacing: 0.22em; color: var(--gold); margin-bottom: 20px; }
+
+.final-cta { padding: var(--section-y) 0; text-align: center; }
+
+@media (max-width: 1024px) {
+  .numbers-grid, .comp-grid, .feature-grid { grid-template-columns: 1fr 1fr; }
+  .number-col:nth-child(2) { border-right: none; }
+}
+@media (max-width: 768px) {
+  .numbers-grid, .process-grid, .comp-grid, .feature-grid, .test-grid { grid-template-columns: 1fr; }
+  .number-col { border-right: none; border-bottom: 1px solid var(--border); }
+  .hero-h1 { font-size: 56px; }
+  .hero-cta-row { display: flex; flex-direction: column; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-top-label scroll-reveal">INDIA'S UNCLAIMED ASSET RECOVERY PLATFORM</span>
+    <h1 class="hero-h1 scroll-reveal">
+      Your family's money.<br>
+      <span style="font-style: italic;">Found. Claimed.</span><br>
+      Protected.
+    </h1>
+    <div class="gold-rule center scroll-reveal"></div>
+    <p class="hero-sub scroll-reveal">Every year, ₹1 lakh crore sits unclaimed in Indian banks and insurance policies. We find it. We return it.</p>
+    
+    <div class="hero-cta-row scroll-reveal" style="display: flex; gap: 20px; justify-content: center;">
+      <a href="{% url 'search' %}" class="btn-primary">FIND HIDDEN ASSETS &rarr;</a>
+      <a href="#how" class="btn-secondary">HOW IT WORKS</a>
+    </div>
+
+    <div style="font-family: var(--font-sans); font-weight: 400; font-size: 12px; letter-spacing: 0.1em; color: var(--white-faint); margin-top: 60px;" class="scroll-reveal">
+      Aadhaar Verified &middot; RBI Compliant &middot; DigiLocker Integrated
+    </div>
+  </div>
+</section>
+
+<!-- NUMBERS -->
+<section class="numbers-section">
+  <div class="numbers-grid">
+    <div class="number-col scroll-reveal">
+      <div class="num-val">₹42<span class="num-unit">,000 Cr+</span></div>
+      <div class="label" style="margin-top: 16px;">UNCLAIMED INSURANCE</div>
+      <div style="font-family: var(--font-sans); font-weight: 300; font-size: 11px; color: var(--white-faint); opacity: 0.6; margin-top: 8px;">IRDAI 2024</div>
+    </div>
+    <div class="number-col scroll-reveal">
+      <div class="num-val">₹35<span class="num-unit">,000 Cr+</span></div>
+      <div class="label" style="margin-top: 16px;">DORMANT BANK DEPOSITS</div>
+      <div style="font-family: var(--font-sans); font-weight: 300; font-size: 11px; color: var(--white-faint); opacity: 0.6; margin-top: 8px;">RBI 2024</div>
+    </div>
+    <div class="number-col scroll-reveal">
+      <div class="num-val">₹8<span class="num-unit">,931 Cr+</span></div>
+      <div class="label" style="margin-top: 16px;">UNCLAIMED EPF</div>
+      <div style="font-family: var(--font-sans); font-weight: 300; font-size: 11px; color: var(--white-faint); opacity: 0.6; margin-top: 8px;">EPFO 2025</div>
+    </div>
+    <div class="number-col scroll-reveal">
+      <div class="num-val">4<span class="num-unit"> Minutes</span></div>
+      <div class="label" style="margin-top: 16px;">VS 4 MONTHS TRADITIONAL</div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTITUTIONS -->
+<section class="inst-strip">
+  <div class="inst-label scroll-reveal">INTEGRATED WITH</div>
+  <div class="marquee">
+    <div style="display: inline-block;">
+      <span class="marquee-item">RBI</span>
+      <span class="marquee-item">LIC</span>
+      <span class="marquee-item">EPFO</span>
+      <span class="marquee-item">SBI</span>
+      <span class="marquee-item">IRDAI</span>
+      <span class="marquee-item">DigiLocker</span>
+      <span class="marquee-item">MF Central</span>
+      <span class="marquee-item">NPS</span>
+      <span class="marquee-item">UIDAI</span>
+      <span class="marquee-item">Bima Sugam</span>
+    </div>
+    <div style="display: inline-block;">
+      <span class="marquee-item">RBI</span>
+      <span class="marquee-item">LIC</span>
+      <span class="marquee-item">EPFO</span>
+      <span class="marquee-item">SBI</span>
+      <span class="marquee-item">IRDAI</span>
+      <span class="marquee-item">DigiLocker</span>
+      <span class="marquee-item">MF Central</span>
+      <span class="marquee-item">NPS</span>
+      <span class="marquee-item">UIDAI</span>
+      <span class="marquee-item">Bima Sugam</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="process-section">
+  <div class="container">
+    <div class="label scroll-reveal">THE PROCESS</div>
+    <h2 class="section-h2 scroll-reveal">Three steps to what is yours</h2>
+    <div class="gold-rule scroll-reveal"></div>
+    
+    <div class="process-grid" style="margin-top: 60px;">
+      <div class="process-step scroll-reveal">
+        <div class="process-num">01</div>
+        <div class="label" style="color: var(--gold); margin-bottom: 20px;">STEP 01</div>
+        <h3 class="card-h3" style="font-size: 36px; margin-bottom: 16px;">We Find Everything</h3>
+        <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); max-width: 380px;">Enter the deceased's PAN. Five government databases. Nine seconds.</p>
+      </div>
+      <div class="process-step scroll-reveal">
+        <div class="process-num">02</div>
+        <div class="label" style="color: var(--gold); margin-bottom: 20px;">STEP 02</div>
+        <h3 class="card-h3" style="font-size: 36px; margin-bottom: 16px;">We Handle The Paperwork</h3>
+        <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); max-width: 380px;">Every form pre-filled. Nominee status detected. Legal path determined automatically.</p>
+      </div>
+      <div class="process-step scroll-reveal">
+        <div class="process-num">03</div>
+        <div class="label" style="color: var(--gold); margin-bottom: 20px;">STEP 03</div>
+        <h3 class="card-h3" style="font-size: 36px; margin-bottom: 16px;">You Receive What Is Yours</h3>
+        <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); max-width: 380px;">Bridge loan in two hours. Full claim in 30 to 45 days. Your family's financial future — secured.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPABILITIES -->
+<section class="feature-section">
+  <div class="container">
+    <div class="label scroll-reveal">CAPABILITIES</div>
+    <h2 class="section-h2 scroll-reveal">Built for India's most important moment</h2>
+    <div class="gold-rule scroll-reveal"></div>
+    <p style="font-family: var(--font-sans); font-weight: 300; font-size: 18px; color: var(--white-muted); max-width: 560px; margin-top: 24px;" class="scroll-reveal">
+      When a family loses someone, the financial burden should not compound the grief. WealthPass ensures it doesn't.
+    </p>
+    
+    <div class="feature-grid">
+      <div class="feature-list">
+        <div class="feature-row scroll-reveal">
+          <div class="feature-num">01</div>
+          <div>
+            <h3 style="font-family: var(--font-serif); font-weight: 500; font-size: 24px; color: var(--white); margin-bottom: 8px;">Multi-Database Discovery</h3>
+            <p style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted);">EPFO. LIC. SBI. MF Central. RBI DEAF. Simultaneously.</p>
+          </div>
+        </div>
+        <div class="feature-row scroll-reveal">
+          <div class="feature-num">02</div>
+          <div>
+            <h3 style="font-family: var(--font-serif); font-weight: 500; font-size: 24px; color: var(--white); margin-bottom: 8px;">Nominee vs Legal Heir Detection</h3>
+            <p style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted);">The distinction that costs families crores. Detected automatically.</p>
+          </div>
+        </div>
+        <div class="feature-row scroll-reveal">
+          <div class="feature-num">03</div>
+          <div>
+            <h3 style="font-family: var(--font-serif); font-weight: 500; font-size: 24px; color: var(--white); margin-bottom: 8px;">Four-Layer Fraud Shield</h3>
+            <p style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted);">Aadhaar. Civil registry. AI scan. Affidavit. Nothing slips through.</p>
+          </div>
+        </div>
+        <div class="feature-row scroll-reveal">
+          <div class="feature-num">04</div>
+          <div>
+            <h3 style="font-family: var(--font-serif); font-weight: 500; font-size: 24px; color: var(--white); margin-bottom: 8px;">Pre-Filled Claim Forms</h3>
+            <p style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted);">Every document generated. Every field populated. You only sign.</p>
+          </div>
+        </div>
+        <div class="feature-row scroll-reveal">
+          <div class="feature-num">05</div>
+          <div>
+            <h3 style="font-family: var(--font-serif); font-weight: 500; font-size: 24px; color: var(--white); margin-bottom: 8px;">Bridge Loan in 60 Seconds</h3>
+            <p style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted);">Your verified claim as collateral. Money before the process ends.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="sticky-preview scroll-reveal">
+        <pre style="margin: 0; line-height: 1.8; color: var(--white-muted);">
+┌──────────────────────────────┐
+│  WEALTHPASS                  │
+│  Asset Discovery Report      │
+│  ─────────────────────────── │
+│  <span style="color:var(--white);">Ramesh Kumar — PAN Verified</span> │
+│  ─────────────────────────── │
+│  LIC Insurance   <span style="color:var(--white);">₹5,00,000</span>  │
+│  EPFO PF         <span style="color:var(--white);">₹1,42,000</span>  │
+│  SBI Account     <span style="color:var(--white);">₹38,000</span>    │
+│  ─────────────────────────── │
+│  <span style="color:var(--gold);">TOTAL         ₹6,80,000</span>    │
+│                              │
+│  Status: <span style="color:var(--verified);">VERIFIED ✓</span>          │
+│  Fraud Score: 2/100          │
+│  Bridge Loan: ₹48,000 Ready  │
+└──────────────────────────────┘
+        </pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="container">
+    <div class="label scroll-reveal">WHAT FAMILIES SAY</div>
+    <h2 class="section-h2 scroll-reveal">Stories of recovery</h2>
+    <div class="gold-rule scroll-reveal"></div>
+    
+    <div class="test-grid" style="margin-top: 60px;">
+      <div class="test-card scroll-reveal">
+        <div class="test-quote">"</div>
+        <p class="test-text">"My father had a policy none of us knew existed. WealthPass found ₹4.2 lakh in eight seconds."</p>
+        <div style="font-family: var(--font-sans); font-weight: 500; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-faint);">ANANYA SHARMA</div>
+        <div style="font-family: var(--font-sans); font-weight: 300; font-size: 12px; color: var(--gold); margin-top: 4px;">Delhi | ₹4,20,000 Recovered</div>
+      </div>
+      <div class="test-card scroll-reveal">
+        <div class="test-quote">"</div>
+        <p class="test-text">"Rent was due in three days. The claim would take two months. The bridge loan saved our family."</p>
+        <div style="font-family: var(--font-sans); font-weight: 500; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-faint);">VIKRAM NAIR</div>
+        <div style="font-family: var(--font-sans); font-weight: 300; font-size: 12px; color: var(--gold); margin-top: 4px;">Bangalore | ₹35,000 Bridge Loan</div>
+      </div>
+      <div class="test-card scroll-reveal">
+        <div class="test-quote">"</div>
+        <p class="test-text">"Three accounts and a provident fund. ₹8.6 lakh my husband had. I would never have known."</p>
+        <div style="font-family: var(--font-sans); font-weight: 500; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-faint);">MEENA PILLAI</div>
+        <div style="font-family: var(--font-sans); font-weight: 300; font-size: 12px; color: var(--gold); margin-top: 4px;">Chennai | ₹8,60,000 Recovered</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPLIANCE -->
+<section class="compliance">
+  <div class="container">
+    <div class="label scroll-reveal">LEGAL FOUNDATION</div>
+    <h2 class="section-h2 scroll-reveal">Built on India's infrastructure</h2>
+    <p style="font-family:var(--font-sans);font-weight:300;font-size:18px;color:var(--white-muted);margin-top:16px;" class="scroll-reveal">We don't bypass the system. We are its consumer layer.</p>
+    <div class="gold-rule scroll-reveal"></div>
+    
+    <div class="comp-grid" style="margin-top: 60px;">
+      <div class="comp-card scroll-reveal">
+        <div class="comp-badge">RBI</div>
+        <h3 style="font-family:var(--font-serif);font-weight:500;font-size:22px;color:var(--white);margin-bottom:8px;">Account Aggregator Framework</h3>
+        <p style="font-family:var(--font-sans);font-weight:300;font-size:14px;color:var(--white-muted);line-height:1.8;">Consent-based data sharing. Legally mandated participation.</p>
+      </div>
+      <div class="comp-card scroll-reveal">
+        <div class="comp-badge">IRDAI</div>
+        <h3 style="font-family:var(--font-serif);font-weight:500;font-size:22px;color:var(--white);margin-bottom:8px;">Bima Sugam Integration</h3>
+        <p style="font-family:var(--font-sans);font-weight:300;font-size:14px;color:var(--white-muted);line-height:1.8;">Central insurance repository. Every policy. One search.</p>
+      </div>
+      <div class="comp-card scroll-reveal">
+        <div class="comp-badge">EPFO</div>
+        <h3 style="font-family:var(--font-serif);font-weight:500;font-size:22px;color:var(--white);margin-bottom:8px;">Unified Portal API</h3>
+        <p style="font-family:var(--font-sans);font-weight:300;font-size:14px;color:var(--white-muted);line-height:1.8;">Direct provident fund and nominee data access.</p>
+      </div>
+      <div class="comp-card scroll-reveal">
+        <div class="comp-badge">UIDAI</div>
+        <h3 style="font-family:var(--font-serif);font-weight:500;font-size:22px;color:var(--white);margin-bottom:8px;">Aadhaar Verified Identity</h3>
+        <p style="font-family:var(--font-sans);font-weight:300;font-size:14px;color:var(--white-muted);line-height:1.8;">OTP liveness check. Zero impersonation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <div style="border-top: 1px solid var(--border-gold); margin-bottom: var(--section-y);" class="scroll-reveal"></div>
+    
+    <h2 style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 72px; color: var(--white); line-height: 1.1;" class="scroll-reveal">
+      Your family deserves<br>every rupee.
+    </h2>
+    <p style="font-family: var(--font-sans); font-weight: 300; font-size: 18px; color: var(--white-muted); margin: 32px auto; max-width: 400px;" class="scroll-reveal">
+      It takes four minutes. Not four months.
+    </p>
+    
+    <a href="{% url 'search' %}" class="btn-primary scroll-reveal">BEGIN YOUR SEARCH &rarr;</a>
+    <div style="font-family: var(--font-sans); font-weight: 300; font-size: 13px; color: var(--white-faint); margin-top: 24px;" class="scroll-reveal">
+      No registration. No upfront cost. Results in under 60 seconds.
+    </div>
+    
+    <div style="border-bottom: 1px solid var(--border-gold); margin-top: var(--section-y);" class="scroll-reveal"></div>
+  </div>
+</section>
+{% endblock %}
