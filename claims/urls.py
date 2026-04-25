@@ -9,4 +9,5 @@ urlpatterns = [
     path('loan/<uuid:session_id>/', views.loan, name='loan'),
     path('accept-loan/<uuid:session_id>/', views.accept_loan, name='accept_loan'),
     path('success/<uuid:session_id>/', views.success, name='success'),
+    path('print-forms/<uuid:session_id>/', views.print_forms, name='print_forms'),
 ]

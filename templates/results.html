@@ -208,7 +208,7 @@
           <a href="{% url 'loan' session_id=session_id %}" class="btn-primary" style="width: 240px; justify-content: space-between;">
             INITIATE CLAIM <span>&rarr;</span>
           </a>
-          <button class="btn-secondary" style="width: 240px;">SECURE FORM</button>
+          <a href="{% url 'print_forms' session_id=session_id %}" target="_blank" class="btn-secondary" style="width: 240px; text-align:center; display:flex; justify-content:center; align-items:center;">SECURE FORM</a>
         </div>
       </div>
     </div>

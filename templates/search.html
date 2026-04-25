@@ -39,6 +39,58 @@
   font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--danger);
   margin-top: 24px;
 }
+
+/* Premium Loader Overlay */
+#loader-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10, 10, 26, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+#loader-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.spinner {
+  width: 60px; height: 60px;
+  border: 2px solid rgba(201, 168, 76, 0.2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: s-spin 1s linear infinite;
+  margin-bottom: 30px;
+}
+
+@keyframes s-spin { 100% { transform: rotate(360deg); } }
+
+.loader-text {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  color: var(--white);
+  height: 40px;
+  overflow: hidden;
+  position: relative;
+}
+
+.loader-phrase {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.loader-phrase.active { opacity: 1; }
 </style>
 {% endblock %}
 
@@ -67,7 +119,7 @@
       <form action="{% url 'search' %}" method="POST" enctype="multipart/form-data" id="search-form">
         {% csrf_token %}
         
-        <div class="form-section-title">ABOUT THE DECEASED</div>
+        <div class="form-section-title" id="hackathon-trigger" style="user-select: none;">ABOUT THE DECEASED</div>
         <div class="form-rule"></div>
         
         <div class="input-group">
@@ -78,7 +130,10 @@
         <div class="input-group">
           <label class="input-label">PAN NUMBER</label>
           <input type="text" name="pan_number" class="form-input" style="text-transform: uppercase;" required>
-          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 12px; color: var(--white-faint); margin-top: 8px;">10-character PAN — e.g. ABCDE1234F</div>
+          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 12px; color: var(--white-faint); margin-top: 8px; display:flex; justify-content:space-between; align-items:center;">
+            <span>10-character PAN — e.g. ABCDE1234F</span>
+            <span style="display:flex; align-items:center; gap:4px; color:var(--verified); font-weight:500;"><i class="ph ph-lock-key"></i> Your data is encrypted and never shared</span>
+          </div>
         </div>
         
         <div class="input-group">
@@ -149,6 +204,16 @@
   </div>
 </div>
 
+<!-- Loader -->
+<div id="loader-overlay">
+  <div class="spinner"></div>
+  <div class="loader-text">
+    <div class="loader-phrase active" id="phrase-1">Scanning Certificate...</div>
+    <div class="loader-phrase" id="phrase-2">Verifying Identity...</div>
+    <div class="loader-phrase" id="phrase-3">Matching Records...</div>
+  </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('search-form');
@@ -187,8 +252,51 @@ document.addEventListener('DOMContentLoaded', () => {
       errorDiv.style.display = 'block';
       errorDiv.textContent = 'Invalid PAN format. Please use format ABCDE1234F.';
       setTimeout(() => { errorDiv.style.display = 'none'; }, 4000);
+      return;
     }
+    
+    // Show Loader and animate phrases
+    e.preventDefault(); // Delay submit
+    document.getElementById('loader-overlay').classList.add('active');
+    
+    setTimeout(() => {
+      document.getElementById('phrase-1').classList.remove('active');
+      document.getElementById('phrase-2').classList.add('active');
+    }, 1500);
+    
+    setTimeout(() => {
+      document.getElementById('phrase-2').classList.remove('active');
+      document.getElementById('phrase-3').classList.add('active');
+    }, 3000);
+    
+    setTimeout(() => {
+      form.submit();
+    }, 4500);
   });
+
+  // Hackathon mock fill
+  let triggerCount = 0;
+  const trigger = document.getElementById('hackathon-trigger');
+  if(trigger) {
+    trigger.addEventListener('click', () => {
+      triggerCount++;
+      if(triggerCount === 3) {
+        form.querySelector('[name="deceased_name"]').value = "Ramesh Sharma";
+        form.querySelector('[name="pan_number"]').value = "ABCDE1234F";
+        form.querySelector('[name="death_certificate_no"]').value = "DL-2026-0988";
+        form.querySelector('[name="claimant_name"]').value = "Rajiv Sharma";
+        form.querySelector('[name="aadhaar_last4"]').value = "8832";
+        form.querySelector('[name="relation"]').value = "Son";
+        form.querySelector('[name="mobile"]').value = "9810000000";
+        checkbox.checked = true;
+        submitBtn.disabled = false;
+        
+        // Add visual cue
+        trigger.style.color = "var(--success)";
+        trigger.textContent += " (DEMO MODE)";
+      }
+    });
+  }
 });
 </script>
 {% endblock %}

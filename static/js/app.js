@@ -60,6 +60,37 @@ document.addEventListener('DOMContentLoaded', () => {
     ruleObserver.observe(rule);
   });
 
+  /* ── NUMBER COUNTER ── */
+  const counters = document.querySelectorAll('.counter');
+  if(counters.length) {
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) {
+          const target = +entry.target.getAttribute('data-target');
+          const duration = 2000;
+          const step = target / (duration / 16); // 60fps
+          let current = 0;
+          
+          const updateCounter = () => {
+            current += step;
+            if(current < target) {
+              entry.target.innerText = Math.ceil(current).toLocaleString('en-IN');
+              requestAnimationFrame(updateCounter);
+            } else {
+              entry.target.innerText = target.toLocaleString('en-IN');
+            }
+          };
+          updateCounter();
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    counters.forEach(counter => {
+      counterObserver.observe(counter);
+    });
+  }
+
   /* ── NAVBAR SCROLL TRANSPARENCY ── */
   const navbar = document.querySelector('.navbar');
   if(navbar) {

@@ -123,7 +123,7 @@
         </div>
         <div class="table-row">
           <div class="table-label">LOAN AMOUNT</div>
-          <div class="table-value gold">₹{{ loan_amount }}</div>
+          <div class="table-value gold" id="display-loan-amount">₹{{ loan_amount }}</div>
         </div>
         <div class="table-row">
           <div class="table-label">INTEREST RATE</div>
@@ -139,18 +139,27 @@
         </div>
       </div>
 
+      <div style="margin-top: 40px;">
+        <div class="label" style="color: var(--white-faint); margin-bottom: 24px;">ADJUST LOAN AMOUNT</div>
+        <input type="range" id="loan-slider" min="10000" max="{{ loan_amount }}" value="{{ loan_amount }}" step="1000" style="width: 100%; cursor: pointer;">
+        <div style="display:flex; justify-content:space-between; margin-top:8px; font-family:var(--font-sans); font-size:12px; color:var(--white-muted);">
+          <span>₹10k</span>
+          <span>₹{{ loan_amount }}</span>
+        </div>
+      </div>
+
       <form action="{% url 'accept_loan' session_id=session_id %}" method="POST" id="loan-form" style="margin-top: 40px;">
         {% csrf_token %}
         <label class="custom-checkbox-wrapper" style="margin-bottom: 32px;">
           <input type="checkbox" class="custom-checkbox-input" id="loan-affidavit" required>
           <div class="custom-checkbox-box"></div>
           <div class="custom-checkbox-text">
-            I authorise SwiftCredit NBFC to disburse ₹{{ loan_amount }} to my registered bank account and automatically recover it upon claim release.
+            I authorise SwiftCredit NBFC to disburse <span id="auth-amount-text">₹{{ loan_amount }}</span> to my registered bank account and automatically recover it upon claim release.
           </div>
         </label>
 
         <button type="submit" class="btn-primary btn-full" id="loan-btn" style="height: 60px; font-size: 12px;" disabled>
-          ACCEPT & RECEIVE ₹{{ loan_amount }} <span class="arrow">&rarr;</span>
+          ACCEPT & RECEIVE <span id="btn-amount-text" style="display:inline-block; margin-left:4px;">₹{{ loan_amount }}</span> <span class="arrow">&rarr;</span>
         </button>
       </form>
     </div>
@@ -158,8 +167,24 @@
 </div>
 
 <script>
-document.getElementById('loan-affidavit').addEventListener('change', function() {
-  document.getElementById('loan-btn').disabled = !this.checked;
+document.addEventListener('DOMContentLoaded', () => {
+  const affidavit = document.getElementById('loan-affidavit');
+  const btn = document.getElementById('loan-btn');
+  const slider = document.getElementById('loan-slider');
+  const displayAmount = document.getElementById('display-loan-amount');
+  const btnAmountText = document.getElementById('btn-amount-text');
+  const authAmountText = document.getElementById('auth-amount-text');
+
+  affidavit.addEventListener('change', function() {
+    btn.disabled = !this.checked;
+  });
+
+  slider.addEventListener('input', function() {
+    const val = parseInt(this.value).toLocaleString('en-IN');
+    if (displayAmount) displayAmount.textContent = '₹' + val;
+    if (btnAmountText) btnAmountText.textContent = '₹' + val;
+    if (authAmountText) authAmountText.textContent = '₹' + val;
+  });
 });
 </script>
 {% endblock %}

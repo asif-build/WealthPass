@@ -9,6 +9,16 @@ class ClaimSession(models.Model):
     deceased_pan = models.CharField(max_length=15)
     death_certificate_no = models.CharField(max_length=100)
     death_certificate_file = models.FileField(upload_to='certificates/', null=True, blank=True)
+    ocr_result = models.TextField(blank=True, null=True)
+    document_verified = models.BooleanField(default=False)
+    confidence_score = models.IntegerField(default=0)
+    
+    # New OCR Matching fields
+    verification_status = models.CharField(max_length=50, default='PENDING')
+    match_score = models.IntegerField(default=0)
+    fraud_risk_level = models.CharField(max_length=20, default='LOW')
+    extracted_name = models.CharField(max_length=255, blank=True, null=True)
+    extracted_certificate_no = models.CharField(max_length=100, blank=True, null=True)
     
     # Claimant
     claimant_name = models.CharField(max_length=255)

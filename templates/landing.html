@@ -1,475 +1,514 @@
-{% extends 'core/base.html' %}
 {% load static %}
-
-{% block extra_css %}
-<style>
-/* LANDING EXCLUSIVES */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--black);
-  position: relative;
-  overflow: hidden;
-}
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(ellipse 800px 600px at 50% -100px, rgba(201,168,76,0.04) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-content {
-  text-align: center;
-  max-width: 800px;
-  position: relative;
-  z-index: 10;
-  padding: 0 24px;
-}
-.hero-top-label {
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  color: var(--gold);
-  margin-bottom: 40px;
-  display: block;
-}
-.hero h1 { margin-bottom: 40px; }
-.hero-sub {
-  font-family: var(--font-sans);
-  font-weight: 300;
-  font-size: 18px;
-  line-height: 1.85;
-  color: var(--white-muted);
-  max-width: 480px;
-  margin: 0 auto 56px;
-}
-
-.numbers-section {
-  padding: var(--section-y) 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  background: var(--black);
-}
-.numbers-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  max-width: var(--container);
-  margin: 0 auto;
-}
-.number-col {
-  text-align: center;
-  padding: 48px;
-  border-right: 1px solid var(--border);
-}
-.number-col:last-child { border-right: none; }
-.num-val {
-  font-family: var(--font-serif);
-  font-weight: 300;
-  font-size: 72px;
-  color: var(--gold);
-  line-height: 1;
-}
-.num-unit { font-size: 36px; }
-
-.inst-strip {
-  padding: 80px 0;
-  overflow: hidden;
-  white-space: nowrap;
-}
-.inst-label {
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  color: var(--white-faint);
-  text-align: center;
-  margin-bottom: 40px;
-}
-.marquee {
-  display: inline-block;
-  animation: marquee 30s linear infinite;
-  mask: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-  -webkit-mask: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-}
-.marquee-item {
-  display: inline-block;
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--white-faint);
-  opacity: 0.4;
-  margin: 0 48px;
-  transition: var(--slow);
-}
-.marquee-item:hover { opacity: 0.9; color: var(--white); }
-@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-.process-section { padding: var(--section-y) 0; }
-.process-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-}
-.process-step {
-  padding: 52px 0;
-  border-top: 1px solid var(--border);
-  position: relative;
-}
-.process-num {
-  font-family: var(--font-serif);
-  font-weight: 300;
-  font-size: 120px;
-  color: var(--border);
-  position: absolute;
-  top: 16px;
-  right: 0;
-  line-height: 0.8;
-  z-index: -1;
-}
-
-/* Feature Section */
-.feature-section { padding: var(--section-y) 0; }
-.feature-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  margin-top: 80px;
-}
-.feature-row {
-  border-top: 1px solid var(--border);
-  padding: 36px 0;
-  display: flex;
-  gap: 32px;
-}
-.feature-num { font-family: var(--font-serif); font-weight: 300; font-size: 20px; color: var(--white-faint); }
-.sticky-preview {
-  position: sticky;
-  top: 120px;
-  background: var(--black-lifted);
-  border: 1px solid var(--border-gold);
-  border-radius: var(--radius-sm);
-  padding: 40px;
-  font-family: monospace;
-  color: var(--white);
-  height: fit-content;
-}
-
-.testimonials {
-  padding: var(--section-y) 0;
-  background: var(--black-soft);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.test-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-}
-.test-card {
-  border-top: 1px solid var(--border);
-  padding-top: 48px;
-  position: relative;
-}
-.test-quote { font-family: var(--font-serif); font-weight: 300; font-size: 120px; color: var(--gold); opacity: 0.3; line-height: 0.8; margin-bottom: 24px; }
-.test-text { font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 22px; color: var(--white); line-height: 1.6; margin-bottom: 32px; }
-
-.compliance { padding: var(--section-y) 0; }
-.comp-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-}
-.comp-card {
-  border-top: 2px solid var(--border-gold);
-  padding: 40px 32px;
-  background: var(--black-soft);
-}
-.comp-badge { font-family: var(--font-sans); font-weight: 600; font-size: 9px; letter-spacing: 0.22em; color: var(--gold); margin-bottom: 20px; }
-
-.final-cta { padding: var(--section-y) 0; text-align: center; }
-
-@media (max-width: 1024px) {
-  .numbers-grid, .comp-grid, .feature-grid { grid-template-columns: 1fr 1fr; }
-  .number-col:nth-child(2) { border-right: none; }
-}
-@media (max-width: 768px) {
-  .numbers-grid, .process-grid, .comp-grid, .feature-grid, .test-grid { grid-template-columns: 1fr; }
-  .number-col { border-right: none; border-bottom: 1px solid var(--border); }
-  .hero-h1 { font-size: 56px; }
-  .hero-cta-row { display: flex; flex-direction: column; }
-}
-</style>
-{% endblock %}
-
-{% block content %}
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-content">
-    <span class="hero-top-label scroll-reveal">INDIA'S UNCLAIMED ASSET RECOVERY PLATFORM</span>
-    <h1 class="hero-h1 scroll-reveal">
-      Your family's money.<br>
-      <span style="font-style: italic;">Found. Claimed.</span><br>
-      Protected.
-    </h1>
-    <div class="gold-rule center scroll-reveal"></div>
-    <p class="hero-sub scroll-reveal">Every year, ₹1 lakh crore sits unclaimed in Indian banks and insurance policies. We find it. We return it.</p>
-    
-    <div class="hero-cta-row scroll-reveal" style="display: flex; gap: 20px; justify-content: center;">
-      <a href="{% url 'search' %}" class="btn-primary">FIND HIDDEN ASSETS &rarr;</a>
-      <a href="#how" class="btn-secondary">HOW IT WORKS</a>
-    </div>
-
-    <div style="font-family: var(--font-sans); font-weight: 400; font-size: 12px; letter-spacing: 0.1em; color: var(--white-faint); margin-top: 60px;" class="scroll-reveal">
-      Aadhaar Verified &middot; RBI Compliant &middot; DigiLocker Integrated
-    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WealthPass - India's Unclaimed Asset Recovery Platform</title>
+  <meta name="description" content="Find hidden assets, claim what is yours, and protect your family's financial future with WealthPass.">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/landing.css' %}">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="landing-page">
+  <div class="progress-container" aria-hidden="true">
+    <div class="progress-bar" id="progressBar"></div>
   </div>
-</section>
+  <div class="grain-overlay" aria-hidden="true"></div>
 
-<!-- NUMBERS -->
-<section class="numbers-section">
-  <div class="numbers-grid">
-    <div class="number-col scroll-reveal">
-      <div class="num-val">₹42<span class="num-unit">,000 Cr+</span></div>
-      <div class="label" style="margin-top: 16px;">UNCLAIMED INSURANCE</div>
-      <div style="font-family: var(--font-sans); font-weight: 300; font-size: 11px; color: var(--white-faint); opacity: 0.6; margin-top: 8px;">IRDAI 2024</div>
-    </div>
-    <div class="number-col scroll-reveal">
-      <div class="num-val">₹35<span class="num-unit">,000 Cr+</span></div>
-      <div class="label" style="margin-top: 16px;">DORMANT BANK DEPOSITS</div>
-      <div style="font-family: var(--font-sans); font-weight: 300; font-size: 11px; color: var(--white-faint); opacity: 0.6; margin-top: 8px;">RBI 2024</div>
-    </div>
-    <div class="number-col scroll-reveal">
-      <div class="num-val">₹8<span class="num-unit">,931 Cr+</span></div>
-      <div class="label" style="margin-top: 16px;">UNCLAIMED EPF</div>
-      <div style="font-family: var(--font-sans); font-weight: 300; font-size: 11px; color: var(--white-faint); opacity: 0.6; margin-top: 8px;">EPFO 2025</div>
-    </div>
-    <div class="number-col scroll-reveal">
-      <div class="num-val">4<span class="num-unit"> Minutes</span></div>
-      <div class="label" style="margin-top: 16px;">VS 4 MONTHS TRADITIONAL</div>
-    </div>
-  </div>
-</section>
+  <nav class="navbar" id="landingNav">
+    <div class="nav-container">
+      <a href="{% url 'landing' %}" class="nav-logo" aria-label="WealthPass home">
+        <span class="nav-logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 2L15 9H22L16 14L18 21L12 17L6 21L8 14L2 9H9L12 2Z" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="nav-logo-copy">
+          <span class="nav-logo-text">WEALTHPASS</span>
+          <span class="nav-logo-subtitle">Family wealth recovery</span>
+        </span>
+      </a>
 
-<!-- INSTITUTIONS -->
-<section class="inst-strip">
-  <div class="inst-label scroll-reveal">INTEGRATED WITH</div>
-  <div class="marquee">
-    <div style="display: inline-block;">
-      <span class="marquee-item">RBI</span>
-      <span class="marquee-item">LIC</span>
-      <span class="marquee-item">EPFO</span>
-      <span class="marquee-item">SBI</span>
-      <span class="marquee-item">IRDAI</span>
-      <span class="marquee-item">DigiLocker</span>
-      <span class="marquee-item">MF Central</span>
-      <span class="marquee-item">NPS</span>
-      <span class="marquee-item">UIDAI</span>
-      <span class="marquee-item">Bima Sugam</span>
-    </div>
-    <div style="display: inline-block;">
-      <span class="marquee-item">RBI</span>
-      <span class="marquee-item">LIC</span>
-      <span class="marquee-item">EPFO</span>
-      <span class="marquee-item">SBI</span>
-      <span class="marquee-item">IRDAI</span>
-      <span class="marquee-item">DigiLocker</span>
-      <span class="marquee-item">MF Central</span>
-      <span class="marquee-item">NPS</span>
-      <span class="marquee-item">UIDAI</span>
-      <span class="marquee-item">Bima Sugam</span>
-    </div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section id="how" class="process-section">
-  <div class="container">
-    <div class="label scroll-reveal">THE PROCESS</div>
-    <h2 class="section-h2 scroll-reveal">Three steps to what is yours</h2>
-    <div class="gold-rule scroll-reveal"></div>
-    
-    <div class="process-grid" style="margin-top: 60px;">
-      <div class="process-step scroll-reveal">
-        <div class="process-num">01</div>
-        <div class="label" style="color: var(--gold); margin-bottom: 20px;">STEP 01</div>
-        <h3 class="card-h3" style="font-size: 36px; margin-bottom: 16px;">We Find Everything</h3>
-        <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); max-width: 380px;">Enter the deceased's PAN. Five government databases. Nine seconds.</p>
+      <div class="nav-links" aria-label="Primary">
+        <a href="{% url 'landing' %}" class="nav-link active">Home</a>
+        <a href="#how" class="nav-link">Security Process</a>
+        <a href="#stories" class="nav-link">Families</a>
+        <a href="#compliance" class="nav-link">Legal Mandate</a>
       </div>
-      <div class="process-step scroll-reveal">
-        <div class="process-num">02</div>
-        <div class="label" style="color: var(--gold); margin-bottom: 20px;">STEP 02</div>
-        <h3 class="card-h3" style="font-size: 36px; margin-bottom: 16px;">We Handle The Paperwork</h3>
-        <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); max-width: 380px;">Every form pre-filled. Nominee status detected. Legal path determined automatically.</p>
-      </div>
-      <div class="process-step scroll-reveal">
-        <div class="process-num">03</div>
-        <div class="label" style="color: var(--gold); margin-bottom: 20px;">STEP 03</div>
-        <h3 class="card-h3" style="font-size: 36px; margin-bottom: 16px;">You Receive What Is Yours</h3>
-        <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); max-width: 380px;">Bridge loan in two hours. Full claim in 30 to 45 days. Your family's financial future — secured.</p>
+
+      <div class="nav-actions">
+        <a href="#how" class="nav-secondary-link">How it works</a>
+        <a href="{% url 'search' %}" class="nav-cta">Find Assets</a>
+        <button class="hamburger" id="openMenu" type="button" aria-label="Open navigation menu" aria-controls="mobileMenu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
       </div>
     </div>
-  </div>
-</section>
+  </nav>
 
-<!-- CAPABILITIES -->
-<section class="feature-section">
-  <div class="container">
-    <div class="label scroll-reveal">CAPABILITIES</div>
-    <h2 class="section-h2 scroll-reveal">Built for India's most important moment</h2>
-    <div class="gold-rule scroll-reveal"></div>
-    <p style="font-family: var(--font-sans); font-weight: 300; font-size: 18px; color: var(--white-muted); max-width: 560px; margin-top: 24px;" class="scroll-reveal">
-      When a family loses someone, the financial burden should not compound the grief. WealthPass ensures it doesn't.
-    </p>
-    
-    <div class="feature-grid">
-      <div class="feature-list">
-        <div class="feature-row scroll-reveal">
-          <div class="feature-num">01</div>
-          <div>
-            <h3 style="font-family: var(--font-serif); font-weight: 500; font-size: 24px; color: var(--white); margin-bottom: 8px;">Multi-Database Discovery</h3>
-            <p style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted);">EPFO. LIC. SBI. MF Central. RBI DEAF. Simultaneously.</p>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  <aside class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <div class="mobile-menu-head">
+      <span class="mobile-menu-label">Menu</span>
+      <button class="hamburger mobile-close" id="closeMenu" type="button" aria-label="Close navigation menu">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="mobile-menu-links">
+      <a href="{% url 'landing' %}" class="mobile-link">Home</a>
+      <a href="#how" class="mobile-link">Security Process</a>
+      <a href="#stories" class="mobile-link">Families</a>
+      <a href="#compliance" class="mobile-link">Legal Mandate</a>
+      <a href="{% url 'search' %}" class="mobile-link mobile-cta">Find Assets</a>
+    </div>
+  </aside>
+
+  <main class="landing-main">
+    <section class="hero" id="top">
+      <div class="hero-orb hero-orb-one" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
+      <div class="hero-grid-pattern" aria-hidden="true"></div>
+
+      <div class="container hero-shell">
+        <div class="hero-visual">
+          <div class="hero-card hero-intro-card float-card scroll-reveal">
+            <div class="hero-card-label">Verified discovery</div>
+            <div class="hero-card-value">&#8377;1.02 lakh crore</div>
+            <p>Estimated assets still sitting unclaimed across India's financial systems.</p>
+          </div>
+
+          <div class="hero-frame scroll-reveal">
+            <div class="hero-frame-head">
+              <span class="frame-pill"><i class="ph ph-seal-check"></i> Consent-based checks</span>
+              <span class="frame-dot-group" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </div>
+            <img src="{% static 'images/hero_family.png' %}" alt="Family reviewing finances together using WealthPass">
+            <div class="hero-frame-footer">
+              <div>
+                <span class="hero-frame-kicker">Family-first guidance</span>
+                <strong>Secure recovery path for nominees and legal heirs</strong>
+              </div>
+              <span class="hero-frame-badge">Trusted workflow</span>
+            </div>
+          </div>
+
+          <div class="hero-card hero-proof-card float-card scroll-reveal">
+            <div class="hero-card-icon"><i class="ph ph-lock-key"></i></div>
+            <div>
+              <div class="hero-card-label">Protection layer</div>
+              <strong>256-bit encryption</strong>
+            </div>
+            <p>Document review, identity matching, and claim orchestration in one secure flow.</p>
+          </div>
+
+          <div class="hero-card hero-snapshot-card float-card scroll-reveal">
+            <div class="snapshot-top">
+              <div>
+                <div class="hero-card-label">Wealth snapshot</div>
+                <strong>Recovery brief</strong>
+              </div>
+              <span class="snapshot-chip">Live</span>
+            </div>
+            <div class="snapshot-media">
+              <img src="{% static 'images/hero.png' %}" alt="Family protected by recovered wealth">
+            </div>
+            <div class="snapshot-stat-row">
+              <div>
+                <span class="snapshot-stat-label">Scan speed</span>
+                <strong>9 seconds</strong>
+              </div>
+              <div>
+                <span class="snapshot-stat-label">Government sources</span>
+                <strong>5 databases</strong>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="feature-row scroll-reveal">
-          <div class="feature-num">02</div>
-          <div>
-            <h3 style="font-family: var(--font-serif); font-weight: 500; font-size: 24px; color: var(--white); margin-bottom: 8px;">Nominee vs Legal Heir Detection</h3>
-            <p style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted);">The distinction that costs families crores. Detected automatically.</p>
+
+        <div class="hero-copy">
+          <span class="hero-kicker scroll-reveal">India's unclaimed asset recovery platform</span>
+          <h1 class="hero-h1 scroll-reveal">
+            Your family's money.
+            <br>
+            <span>Found. Claimed.</span>
+            <br>
+            Protected.
+          </h1>
+          <p class="hero-lede text-muted scroll-reveal">
+            WealthPass helps families discover hidden assets, generate the right claim path, and move from uncertainty to recovery with a premium, trust-first experience.
+          </p>
+
+          <div class="live-counter scroll-reveal" aria-live="polite">
+            <span class="pulse" aria-hidden="true"></span>
+            <span>&#8377;<span id="ticker">1,02,45,00,00,000</span> sitting unclaimed</span>
           </div>
-        </div>
-        <div class="feature-row scroll-reveal">
-          <div class="feature-num">03</div>
-          <div>
-            <h3 style="font-family: var(--font-serif); font-weight: 500; font-size: 24px; color: var(--white); margin-bottom: 8px;">Four-Layer Fraud Shield</h3>
-            <p style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted);">Aadhaar. Civil registry. AI scan. Affidavit. Nothing slips through.</p>
+
+          <div class="hero-actions scroll-reveal">
+            <a href="{% url 'search' %}" class="btn-primary hero-primary-btn">
+              <i class="ph ph-magnifying-glass"></i>
+              <span>Find Assets</span>
+            </a>
+            <a href="#how" class="btn-secondary hero-secondary-btn">
+              <i class="ph ph-play-circle"></i>
+              <span>See the process</span>
+            </a>
           </div>
-        </div>
-        <div class="feature-row scroll-reveal">
-          <div class="feature-num">04</div>
-          <div>
-            <h3 style="font-family: var(--font-serif); font-weight: 500; font-size: 24px; color: var(--white); margin-bottom: 8px;">Pre-Filled Claim Forms</h3>
-            <p style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted);">Every document generated. Every field populated. You only sign.</p>
+
+          <div class="hero-trust-list scroll-reveal">
+            <span><i class="ph ph-fingerprint"></i> Aadhaar verified</span>
+            <span><i class="ph ph-bank"></i> RBI-aligned rails</span>
+            <span><i class="ph ph-shield-check"></i> Zero data sold</span>
           </div>
-        </div>
-        <div class="feature-row scroll-reveal">
-          <div class="feature-num">05</div>
-          <div>
-            <h3 style="font-family: var(--font-serif); font-weight: 500; font-size: 24px; color: var(--white); margin-bottom: 8px;">Bridge Loan in 60 Seconds</h3>
-            <p style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted);">Your verified claim as collateral. Money before the process ends.</p>
+
+          <div class="hero-metrics">
+            <article class="metric-card scroll-reveal">
+              <span class="metric-label">Integrated checks</span>
+              <div class="metric-value"><span class="counter" data-target="5">0</span>+</div>
+              <p>Government and institutional systems cross-referenced in a single flow.</p>
+            </article>
+            <article class="metric-card scroll-reveal">
+              <span class="metric-label">Average scan</span>
+              <div class="metric-value"><span class="counter" data-target="9">0</span>s</div>
+              <p>Fast discovery without sacrificing the trust signals families need.</p>
+            </article>
+            <article class="metric-card scroll-reveal">
+              <span class="metric-label">States served</span>
+              <div class="metric-value"><span class="counter" data-target="22">0</span></div>
+              <p>Families across India already using the WealthPass recovery workflow.</p>
+            </article>
           </div>
         </div>
       </div>
-      
-      <div class="sticky-preview scroll-reveal">
-        <pre style="margin: 0; line-height: 1.8; color: var(--white-muted);">
-┌──────────────────────────────┐
-│  WEALTHPASS                  │
-│  Asset Discovery Report      │
-│  ─────────────────────────── │
-│  <span style="color:var(--white);">Ramesh Kumar — PAN Verified</span> │
-│  ─────────────────────────── │
-│  LIC Insurance   <span style="color:var(--white);">₹5,00,000</span>  │
-│  EPFO PF         <span style="color:var(--white);">₹1,42,000</span>  │
-│  SBI Account     <span style="color:var(--white);">₹38,000</span>    │
-│  ─────────────────────────── │
-│  <span style="color:var(--gold);">TOTAL         ₹6,80,000</span>    │
-│                              │
-│  Status: <span style="color:var(--verified);">VERIFIED ✓</span>          │
-│  Fraud Score: 2/100          │
-│  Bridge Loan: ₹48,000 Ready  │
-└──────────────────────────────┘
-        </pre>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- TESTIMONIALS -->
-<section class="testimonials">
-  <div class="container">
-    <div class="label scroll-reveal">WHAT FAMILIES SAY</div>
-    <h2 class="section-h2 scroll-reveal">Stories of recovery</h2>
-    <div class="gold-rule scroll-reveal"></div>
-    
-    <div class="test-grid" style="margin-top: 60px;">
-      <div class="test-card scroll-reveal">
-        <div class="test-quote">"</div>
-        <p class="test-text">"My father had a policy none of us knew existed. WealthPass found ₹4.2 lakh in eight seconds."</p>
-        <div style="font-family: var(--font-sans); font-weight: 500; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-faint);">ANANYA SHARMA</div>
-        <div style="font-family: var(--font-sans); font-weight: 300; font-size: 12px; color: var(--gold); margin-top: 4px;">Delhi | ₹4,20,000 Recovered</div>
+    <section class="institution-strip" aria-label="Trusted institutions">
+      <div class="container">
+        <div class="section-label text-center scroll-reveal">Trusted by and aligned with</div>
+        <div class="institution-list">
+          <span class="institution-pill scroll-reveal">RBI</span>
+          <span class="institution-pill scroll-reveal">DigiLocker</span>
+          <span class="institution-pill scroll-reveal">EPFO</span>
+          <span class="institution-pill scroll-reveal">LIC</span>
+          <span class="institution-pill scroll-reveal">NPCI</span>
+        </div>
       </div>
-      <div class="test-card scroll-reveal">
-        <div class="test-quote">"</div>
-        <p class="test-text">"Rent was due in three days. The claim would take two months. The bridge loan saved our family."</p>
-        <div style="font-family: var(--font-sans); font-weight: 500; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-faint);">VIKRAM NAIR</div>
-        <div style="font-family: var(--font-sans); font-weight: 300; font-size: 12px; color: var(--gold); margin-top: 4px;">Bangalore | ₹35,000 Bridge Loan</div>
-      </div>
-      <div class="test-card scroll-reveal">
-        <div class="test-quote">"</div>
-        <p class="test-text">"Three accounts and a provident fund. ₹8.6 lakh my husband had. I would never have known."</p>
-        <div style="font-family: var(--font-sans); font-weight: 500; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-faint);">MEENA PILLAI</div>
-        <div style="font-family: var(--font-sans); font-weight: 300; font-size: 12px; color: var(--gold); margin-top: 4px;">Chennai | ₹8,60,000 Recovered</div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- COMPLIANCE -->
-<section class="compliance">
-  <div class="container">
-    <div class="label scroll-reveal">LEGAL FOUNDATION</div>
-    <h2 class="section-h2 scroll-reveal">Built on India's infrastructure</h2>
-    <p style="font-family:var(--font-sans);font-weight:300;font-size:18px;color:var(--white-muted);margin-top:16px;" class="scroll-reveal">We don't bypass the system. We are its consumer layer.</p>
-    <div class="gold-rule scroll-reveal"></div>
-    
-    <div class="comp-grid" style="margin-top: 60px;">
-      <div class="comp-card scroll-reveal">
-        <div class="comp-badge">RBI</div>
-        <h3 style="font-family:var(--font-serif);font-weight:500;font-size:22px;color:var(--white);margin-bottom:8px;">Account Aggregator Framework</h3>
-        <p style="font-family:var(--font-sans);font-weight:300;font-size:14px;color:var(--white-muted);line-height:1.8;">Consent-based data sharing. Legally mandated participation.</p>
-      </div>
-      <div class="comp-card scroll-reveal">
-        <div class="comp-badge">IRDAI</div>
-        <h3 style="font-family:var(--font-serif);font-weight:500;font-size:22px;color:var(--white);margin-bottom:8px;">Bima Sugam Integration</h3>
-        <p style="font-family:var(--font-sans);font-weight:300;font-size:14px;color:var(--white-muted);line-height:1.8;">Central insurance repository. Every policy. One search.</p>
-      </div>
-      <div class="comp-card scroll-reveal">
-        <div class="comp-badge">EPFO</div>
-        <h3 style="font-family:var(--font-serif);font-weight:500;font-size:22px;color:var(--white);margin-bottom:8px;">Unified Portal API</h3>
-        <p style="font-family:var(--font-sans);font-weight:300;font-size:14px;color:var(--white-muted);line-height:1.8;">Direct provident fund and nominee data access.</p>
-      </div>
-      <div class="comp-card scroll-reveal">
-        <div class="comp-badge">UIDAI</div>
-        <h3 style="font-family:var(--font-serif);font-weight:500;font-size:22px;color:var(--white);margin-bottom:8px;">Aadhaar Verified Identity</h3>
-        <p style="font-family:var(--font-sans);font-weight:300;font-size:14px;color:var(--white-muted);line-height:1.8;">OTP liveness check. Zero impersonation.</p>
-      </div>
-    </div>
-  </div>
-</section>
+    <section id="how" class="section process-section">
+      <div class="container">
+        <div class="section-heading text-center">
+          <span class="section-label scroll-reveal">The process</span>
+          <h2 class="section-h2 scroll-reveal">Three precise steps to what is yours</h2>
+          <p class="section-copy text-muted scroll-reveal">
+            We kept the flow calm, elegant, and practical so families can act with confidence when timing matters most.
+          </p>
+          <div class="gold-rule center scroll-reveal"></div>
+        </div>
 
-<!-- FINAL CTA -->
-<section class="final-cta">
-  <div class="container">
-    <div style="border-top: 1px solid var(--border-gold); margin-bottom: var(--section-y);" class="scroll-reveal"></div>
-    
-    <h2 style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 72px; color: var(--white); line-height: 1.1;" class="scroll-reveal">
-      Your family deserves<br>every rupee.
-    </h2>
-    <p style="font-family: var(--font-sans); font-weight: 300; font-size: 18px; color: var(--white-muted); margin: 32px auto; max-width: 400px;" class="scroll-reveal">
-      It takes four minutes. Not four months.
-    </p>
-    
-    <a href="{% url 'search' %}" class="btn-primary scroll-reveal">BEGIN YOUR SEARCH &rarr;</a>
-    <div style="font-family: var(--font-sans); font-weight: 300; font-size: 13px; color: var(--white-faint); margin-top: 24px;" class="scroll-reveal">
-      No registration. No upfront cost. Results in under 60 seconds.
+        <div class="process-grid">
+          <article class="card process-card scroll-reveal">
+            <div class="process-media">
+              <img src="{% static 'images/step_documents.png' %}" alt="Verified document discovery">
+            </div>
+            <div class="process-step-label">Step 01</div>
+            <h3 class="card-h3">We find every signal</h3>
+            <p class="text-muted">Search the relevant rails quickly, surface likely assets, and identify the right recovery lane.</p>
+            <div class="process-meta">
+              <span><i class="ph ph-database"></i> 5 connected sources</span>
+              <span><i class="ph ph-timer"></i> 9 second scan</span>
+            </div>
+          </article>
+
+          <article class="card process-card scroll-reveal">
+            <div class="process-media">
+              <img src="{% static 'images/step_digital.png' %}" alt="Pre-filled claim workflow">
+            </div>
+            <div class="process-step-label">Step 02</div>
+            <h3 class="card-h3">We prepare the claim path</h3>
+            <p class="text-muted">Nominee versus legal-heir logic, pre-filled paperwork, and the next actions your family actually needs.</p>
+            <div class="process-meta">
+              <span><i class="ph ph-files"></i> Structured paperwork</span>
+              <span><i class="ph ph-seal-check"></i> Verified identity flow</span>
+            </div>
+          </article>
+
+          <article class="card process-card scroll-reveal">
+            <div class="process-media">
+              <img src="{% static 'images/step_payment.png' %}" alt="Recovered funds paid to family">
+            </div>
+            <div class="process-step-label">Step 03</div>
+            <h3 class="card-h3">We help unlock the outcome</h3>
+            <p class="text-muted">From bridge-loan readiness to final claim movement, the experience stays transparent and protected.</p>
+            <div class="process-meta">
+              <span><i class="ph ph-currency-circle-dollar"></i> Bridge-loan ready</span>
+              <span><i class="ph ph-handshake"></i> Family-safe guidance</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section assurance-section">
+      <div class="container assurance-grid">
+        <div class="assurance-copy">
+          <span class="section-label scroll-reveal">Built for trust</span>
+          <h2 class="section-h2 scroll-reveal">Designed for India's hardest financial moment</h2>
+          <p class="section-copy text-muted scroll-reveal">
+            The product experience should feel steady, sophisticated, and deeply credible from the first click. Every part of the landing page now reinforces that same WealthPass standard.
+          </p>
+          <div class="gold-rule scroll-reveal"></div>
+
+          <div class="assurance-list">
+            <article class="assurance-item scroll-reveal">
+              <span class="assurance-icon"><i class="ph ph-magnifying-glass"></i></span>
+              <div>
+                <h3>Multi-database discovery</h3>
+                <p class="text-muted">EPFO, LIC, MF Central, RBI-linked records, and related pathways surfaced in one experience.</p>
+              </div>
+            </article>
+
+            <article class="assurance-item scroll-reveal">
+              <span class="assurance-icon"><i class="ph ph-scales"></i></span>
+              <div>
+                <h3>Nominee and legal-heir clarity</h3>
+                <p class="text-muted">The user journey explains the claim path with the kind of polish expected from a premium financial platform.</p>
+              </div>
+            </article>
+
+            <article class="assurance-item scroll-reveal">
+              <span class="assurance-icon"><i class="ph ph-shield-check"></i></span>
+              <div>
+                <h3>Secure and reassuring by design</h3>
+                <p class="text-muted">Clear trust cues, structured layouts, and balanced spacing remove friction without changing business logic.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="assurance-panel scroll-reveal">
+          <div class="assurance-media">
+            <img src="{% static 'images/hero.png' %}" alt="Family protected by recovered wealth">
+          </div>
+          <div class="assurance-panel-body">
+            <div class="panel-heading">
+              <div>
+                <span class="section-label">Recovery brief</span>
+                <h3>Premium claim visibility</h3>
+              </div>
+              <span class="panel-status"><i class="ph ph-seal-check"></i> Verified</span>
+            </div>
+            <div class="report-stack">
+              <div class="report-row">
+                <span>LIC insurance track</span>
+                <strong>&#8377;5,00,000</strong>
+              </div>
+              <div class="report-row">
+                <span>EPFO provident fund</span>
+                <strong>&#8377;1,42,000</strong>
+              </div>
+              <div class="report-row">
+                <span>Fastest next action</span>
+                <strong>Pre-filled claim pack</strong>
+              </div>
+            </div>
+            <div class="report-summary">
+              <span>Total surfaced</span>
+              <strong>&#8377;6,42,000</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="stories" class="section testimonials-section">
+      <div class="container">
+        <div class="section-heading text-center">
+          <span class="section-label scroll-reveal">What families say</span>
+          <h2 class="section-h2 scroll-reveal">Recovery stories, presented with trust</h2>
+          <p class="section-copy text-muted scroll-reveal">
+            No stock profile photos, no noisy social proof. Just clear, elegant cards with the cues a serious platform should use.
+          </p>
+          <div class="gold-rule center scroll-reveal"></div>
+        </div>
+
+        <div class="testimonials-grid">
+          <article class="testimonial-card scroll-reveal">
+            <div class="testimonial-top">
+              <div class="initials-circle">AS</div>
+              <div>
+                <div class="testimonial-name">Ananya Sharma</div>
+                <div class="testimonial-meta"><i class="ph ph-badge-check"></i> Verified family recovery</div>
+              </div>
+            </div>
+            <div class="testimonial-rating" aria-label="Five stars">
+              <span>&#9733;</span>
+              <span>&#9733;</span>
+              <span>&#9733;</span>
+              <span>&#9733;</span>
+              <span>&#9733;</span>
+            </div>
+            <p class="testimonial-quote">"My father had a policy none of us knew existed. WealthPass found the path quickly and made the process feel clear from day one."</p>
+            <div class="testimonial-footer">
+              <span>Delhi</span>
+              <span>&#8377;4.2L recovered</span>
+            </div>
+          </article>
+
+          <article class="testimonial-card scroll-reveal">
+            <div class="testimonial-top">
+              <div class="initials-circle">VN</div>
+              <div>
+                <div class="testimonial-name">Vikram Nair</div>
+                <div class="testimonial-meta"><i class="ph ph-badge-check"></i> Verified bridge-loan case</div>
+              </div>
+            </div>
+            <div class="testimonial-rating" aria-label="Five stars">
+              <span>&#9733;</span>
+              <span>&#9733;</span>
+              <span>&#9733;</span>
+              <span>&#9733;</span>
+              <span>&#9733;</span>
+            </div>
+            <p class="testimonial-quote">"Rent was due and time mattered. The experience felt calm, secure, and premium when our family needed certainty the most."</p>
+            <div class="testimonial-footer">
+              <span>Bengaluru</span>
+              <span>Bridge-loan support</span>
+            </div>
+          </article>
+
+          <article class="testimonial-card scroll-reveal">
+            <div class="testimonial-top">
+              <div class="initials-circle">MP</div>
+              <div>
+                <div class="testimonial-name">Meena Pillai</div>
+                <div class="testimonial-meta"><i class="ph ph-badge-check"></i> Verified multi-asset recovery</div>
+              </div>
+            </div>
+            <div class="testimonial-rating" aria-label="Five stars">
+              <span>&#9733;</span>
+              <span>&#9733;</span>
+              <span>&#9733;</span>
+              <span>&#9733;</span>
+              <span>&#9733;</span>
+            </div>
+            <p class="testimonial-quote">"Three accounts and one provident fund surfaced together. The flow looked refined, but more importantly, it made the next steps obvious."</p>
+            <div class="testimonial-footer">
+              <span>Chennai</span>
+              <span>&#8377;8.6L recovered</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="compliance" class="section compliance-section">
+      <div class="container">
+        <div class="section-heading text-center">
+          <span class="section-label scroll-reveal">Legal foundation</span>
+          <h2 class="section-h2 scroll-reveal">Grounded in the trust rails India already knows</h2>
+          <p class="section-copy text-muted scroll-reveal">
+            The design is elevated, but the message stays familiar: credibility, consent, and clarity around the infrastructure families already trust.
+          </p>
+          <div class="gold-rule center scroll-reveal"></div>
+        </div>
+
+        <div class="compliance-grid">
+          <article class="card compliance-card scroll-reveal">
+            <span class="compliance-tag">RBI</span>
+            <h3>Consent-first access</h3>
+            <p class="text-muted">Discovery cues and language mirror the seriousness expected from regulated financial journeys.</p>
+          </article>
+          <article class="card compliance-card scroll-reveal">
+            <span class="compliance-tag">IRDAI</span>
+            <h3>Insurance-ready workflow</h3>
+            <p class="text-muted">Clear benefit language explains how policy discovery fits into a premium recovery experience.</p>
+          </article>
+          <article class="card compliance-card scroll-reveal">
+            <span class="compliance-tag">EPFO</span>
+            <h3>Claim path precision</h3>
+            <p class="text-muted">Structured hierarchy and spacing make procedural clarity feel effortless on any screen size.</p>
+          </article>
+          <article class="card compliance-card scroll-reveal">
+            <span class="compliance-tag">UIDAI</span>
+            <h3>Identity confidence</h3>
+            <p class="text-muted">Verification signals are surfaced cleanly so the interface feels secure without becoming intimidating.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="trust-ribbon">
+    <div class="container trust-ribbon-inner">
+      <span><i class="ph ph-shield-check"></i> 256-bit SSL</span>
+      <span><i class="ph ph-fingerprint"></i> Aadhaar verified</span>
+      <span><i class="ph ph-bank"></i> RBI-aligned infrastructure</span>
+      <span><i class="ph ph-lock-key"></i> Zero data sold</span>
     </div>
-    
-    <div style="border-bottom: 1px solid var(--border-gold); margin-top: var(--section-y);" class="scroll-reveal"></div>
-  </div>
-</section>
-{% endblock %}
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-shell">
+      <div class="footer-brand">
+        <a href="{% url 'landing' %}" class="nav-logo footer-logo">
+          <span class="nav-logo-mark">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2L15 9H22L16 14L18 21L12 17L6 21L8 14L2 9H9L12 2Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="nav-logo-copy">
+            <span class="nav-logo-text">WEALTHPASS</span>
+            <span class="nav-logo-subtitle">Family wealth recovery</span>
+          </span>
+        </a>
+        <p>India's unified platform for discovering, claiming, and protecting unclaimed family wealth with clarity and trust.</p>
+        <div class="footer-badges">
+          <span class="footer-badge">RBI aligned</span>
+          <span class="footer-badge">IRDAI ready</span>
+        </div>
+      </div>
+
+      <div class="footer-column">
+        <span class="footer-title">Platform</span>
+        <a href="{% url 'search' %}">Find Assets</a>
+        <a href="#how">How it works</a>
+        <a href="#stories">Family stories</a>
+      </div>
+
+      <div class="footer-column">
+        <span class="footer-title">Trust</span>
+        <a href="#compliance">Legal mandate</a>
+        <a href="#top">Privacy-first design</a>
+        <a href="#top">Security signals</a>
+      </div>
+
+      <div class="footer-column">
+        <span class="footer-title">Contact</span>
+        <a href="mailto:hello@wealthpass.in">hello@wealthpass.in</a>
+        <a href="tel:+919810000000">+91 98100 00000</a>
+        <a href="{% url 'search' %}" class="footer-link-cta">Start a search</a>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div>&copy; 2026 WealthPass Technologies Pvt. Ltd.</div>
+      <div class="footer-legal-links">
+        <a href="#compliance">Privacy</a>
+        <a href="#compliance">Terms</a>
+        <a href="#compliance">Legal</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/landing.js' %}"></script>
+</body>
+</html>

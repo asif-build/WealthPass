@@ -106,11 +106,66 @@
   transform: translateY(20px);
   transition: var(--slow);
 }
-.success-card.visible {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
+.success-card.visible { display: block; opacity: 1; transform: translateY(0); }
+
+.failed-card {
+  border: 1px solid rgba(122,48,48,0.3);
+  background: rgba(122,48,48,0.06);
+  padding: 48px;
+  text-align: center;
+  margin-top: 40px;
+  border-radius: var(--radius-sm);
+  display: none;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: var(--slow);
 }
+.failed-card.visible { display: block; opacity: 1; transform: translateY(0); }
+
+.review-card {
+  border: 1px solid rgba(220,160,50,0.3);
+  background: rgba(220,160,50,0.06);
+  padding: 48px;
+  text-align: center;
+  margin-top: 40px;
+  border-radius: var(--radius-sm);
+  display: none;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: var(--slow);
+}
+.review-card.visible { display: block; opacity: 1; transform: translateY(0); }
+
+.ocr-panel {
+  border: 1px solid var(--border);
+  background: var(--black-soft);
+  border-radius: var(--radius-sm);
+  margin-top: 24px;
+  overflow: hidden;
+  display: none;
+  opacity: 0;
+  transition: var(--slow);
+}
+.ocr-panel.visible { display: block; opacity: 1; }
+.ocr-header {
+  padding: 16px 24px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--white-faint);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  display: flex; justify-content: space-between;
+}
+.ocr-body {
+  padding: 24px;
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--white-muted);
+  white-space: pre-wrap;
+  display: none;
+}
+.ocr-body.open { display: block; }
 </style>
 {% endblock %}
 
@@ -165,18 +220,53 @@
         <div class="status-icon pending" id="icon-4"></div>
         <div>
           <div class="label">AI DOCUMENT AUTHENTICITY SCAN</div>
-          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-faint); margin-top: 4px;">Checking for tampering or alteration</div>
-          <div class="result-text" id="result-4">→ Score 94/100 — No tampering detected ✓</div>
+          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-faint); margin-top: 4px;">Checking for tampering and matching OCR</div>
+          <div class="result-text" id="result-4">
+            {% if verification_status == 'VERIFIED' %}
+              → Match Score {{ match_score }}% — Match confirmed ✓
+            {% elif verification_status == 'REJECTED' %}
+              → Match Score {{ match_score }}% — Mismatch detected ✗
+            {% else %}
+              → Manual Review Required ⚠
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
     
-    <div class="success-card" id="success-card">
+    {% if verification_status == 'VERIFIED' %}
+    <div class="success-card" id="final-card">
       <div style="font-family: var(--font-sans); font-weight: 600; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--verified); margin-bottom: 24px;">VERIFICATION COMPLETE</div>
-      <h2 style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 32px; color: var(--white); margin-bottom: 12px;">Your documents are confirmed.</h2>
-      <p style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-muted); margin-bottom: 40px;">Fraud Risk Score: 2 / 100</p>
-      
+      <h2 style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 32px; color: var(--white); margin-bottom: 12px;">✅ Certificate Verified</h2>
+      <p style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-muted); margin-bottom: 40px;">Match Score: {{ match_score }}% | Risk Level: {{ fraud_risk_level|default:"Low" }}</p>
       <a href="{% url 'results' session_id=session_id %}" class="btn-primary btn-full">VIEW DISCOVERED ASSETS &rarr;</a>
+    </div>
+    {% elif verification_status == 'REJECTED' %}
+    <div class="failed-card" id="final-card">
+      <div style="font-family: var(--font-sans); font-weight: 600; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--danger); margin-bottom: 24px;">VERIFICATION FAILED</div>
+      <h2 style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 32px; color: var(--danger); margin-bottom: 12px;">❌ Data Mismatch</h2>
+      <p style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-muted); margin-bottom: 40px;">Match Score: {{ match_score }}% | The entered details do not match the uploaded certificate.</p>
+      <a href="{% url 'search' %}" class="btn-secondary btn-full" style="display:block; text-align:center;">TRY AGAIN</a>
+    </div>
+    {% else %}
+    <div class="review-card" id="final-card">
+      <div style="font-family: var(--font-sans); font-weight: 600; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px;">NEEDS ATTENTION</div>
+      <h2 style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 32px; color: var(--gold); margin-bottom: 12px;">⚠ Needs Manual Review</h2>
+      <p style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-muted); margin-bottom: 40px;">The document could not be automatically processed by OCR.</p>
+      <a href="{% url 'results' session_id=session_id %}" class="btn-primary btn-full">PROCEED ANYWAY &rarr;</a>
+    </div>
+    {% endif %}
+
+    <div class="ocr-panel" id="ocr-panel">
+      <div class="ocr-header" onclick="document.getElementById('ocr-content').classList.toggle('open')">
+        <span>VIEW EXTRACTED TEXT (OCR)</span>
+        <span>↓</span>
+      </div>
+      <div class="ocr-body" id="ocr-content">{{ ocr_result|default:"No text extracted." }}</div>
+    </div>
+
+    <div style="text-align:center; font-family:var(--font-sans); font-weight:300; font-size:12px; color:var(--white-faint); margin-top:60px;">
+      "₹1 lakh crore remains unclaimed. WealthPass helps families recover what is rightfully theirs."
     </div>
     
   </div>
@@ -185,6 +275,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const items = [1, 2, 3, 4];
+  const sStatus = "{{ verification_status }}";
   
   items.forEach((i, index) => {
     setTimeout(() => {
@@ -194,15 +285,34 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       const icon = document.getElementById(`icon-${i}`);
       icon.classList.remove('pending');
-      icon.classList.add('done');
-      icon.innerHTML = '✓';
+      
+      if(i === 4 && sStatus === 'REJECTED') {
+        icon.style.borderColor = "var(--danger)";
+        icon.style.color = "var(--danger)";
+        icon.innerHTML = '✗';
+        document.getElementById(`result-${i}`).style.color = "var(--danger)";
+      } else if(i === 4 && sStatus === 'NEEDS REVIEW') {
+        icon.style.borderColor = "var(--gold)";
+        icon.style.color = "var(--gold)";
+        icon.innerHTML = '⚠';
+        document.getElementById(`result-${i}`).style.color = "var(--gold)";
+      } else {
+        icon.classList.add('done');
+        icon.innerHTML = '✓';
+      }
+      
       document.getElementById(`result-${i}`).style.display = 'block';
       
       if(i === 4) {
         setTimeout(() => {
-          const successCard = document.getElementById('success-card');
-          successCard.style.display = 'block';
-          setTimeout(() => { successCard.classList.add('visible'); }, 50);
+          const finalCard = document.getElementById('final-card');
+          const ocrPanel = document.getElementById('ocr-panel');
+          finalCard.style.display = 'block';
+          ocrPanel.style.display = 'block';
+          setTimeout(() => { 
+            finalCard.classList.add('visible'); 
+            ocrPanel.classList.add('visible');
+          }, 50);
         }, 800);
       }
     }, (index * 700) + 1500);
