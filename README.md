@@ -63,9 +63,7 @@ python manage.py runserver
 WealthPass was built through teamwork combining leadership, backend systems, and frontend experience.
 
 - **Aveeshi** — Team Lead
-- **Aveeshi** — Backend Development
 - **Manshi** — Frontend Development
-- **Somya** — Frontend Development
 - **Asif** — Backend Development & Support
 
 ## 🌐 Future Improvements
