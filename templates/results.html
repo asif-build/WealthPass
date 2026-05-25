@@ -3,7 +3,7 @@
 {% block extra_css %}
 <style>
 .results-page {
-  background: radial-gradient(circle at top center, #ffffff 0%, var(--black-lifted) 100%);
+  background: radial-gradient(circle at top center, var(--black-soft) 0%, var(--black) 100%);
   min-height: 100vh;
 }
 .results-header {
@@ -135,8 +135,8 @@
   <section class="results-header scroll-reveal">
     <div class="container">
       <div class="label" style="color: var(--gold); margin-bottom: 24px; letter-spacing: 0.25em;">ASSETS DISCOVERED</div>
-      <h1 class="hero-h1" style="font-size: 72px; letter-spacing: 0.05em;">{{ deceased_name }}</h1>
-      <p style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted); margin-top: 24px; letter-spacing: 0.1em; text-transform: uppercase;">
+      <h1 class="hero-h1 animate-words" style="font-size: 72px; letter-spacing: 0.05em;">{{ deceased_name }}</h1>
+      <p class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted); margin-top: 24px; letter-spacing: 0.1em; text-transform: uppercase;">
         Claimant: <span style="color: var(--white);">{{ claimant_name }}</span> &mdash; {{ relation }}
       </p>
       <div class="gold-rule center"></div>
@@ -147,7 +147,7 @@
   <section class="total-block scroll-reveal" style="transition-delay: 0.1s;">
     <div class="total-label">TOTAL UNCLAIMED CAPITAL</div>
     <span class="total-num" id="total-counter">₹0</span>
-    <div style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--gold-dark); margin-top: 24px; letter-spacing: 0.1em; text-transform: uppercase;">
+    <div class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--gold-dark); margin-top: 24px; letter-spacing: 0.1em; text-transform: uppercase;">
       Secured across {{ classified_assets|length }} institution{{ classified_assets|length|pluralize }}
     </div>
   </section>
@@ -163,9 +163,9 @@
           {% elif asset.color == 'amber' %}LEGAL HEIR PRIORITY
           {% else %}REQUIRES REVIEW{% endif %}
         </div>
-        <h2 style="font-family: var(--font-serif); font-weight: 400; font-size: 44px; color: var(--white); margin-bottom: 8px;">{{ asset.institution }}</h2>
+        <h2 class="animate-words" style="font-family: var(--font-serif); font-weight: 400; font-size: 44px; color: var(--white); margin-bottom: 8px;">{{ asset.institution }}</h2>
         <div class="gold-rule"></div>
-        <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); line-height: 1.8; max-width: 520px; margin-bottom: 40px;">
+        <p class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); line-height: 1.8; max-width: 520px; margin-bottom: 40px;">
           {{ asset.message }}
         </p>
 
@@ -205,8 +205,13 @@
         </div>
         <div class="asset-amount">₹{{ asset.amount }}</div>
         <div class="action-btns">
-          <a href="{% url 'loan' session_id=session_id %}" class="btn-primary" style="width: 240px; justify-content: space-between;">
-            INITIATE CLAIM <span>&rarr;</span>
+          <a href="{% url 'loan' session_id=session_id %}" class="premium-cta-btn" style="width: 240px;">
+            <span>INITIATE CLAIM</span>
+            <div class="arrow-circle">
+              <svg class="arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </div>
           </a>
           <a href="{% url 'print_forms' session_id=session_id %}" target="_blank" class="btn-secondary" style="width: 240px; text-align:center; display:flex; justify-content:center; align-items:center;">SECURE FORM</a>
         </div>
@@ -223,8 +228,13 @@
           Immediate capital provision while legal processing finalizes.
         </p>
       </div>
-      <a href="{% url 'loan' session_id=session_id %}" class="btn-primary" style="padding: 24px 56px; font-size: 12px;">
-        AUTHORIZE ADVANCE &mdash; 60S &rarr;
+      <a href="{% url 'loan' session_id=session_id %}" class="premium-cta-btn" style="padding: 6px 6px 6px 40px; min-height: 60px; font-size: 14px;">
+        <span>AUTHORIZE ADVANCE &mdash; 60S</span>
+        <div class="arrow-circle" style="width: 48px; height: 48px; margin-left: 20px;">
+          <svg class="arrow-svg" style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </div>
       </a>
     </div>
   </div>

@@ -87,11 +87,9 @@
   <div class="loan-left">
     <div class="scroll-reveal">
       <div class="label" style="color: var(--gold); margin-bottom: 40px;">WHY YOU ARE APPROVED</div>
-      <h2 style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 42px; line-height: 1.2; color: var(--white);">
-        Your claim is verified.<br>The loan is secured.
-      </h2>
+      <h2 class="animate-words" style="font-family: var(--font-sans); font-weight: 300; font-size: 42px; line-height: 1.2; color: var(--white); letter-spacing: -0.01em;">Your claim is <span style="font-family: var(--font-serif); font-style: italic; color: var(--gold);">verified</span>.<br>The loan is <span style="font-family: var(--font-serif); font-style: italic; color: var(--gold);">secured</span>.</h2>
       <div class="gold-rule"></div>
-      <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); line-height: 1.85; max-width: 440px; margin-top: 24px;">
+      <p class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); line-height: 1.85; max-width: 440px; margin-top: 24px;">
         SwiftCredit NBFC is lending ₹{{ loan_amount }} against your confirmed ₹{{ total_assets }} claim. They carry near-zero risk. So they say yes — in seconds.
       </p>
 
@@ -104,16 +102,16 @@
 
       <div class="nbfc-card">
         <div class="label" style="margin-bottom: 12px; color: var(--white);">SWIFTCREDIT NBFC</div>
-        <p style="font-family: var(--font-sans); font-weight: 300; font-size: 13px; color: var(--white-faint);">RBI Registered &middot; License NBFC-2019-1234</p>
+        <p class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 13px; color: var(--white-faint);">RBI Registered &middot; License NBFC-2019-1234</p>
       </div>
     </div>
   </div>
 
   <!-- RIGHT -->
   <div class="loan-right">
-    <div class="loan-card scroll-reveal">
+    <div class="loan-card premium-form-card scroll-reveal">
       <div class="label" style="color: var(--gold); margin-bottom: 12px;">BRIDGE LOAN</div>
-      <h3 style="font-family: var(--font-serif); font-weight: 400; font-size: 36px; color: var(--white); margin-bottom: 4px;">Instant Approval</h3>
+      <h3 class="animate-words" style="font-family: var(--font-sans); font-weight: 300; font-size: 36px; color: var(--white); margin-bottom: 4px;">Instant <span style="font-family: var(--font-serif); font-style: italic; color: var(--gold);">Approval</span></h3>
       <div class="gold-rule"></div>
 
       <div style="margin-top: 8px;">
@@ -158,8 +156,13 @@
           </div>
         </label>
 
-        <button type="submit" class="btn-primary btn-full" id="loan-btn" style="height: 60px; font-size: 12px;" disabled>
-          ACCEPT & RECEIVE <span id="btn-amount-text" style="display:inline-block; margin-left:4px;">₹{{ loan_amount }}</span> <span class="arrow">&rarr;</span>
+        <button type="submit" class="premium-cta-btn btn-full" id="loan-btn">
+          <span>ACCEPT & RECEIVE <span id="btn-amount-text" style="display:inline-block; margin-left:4px;">₹{{ loan_amount }}</span></span>
+          <div class="arrow-circle">
+            <svg class="arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </div>
         </button>
       </form>
     </div>
@@ -175,9 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnAmountText = document.getElementById('btn-amount-text');
   const authAmountText = document.getElementById('auth-amount-text');
 
-  affidavit.addEventListener('change', function() {
-    btn.disabled = !this.checked;
-  });
+
 
   slider.addEventListener('input', function() {
     const val = parseInt(this.value).toLocaleString('en-IN');

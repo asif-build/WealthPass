@@ -183,8 +183,8 @@
     </div>
     <div class="step-label">VERIFICATION — STEP 02 OF 05</div>
     
-    <h1 style="font-family: var(--font-serif); font-weight: 400; font-size: 48px; color: var(--white); margin-bottom: 8px;">Verifying your documents</h1>
-    <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted);">Cross-referencing four government systems</p>
+    <h1 class="animate-words" style="font-family: var(--font-sans); font-weight: 300; font-size: 48px; color: var(--white); margin-bottom: 8px; letter-spacing: -0.01em;">Verifying your <span style="font-family: var(--font-serif); font-style: italic; color: var(--gold);">documents</span></h1>
+    <p class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted);">Cross-referencing four government systems</p>
     
     <div class="gold-rule" style="margin-bottom: 60px;"></div>
     
@@ -239,7 +239,14 @@
       <div style="font-family: var(--font-sans); font-weight: 600; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--verified); margin-bottom: 24px;">VERIFICATION COMPLETE</div>
       <h2 style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 32px; color: var(--white); margin-bottom: 12px;">✅ Certificate Verified</h2>
       <p style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-muted); margin-bottom: 40px;">Match Score: {{ match_score }}% | Risk Level: {{ fraud_risk_level|default:"Low" }}</p>
-      <a href="{% url 'results' session_id=session_id %}" class="btn-primary btn-full">VIEW DISCOVERED ASSETS &rarr;</a>
+      <a href="{% url 'results' session_id=session_id %}" class="premium-cta-btn btn-full">
+        <span>VIEW DISCOVERED ASSETS</span>
+        <div class="arrow-circle">
+          <svg class="arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </div>
+      </a>
     </div>
     {% elif verification_status == 'REJECTED' %}
     <div class="failed-card" id="final-card">
@@ -253,7 +260,14 @@
       <div style="font-family: var(--font-sans); font-weight: 600; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px;">NEEDS ATTENTION</div>
       <h2 style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 32px; color: var(--gold); margin-bottom: 12px;">⚠ Needs Manual Review</h2>
       <p style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-muted); margin-bottom: 40px;">The document could not be automatically processed by OCR.</p>
-      <a href="{% url 'results' session_id=session_id %}" class="btn-primary btn-full">PROCEED ANYWAY &rarr;</a>
+      <a href="{% url 'results' session_id=session_id %}" class="premium-cta-btn btn-full">
+        <span>PROCEED ANYWAY</span>
+        <div class="arrow-circle">
+          <svg class="arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </div>
+      </a>
     </div>
     {% endif %}
 

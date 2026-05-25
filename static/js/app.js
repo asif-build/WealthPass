@@ -114,4 +114,162 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  /* ── WORDS STAGGER PULL-UP ANIMATION ── */
+  function splitWords(element) {
+    const childNodes = Array.from(element.childNodes);
+    element.innerHTML = '';
+    let wordCount = 0;
+    
+    childNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const words = node.textContent.split(/(\s+)/);
+        words.forEach(word => {
+          if (word.trim() === '') {
+            element.appendChild(document.createTextNode(word));
+          } else {
+            const outer = document.createElement('span');
+            outer.className = 'word-outer';
+            const inner = document.createElement('span');
+            inner.className = 'word-inner';
+            inner.textContent = word;
+            inner.dataset.index = wordCount++;
+            outer.appendChild(inner);
+            element.appendChild(outer);
+          }
+        });
+      } else {
+        element.appendChild(node);
+      }
+    });
+  }
+
+  const wordObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const inners = entry.target.querySelectorAll('.word-inner');
+        inners.forEach(inner => {
+          const idx = parseInt(inner.dataset.index) || 0;
+          setTimeout(() => {
+            inner.classList.add('visible');
+          }, idx * 60);
+        });
+        wordObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.05,
+    rootMargin: '0px 0px -5% 0px'
+  });
+
+  document.querySelectorAll('.animate-words').forEach(el => {
+    splitWords(el);
+    wordObserver.observe(el);
+  });
+
+  /* ── LETTERS SCROLL & AUTO REVEAL ── */
+  function splitLetters(element) {
+    const childNodes = Array.from(element.childNodes);
+    element.innerHTML = '';
+    let charCount = 0;
+    
+    childNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const chars = node.textContent.split('');
+        chars.forEach(char => {
+          const span = document.createElement('span');
+          span.className = 'char-span';
+          span.textContent = char;
+          span.dataset.index = charCount++;
+          element.appendChild(span);
+        });
+      } else {
+        element.appendChild(node);
+      }
+    });
+  }
+
+  const letterElements = document.querySelectorAll('.animate-letters');
+  letterElements.forEach(el => splitLetters(el));
+
+  function updateLettersReveal() {
+    const viewportHeight = window.innerHeight;
+    const currentScroll = window.scrollY;
+    
+    letterElements.forEach(el => {
+      const charSpans = el.querySelectorAll('.char-span');
+      if (!charSpans.length) return;
+      
+      const rect = el.getBoundingClientRect();
+      const elementHeight = rect.height;
+      const elementTop = rect.top + currentScroll;
+      
+      const start = elementTop - viewportHeight * 0.85;
+      const end = elementTop + elementHeight - viewportHeight * 0.15;
+      
+      let progress = (currentScroll - start) / (end - start);
+      progress = Math.max(0, Math.min(1, progress));
+      
+      const N = charSpans.length;
+      charSpans.forEach(span => {
+        const idx = parseInt(span.dataset.index);
+        const charProgress = idx / N;
+        const rangeStart = charProgress - 0.12;
+        const rangeEnd = charProgress + 0.06;
+        
+        let opacity = 0.2;
+        if (progress <= rangeStart) {
+          opacity = 0.2;
+        } else if (progress >= rangeEnd) {
+          opacity = 1.0;
+        } else {
+          opacity = 0.2 + 0.8 * ((progress - rangeStart) / (rangeEnd - rangeStart));
+        }
+        span.style.opacity = opacity;
+      });
+    });
+  }
+
+  const isScrollable = document.documentElement.scrollHeight > window.innerHeight + 50;
+
+  if (isScrollable) {
+    window.addEventListener('scroll', updateLettersReveal, { passive: true });
+    window.addEventListener('resize', updateLettersReveal, { passive: true });
+    updateLettersReveal();
+  } else {
+    // Short page - auto-reveal on load
+    let startT = null;
+    function anim(timestamp) {
+      if (!startT) startT = timestamp;
+      const elapsed = timestamp - startT;
+      const duration = 1000;
+      let progress = elapsed / duration;
+      progress = Math.min(1, progress);
+      
+      letterElements.forEach(el => {
+        const charSpans = el.querySelectorAll('.char-span');
+        const N = charSpans.length;
+        charSpans.forEach(span => {
+          const idx = parseInt(span.dataset.index);
+          const charProgress = idx / N;
+          const rangeStart = charProgress - 0.12;
+          const rangeEnd = charProgress + 0.06;
+          
+          let opacity = 0.2;
+          if (progress <= rangeStart) {
+            opacity = 0.2;
+          } else if (progress >= rangeEnd) {
+            opacity = 1.0;
+          } else {
+            opacity = 0.2 + 0.8 * ((progress - rangeStart) / (rangeEnd - rangeStart));
+          }
+          span.style.opacity = opacity;
+        });
+      });
+      if (progress < 1) {
+        requestAnimationFrame(anim);
+      }
+    }
+    requestAnimationFrame(anim);
+  }
+
 });

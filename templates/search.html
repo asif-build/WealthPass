@@ -14,22 +14,25 @@
 .trust-list { margin-top: 60px; display: flex; flex-direction: column; gap: 16px; }
 .trust-item { font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted); line-height: 2.2; }
 
-.form-container { max-width: 520px; margin: 0 auto; }
+.form-container { max-width: 520px; margin: 0 auto; padding: 40px; }
 .form-section-title { font-family: var(--font-sans); font-weight: 500; font-size: 10px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 24px; text-transform: uppercase; }
 .form-rule { height: 1px; background: var(--gold); opacity: 0.3; margin: 24px 0 40px; }
 
 .drag-zone {
-  border: 1px dashed var(--border-gold);
-  background: rgba(201,168,76,0.03);
-  border-radius: var(--radius-lg);
-  padding: 48px 32px;
+  border: 1px dashed rgba(222, 219, 200, 0.2);
+  background: var(--black-lifted);
+  border-radius: 16px;
+  padding: 40px 24px;
   text-align: center;
-  transition: var(--medium);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
 }
-.drag-zone:hover { background: rgba(201,168,76,0.06); }
-.file-added { border-color: var(--verified); background: rgba(74,124,89,0.05); }
+.drag-zone:hover {
+  border-color: rgba(222, 219, 200, 0.4);
+  background: #222222;
+}
+.file-added { border-color: var(--verified) !important; background: rgba(74,124,89,0.05) !important; }
 
 .error-state {
   display: none;
@@ -97,11 +100,11 @@
 {% block content %}
 <div class="search-page">
   <div class="search-left">
-    <div class="sticky-statement scroll-reveal">
+    <div class="sticky-statement">
       <div class="label" style="color: var(--white-faint); margin-bottom: 40px;">STEP 01</div>
-      <h2 style="font-family: var(--font-serif); font-weight: 400; font-size: 52px; color: var(--white); line-height: 1.1;">Find what belongs<br>to your family</h2>
+      <h2 class="animate-words" style="font-family: var(--font-sans); font-weight: 300; font-size: 52px; color: var(--white); line-height: 1.1; letter-spacing: -0.02em;">Find what belongs<br><span style="font-family: var(--font-serif); font-style: italic; color: var(--gold);">to your family</span></h2>
       <div class="gold-rule"></div>
-      <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); line-height: 1.85; max-width: 400px; margin-top: 24px;">
+      <p class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); line-height: 1.85; max-width: 400px; margin-top: 24px;">
         Enter the deceased's details below. We cross-reference five government databases and return results in under nine seconds.
       </p>
       
@@ -115,7 +118,7 @@
   </div>
   
   <div class="search-right">
-    <div class="form-container scroll-reveal">
+    <div class="form-container premium-form-card scroll-reveal">
       <form action="{% url 'search' %}" method="POST" enctype="multipart/form-data" id="search-form">
         {% csrf_token %}
         
@@ -168,7 +171,9 @@
         
         <div class="input-group">
           <label class="input-label">RELATION TO DECEASED</label>
-          <select name="relation" class="form-select" required>
+          
+          <!-- Hidden native select for form submission -->
+          <select name="relation" id="native-relation-select" style="display: none;" required>
             <option value="" disabled selected>Select relationship...</option>
             <option value="Spouse">Spouse</option>
             <option value="Son">Son</option>
@@ -178,6 +183,25 @@
             <option value="Brother">Brother</option>
             <option value="Sister">Sister</option>
           </select>
+
+          <!-- Custom Premium Dropdown -->
+          <div class="custom-select-wrapper" id="custom-relation-dropdown">
+            <div class="custom-select-trigger" tabindex="0">
+              <span class="placeholder">Select relationship...</span>
+              <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </div>
+            <div class="custom-select-options">
+              <div class="custom-select-option" data-value="Spouse">Spouse</div>
+              <div class="custom-select-option" data-value="Son">Son</div>
+              <div class="custom-select-option" data-value="Daughter">Daughter</div>
+              <div class="custom-select-option" data-value="Father">Father</div>
+              <div class="custom-select-option" data-value="Mother">Mother</div>
+              <div class="custom-select-option" data-value="Brother">Brother</div>
+              <div class="custom-select-option" data-value="Sister">Sister</div>
+            </div>
+          </div>
         </div>
         
         <div class="input-group">
@@ -194,8 +218,13 @@
           </div>
         </label>
         
-        <button type="submit" class="btn-primary btn-full" id="submit-btn" disabled>
-          SCAN ALL DATABASES <span class="arrow">&rarr;</span>
+        <button type="submit" class="premium-cta-btn btn-full" id="submit-btn">
+          <span>SCAN ALL DATABASES</span>
+          <div class="arrow-circle">
+            <svg class="arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </div>
         </button>
         
         <div class="error-state" id="form-error"></div>
@@ -234,14 +263,77 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Checkbox logic for submit
-  form.addEventListener('input', () => {
-    if(checkbox.checked && form.checkValidity()) {
-      submitBtn.disabled = false;
-    } else {
-      submitBtn.disabled = true;
-    }
-  });
+  // Custom Select Controller
+  const customSelect = document.getElementById('custom-relation-dropdown');
+  const nativeSelect = document.getElementById('native-relation-select');
+  
+  if (customSelect && nativeSelect) {
+    const trigger = customSelect.querySelector('.custom-select-trigger');
+    const triggerText = trigger.querySelector('span');
+    const optionsContainer = customSelect.querySelector('.custom-select-options');
+    const options = customSelect.querySelectorAll('.custom-select-option');
+
+    // Toggle dropdown open state
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      trigger.classList.toggle('active');
+      optionsContainer.classList.toggle('open');
+    });
+
+    // Close dropdown on click outside
+    document.addEventListener('click', () => {
+      trigger.classList.remove('active');
+      optionsContainer.classList.remove('open');
+    });
+
+    // Handle option selection
+    options.forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const value = opt.dataset.value;
+        const text = opt.textContent;
+
+        // Update active class on options
+        options.forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+
+        // Update trigger text
+        triggerText.textContent = text;
+        triggerText.classList.remove('placeholder');
+
+        // Set value in native select and dispatch change event
+        nativeSelect.value = value;
+        nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+
+        // Close dropdown
+        trigger.classList.remove('active');
+        optionsContainer.classList.remove('open');
+      });
+    });
+
+    // Sync custom UI if native select changes (e.g. during Autofill / Demo Mode)
+    nativeSelect.addEventListener('change', () => {
+      const val = nativeSelect.value;
+      options.forEach(opt => {
+        if (opt.dataset.value === val) {
+          options.forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          triggerText.textContent = opt.textContent;
+          triggerText.classList.remove('placeholder');
+        }
+      });
+    });
+
+    // Keyboard navigation accessibility
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        trigger.click();
+      }
+    });
+  }
+
+
 
   // Form submission basic validation (PAN)
   form.addEventListener('submit', (e) => {
