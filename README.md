@@ -58,14 +58,6 @@ pip install -r requirements.txt
 
 python manage.py runserver
 
-## 👥 Team Behind WealthPass
-
-WealthPass was built through teamwork combining leadership, backend systems, and frontend experience.
-
-- **Aveeshi** — Team Lead
-- **Manshi** — Frontend Development
-- **Asif** — Backend Development & Support
-
 ## 🌐 Future Improvements
 
 - AI-powered assistant
