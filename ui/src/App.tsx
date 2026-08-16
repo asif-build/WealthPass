@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Mail, Instagram, Twitter, Linkedin } from "lucide-react";
+import { ArrowRight, Mail, Instagram, Twitter, Linkedin, CheckCircle } from "lucide-react";
 import { WordsPullUp } from "./components/WordsPullUp";
 import { AboutSection } from "./components/AboutSection";
 import { FeaturesSection } from "./components/FeaturesSection";
@@ -7,6 +8,51 @@ import { FamiliesSection } from "./components/FamiliesSection";
 import { LegalSection } from "./components/LegalSection";
 
 function App() {
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [submittedName, setSubmittedName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactName || !contactEmail || !contactMessage) return;
+    
+    setIsSubmitting(true);
+    
+    // Attempt backend submission
+    try {
+      await fetch("/api/contact/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: contactName,
+          email: contactEmail,
+          message: contactMessage,
+        }),
+      });
+    } catch (err) {
+      console.log("Backend submit attempt:", err);
+    }
+
+    // Direct mailto trigger to hello.wealthpass@gmail.com
+    const subject = encodeURIComponent(`WealthPass Search Inquiry from ${contactName}`);
+    const body = encodeURIComponent(`Name: ${contactName}\nEmail: ${contactEmail}\n\nSearch Inquiry / Message:\n${contactMessage}`);
+    const mailtoUrl = `mailto:hello.wealthpass@gmail.com?subject=${subject}&body=${body}`;
+
+    window.location.href = mailtoUrl;
+
+    setSubmittedName(contactName);
+    setContactSubmitted(true);
+    setIsSubmitting(false);
+    setContactName("");
+    setContactEmail("");
+    setContactMessage("");
+  };
+
   const navItems = [
     { name: "Security Process", href: "#about" },
     { name: "Families", href: "#families" },
@@ -29,6 +75,7 @@ function App() {
       },
     }),
   };
+
 
   return (
     <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
@@ -120,23 +167,21 @@ function App() {
         </div>
       </section>
 
-      {/* SECTION 2: ABOUT */}
+
+      {/* About Section */}
       <AboutSection />
 
-      {/* SECTION 3: FAMILIES */}
-      <FamiliesSection />
-
-      {/* SECTION 4: FEATURES */}
+      {/* Features Section */}
       <FeaturesSection />
 
-      {/* SECTION 5: LEGAL MANDATE */}
+      {/* Families Section */}
+      <FamiliesSection />
+
+      {/* Legal Section */}
       <LegalSection />
 
-      {/* SECTION 6: INQUIRIES & FOOTER */}
-      <footer id="inquiries" className="bg-[#0c0c0c] border-t border-white/5 py-24 px-4 md:px-6 relative overflow-hidden">
-        {/* Soft atmospheric gradient */}
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[120px] pointer-events-none z-0" />
-        
+      {/* Footer / Contact Section */}
+      <footer id="inquiries" className="relative pt-24 pb-16 px-6 sm:px-8 border-t border-white/10 bg-[#0a0a0a]">
         <div className="w-full max-w-7xl mx-auto z-10 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
             
@@ -150,15 +195,15 @@ function App() {
                   Let's secure your family's inheritance.
                 </h3>
                 <p className="text-gray-400 text-sm sm:text-base leading-relaxed max-w-md mb-8">
-                  Have a claim, a question, or need assistance recovering family wealth? Reach out to our advisors. We are here to bring closure to your search.
+                  Have a claim, a question, or need assistance recovering family wealth? Reach out to our advisors directly. We are here to bring closure to your search.
                 </p>
               </div>
 
               {/* Contact details */}
               <div className="flex flex-col gap-4 mt-8">
-                <a href="mailto:hello@wealthpass.in" className="flex items-center gap-3 text-[#E1E0CC] hover:text-primary transition-colors text-sm sm:text-base">
-                  <Mail className="w-5 h-5" />
-                  <span>hello@wealthpass.in</span>
+                <a href="mailto:hello.wealthpass@gmail.com" className="flex items-center gap-3 text-[#E1E0CC] hover:text-primary transition-colors text-sm sm:text-base">
+                  <Mail className="w-5 h-5 text-primary" />
+                  <span>hello.wealthpass@gmail.com</span>
                 </a>
                 <div className="flex gap-4 mt-4">
                   <a href="#" className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-gray-400 hover:text-[#E1E0CC] hover:border-white/20 transition-all">
@@ -176,44 +221,69 @@ function App() {
 
             {/* Right Contact Form Column */}
             <div className="bg-[#121212] p-8 md:p-12 rounded-[2rem] border border-white/5 shadow-2xl">
-              <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-6">
-                <div>
-                  <label className="text-xs uppercase tracking-widest text-gray-400 block mb-2 font-medium">Your Name</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Enter your name"
-                    className="w-full bg-[#1c1c1c] border border-white/5 rounded-xl px-4 py-3 text-[#E1E0CC] placeholder-gray-600 focus:outline-none focus:border-primary/50 text-sm transition-colors"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs uppercase tracking-widest text-gray-400 block mb-2 font-medium">Email Address</label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="you@example.com"
-                    className="w-full bg-[#1c1c1c] border border-white/5 rounded-xl px-4 py-3 text-[#E1E0CC] placeholder-gray-600 focus:outline-none focus:border-primary/50 text-sm transition-colors"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs uppercase tracking-widest text-gray-400 block mb-2 font-medium">Message / Search Inquiry</label>
-                  <textarea
-                    rows={4}
-                    required
-                    placeholder="Tell us about the policies or assets you are looking to search..."
-                    className="w-full bg-[#1c1c1c] border border-white/5 rounded-xl px-4 py-3 text-[#E1E0CC] placeholder-gray-600 focus:outline-none focus:border-primary/50 text-sm transition-colors resize-none"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full group flex items-center justify-between p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-black font-medium transition-all duration-300 text-sm sm:text-base hover:bg-white"
-                >
-                  <span>Submit Search Inquiry</span>
-                  <div className="bg-black rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+              {contactSubmitted ? (
+                <div className="flex flex-col items-center justify-center py-8 text-center gap-4">
+                  <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary mb-2">
+                    <CheckCircle className="w-8 h-8" />
                   </div>
-                </button>
-              </form>
+                  <h4 className="text-2xl font-medium text-[#E1E0CC]">Inquiry Sent!</h4>
+                  <p className="text-gray-400 text-sm max-w-sm leading-relaxed">
+                    Thank you, <span className="text-[#E1E0CC] font-medium">{submittedName}</span>! Your inquiry has been submitted and your email client has opened to send to <span className="text-primary font-medium">hello.wealthpass@gmail.com</span>. We will get back to you within 24 hours.
+                  </p>
+                  <button
+                    onClick={() => setContactSubmitted(false)}
+                    className="mt-4 px-6 py-2.5 rounded-full border border-white/10 text-xs uppercase tracking-widest text-gray-300 hover:text-white hover:border-white/30 transition-all"
+                  >
+                    Send Another Message
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleContactSubmit} className="flex flex-col gap-6">
+                  <div>
+                    <label className="text-xs uppercase tracking-widest text-gray-400 block mb-2 font-medium">Your Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={contactName}
+                      onChange={(e) => setContactName(e.target.value)}
+                      placeholder="Enter your name"
+                      className="w-full bg-[#1c1c1c] border border-white/5 rounded-xl px-4 py-3 text-[#E1E0CC] placeholder-gray-600 focus:outline-none focus:border-primary/50 text-sm transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase tracking-widest text-gray-400 block mb-2 font-medium">Email Address</label>
+                    <input
+                      type="email"
+                      required
+                      value={contactEmail}
+                      onChange={(e) => setContactEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      className="w-full bg-[#1c1c1c] border border-white/5 rounded-xl px-4 py-3 text-[#E1E0CC] placeholder-gray-600 focus:outline-none focus:border-primary/50 text-sm transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase tracking-widest text-gray-400 block mb-2 font-medium">Message / Search Inquiry</label>
+                    <textarea
+                      rows={4}
+                      required
+                      value={contactMessage}
+                      onChange={(e) => setContactMessage(e.target.value)}
+                      placeholder="Tell us about the policies or assets you are looking to search..."
+                      className="w-full bg-[#1c1c1c] border border-white/5 rounded-xl px-4 py-3 text-[#E1E0CC] placeholder-gray-600 focus:outline-none focus:border-primary/50 text-sm transition-colors resize-none"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full group flex items-center justify-between p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-black font-medium transition-all duration-300 text-sm sm:text-base hover:bg-white disabled:opacity-50"
+                  >
+                    <span>{isSubmitting ? 'Sending Inquiry...' : 'Submit Search Inquiry'}</span>
+                    <div className="bg-black rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                    </div>
+                  </button>
+                </form>
+              )}
             </div>
 
           </div>

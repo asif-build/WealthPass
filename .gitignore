@@ -24,3 +24,6 @@ media/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Vite temporary index
+static/index.html

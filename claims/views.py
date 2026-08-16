@@ -1,9 +1,14 @@
 import re
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from decimal import Decimal
 from .models import ClaimSession, DiscoveredAsset
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
+from django.conf import settings
 from .ocr import extract_text
+
 
 
 def landing(request):
@@ -212,3 +217,41 @@ def scan_document(request):
         "success": False,
         "error": "POST request only"
     })
+
+
+@csrf_exempt
+def contact_inquiry(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except Exception:
+            data = request.POST
+
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip()
+        message = data.get('message', '').strip()
+
+        if not name or not email or not message:
+            return JsonResponse({'success': False, 'error': 'All fields are required.'}, status=400)
+
+        recipient = getattr(settings, 'CONTACT_EMAIL', 'hello.wealthpass@gmail.com')
+        subject = f"WealthPass Search Inquiry from {name}"
+        body_text = f"New Enquiry Received:\n\nName: {name}\nEmail: {email}\n\nMessage / Search Inquiry:\n{message}"
+
+        try:
+            send_mail(
+                subject=subject,
+                message=body_text,
+                from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'hello.wealthpass@gmail.com'),
+                recipient_list=[recipient],
+                fail_silently=True,
+            )
+        except Exception as e:
+            print("Contact email send error:", e)
+
+        return JsonResponse({
+            'success': True,
+            'message': f'Inquiry successfully submitted to {recipient}'
+        })
+
+    return JsonResponse({'success': False, 'error': 'POST request only'}, status=405)

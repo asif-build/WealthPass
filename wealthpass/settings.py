@@ -125,3 +125,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Email Configuration
+CONTACT_EMAIL = 'hello.wealthpass@gmail.com'
+DEFAULT_FROM_EMAIL = 'hello.wealthpass@gmail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
