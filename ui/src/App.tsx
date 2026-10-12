@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ArrowRight, Mail, Instagram, Twitter, Linkedin, CheckCircle } from "lucide-react";
-import { WordsPullUp } from "./components/WordsPullUp";
-import { AboutSection } from "./components/AboutSection";
-import { FeaturesSection } from "./components/FeaturesSection";
-import { LegalSection } from "./components/LegalSection";
+import { ArrowRight, Mail, CheckCircle } from "lucide-react";
 import { HowItWorksNavbar } from "./components/how-it-works/HowItWorksNavbar";
 import { VerifyMatchPage } from "./components/how-it-works/VerifyMatchPage";
 import { ClaimPreparationPage } from "./components/how-it-works/ClaimPreparationPage";
@@ -31,6 +26,7 @@ import { NotificationProvider, useNotifications } from "./components/notificatio
 import { DynamicIslandNotification } from "./components/notifications/DynamicIslandNotification";
 import { NotificationCenter } from "./components/notifications/NotificationCenter";
 import { EnergyDashboardPage } from "./components/energy/EnergyDashboardPage";
+import { HaloLandingPage } from "./components/landing/HaloLandingPage";
 
 const VALID_PATHS = [
   "/how-it-works/verify-match",
@@ -259,28 +255,6 @@ function App() {
     setContactMessage("");
   };
 
-  const navItems = [
-    { name: "Security Process", href: "#about" },
-    { name: "Legal Mandate", href: "#legal" },
-    { name: "Green AI Energy", href: "/energy" },
-    { name: "Inquiries", href: "#inquiries" },
-  ];
-
-  const customEase = [0.16, 1, 0.3, 1] as any;
-
-  const fadeUpVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: (delay: number) => ({
-      y: 0,
-      opacity: 1,
-      transition: {
-        ease: customEase,
-        duration: 1,
-        delay,
-      },
-    }),
-  };
-
   // Reusable footer shared between homepage and How-It-Works views
   const renderFooter = () => (
     <footer id="inquiries" className="relative pt-24 pb-16 px-6 sm:px-8 border-t border-white/10 bg-[#0a0a0a]">
@@ -309,29 +283,6 @@ function App() {
                 <Mail className="w-5 h-5 text-primary" />
                 <span>wealthpass.official@gmail.com</span>
               </a>
-              <div className="flex gap-4 mt-4">
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-gray-300 hover:text-[#E1E0CC] hover:border-white/20 transition-all"
-                  aria-label="Instagram"
-                >
-                  <Instagram className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-gray-300 hover:text-[#E1E0CC] hover:border-white/20 transition-all"
-                  aria-label="Twitter"
-                >
-                  <Twitter className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-gray-300 hover:text-[#E1E0CC] hover:border-white/20 transition-all"
-                  aria-label="LinkedIn"
-                >
-                  <Linkedin className="w-4 h-4" />
-                </a>
-              </div>
             </div>
           </div>
 
@@ -689,135 +640,16 @@ function App() {
     return <NotFoundPage onNavigate={handleNavigate} />;
   }
 
-  // DEFAULT ROUTE: HOMEPAGE (Preserved exactly as existing)
+  // DEFAULT ROUTE: HOMEPAGE (Halo-inspired WealthPass Blue/White Landing Page)
   return (
-    <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
-      {/* SECTION 1: HERO */}
-      <section className="h-screen w-full p-4 md:p-6 relative box-border overflow-hidden">
-        <div className="w-full h-full rounded-2xl md:rounded-[2rem] overflow-hidden relative border border-white/5">
-          {/* Background Video */}
-          <video
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover z-0"
-          />
-
-          {/* Noise Overlay */}
-          <div className="absolute inset-0 noise-overlay opacity-[0.7] mix-blend-overlay pointer-events-none z-10" />
-
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/75 z-10" />
-
-          {/* Navbar */}
-          <nav className="absolute top-0 left-1/2 -translate-x-1/2 z-30 w-auto">
-            <div className="bg-black rounded-b-2xl md:rounded-b-3xl px-5 py-2.5 md:px-8 md:py-3.5 flex items-center justify-center gap-4 sm:gap-6 md:gap-8 border-x border-b border-white/5 shadow-2xl">
-              {navItems.map((item, idx) => (
-                <a
-                  key={idx}
-                  href={item.href}
-                  className="text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase transition-colors duration-300"
-                  style={{
-                    color: "#E1E0CC",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "#ffffff";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = "#E1E0CC";
-                  }}
-                >
-                  {item.name}
-                </a>
-              ))}
-              <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
-              {currentUser ? (
-                <a
-                  href="/dashboard"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavigate("/dashboard");
-                  }}
-                  className="text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase text-primary hover:text-white transition-colors"
-                >
-                  Dashboard
-                </a>
-              ) : (
-                <a
-                  href="/login"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavigate("/login");
-                  }}
-                  className="text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase text-primary hover:text-white transition-colors"
-                >
-                  Sign In
-                </a>
-              )}
-            </div>
-          </nav>
-
-          {/* Hero Content (bottom-aligned) */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 md:p-12 lg:p-16 z-20">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-end w-full max-w-7xl mx-auto">
-              {/* Giant Heading */}
-              <div className="lg:col-span-8 flex flex-col justify-end overflow-visible select-none">
-                <WordsPullUp
-                  text="WealthPass"
-                  showAsterisk={true}
-                  className="text-[14vw] sm:text-[13vw] md:text-[11vw] lg:text-[9.5vw] xl:text-[9vw] 2xl:text-[8.5vw] font-medium leading-[0.85] tracking-[-0.07em] text-[#E1E0CC] justify-start"
-                />
-              </div>
-
-              {/* Description & CTA */}
-              <div className="lg:col-span-4 flex flex-col gap-5 sm:gap-6 items-start lg:pb-3">
-                <motion.p
-                  custom={0.5}
-                  variants={fadeUpVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className="text-[#E1E0CC] text-xs sm:text-sm md:text-base leading-[1.3] tracking-wide max-w-sm drop-shadow-sm font-normal"
-                >
-                  WealthPass is a secure platform that helps Indian families discover unclaimed assets, navigate the legal recovery path, and obtain bridge-loan support when it matters most.
-                </motion.p>
-
-                <motion.a
-                  custom={0.7}
-                  variants={fadeUpVariants}
-                  initial="hidden"
-                  animate="visible"
-                  href={currentUser ? "/dashboard" : "/register"}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavigate(currentUser ? "/dashboard" : "/register");
-                  }}
-                  className="group flex items-center gap-2 hover:gap-3 p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-black font-medium transition-all duration-300 text-sm sm:text-base hover:bg-white cursor-pointer"
-                >
-                  <span>Get Started</span>
-                  <div className="bg-black rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                  </div>
-                </motion.a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <AboutSection />
-
-      {/* Features Section (Interactive 4-Card Section) */}
-      <FeaturesSection onNavigate={handleNavigate} />
-
-      {/* Legal Section */}
-      <LegalSection />
-
-      {/* Footer / Contact Section */}
-      {renderFooter()}
-    </div>
+    <HaloLandingPage
+      onNavigate={handleNavigate}
+      onSearch={(deceasedName: string) => {
+        setRelationshipData((prev) => ({ ...prev, deceasedName }));
+        handleNavigate("/discover-assets");
+      }}
+      currentUser={currentUser}
+    />
   );
   };
 
