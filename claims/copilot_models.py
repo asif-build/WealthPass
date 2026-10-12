@@ -107,6 +107,7 @@ class ClaimCopilotProgress(models.Model):
     status = models.CharField(max_length=50, choices=ProgressStatus.choices, default=ProgressStatus.PREPARATION_STARTED)
     checked_document_ids = models.JSONField(default=list, help_text="List of doc_names checked off by the claimant")
     completed_field_ids = models.JSONField(default=list, help_text="List of field_ids completed by the claimant")
+    form_data = models.JSONField(default=dict, help_text="User filled and autosaved form field values")
     user_notes = models.TextField(blank=True, default="")
     
     # External Submission Evidence (Only filled when claimant provides concrete proof)

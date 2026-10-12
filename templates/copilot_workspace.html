@@ -1,22 +1,20 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Claim Copilot Workspace &mdash; {{ procedure.institution_name }} | WealthPass{% endblock %}
+{% block title %}Claim Copilot &amp; Official Form Filing &mdash; {{ procedure.institution_name }} | WealthPass{% endblock %}
 
 {% block extra_head %}
 <style>
 /* ========================================================
-   WEALTHPASS CLAIM COPILOT WORKSPACE (SIDE-BY-SIDE)
-   Strict adherence to WealthPass dark luxury aesthetics:
-   #0c0c0c background, #141414 cards, #D4AF37 gold accents
-   Zero claimant-facing AI telemetry/energy clutter
+   WEALTHPASS CLAIM COPILOT & OFFICIAL FORM WORKSPACE
+   Dark Luxury Palette: #0c0c0c background, #141414 cards, #D4AF37 gold
 ======================================================== */
 .copilot-container {
   min-height: 100vh;
   background: #0c0c0c;
   color: #ffffff;
   padding: 80px 24px 60px;
-  max-width: 1600px;
+  max-width: 1680px;
   margin: 0 auto;
 }
 
@@ -66,7 +64,7 @@
   gap: 8px;
   overflow-x: auto;
   padding-bottom: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 .asset-tab {
   padding: 8px 16px;
@@ -98,154 +96,160 @@
   gap: 28px;
   align-items: start;
 }
-@media (max-width: 1100px) {
+@media (max-width: 1180px) {
   .copilot-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* LEFT PANEL: Official Form & Instructions */
-.official-panel {
+/* LEFT PANEL: The Actual Interactive Form */
+.form-panel {
   background: #141414;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 32px;
   position: relative;
 }
+.form-panel-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+}
 .panel-eyebrow {
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #D4AF37;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 .panel-heading {
   font-family: var(--font-serif, "Playfair Display", serif);
   font-size: 22px;
   color: #ffffff;
-  margin: 0 0 16px 0;
+  margin: 0 0 8px 0;
 }
-
-/* Capability Notification Banner */
-.capability-banner {
+.form-instruction-pill {
+  font-size: 12px;
+  color: #aaaaaa;
   background: rgba(255, 255, 255, 0.03);
-  border-left: 3px solid #D4AF37;
-  padding: 14px 18px;
-  border-radius: 0 8px 8px 0;
-  margin-bottom: 24px;
-  font-size: 13px;
-  color: #cccccc;
-  line-height: 1.5;
-}
-.capability-banner strong {
-  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-top: 6px;
 }
 
-/* Step-by-Step Instructions Accordion/List */
-.official-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
-}
-.step-card {
-  background: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 16px 20px;
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-}
-.step-idx {
+/* Form Sections */
+.form-section-title {
   font-family: var(--font-serif, "Playfair Display", serif);
-  font-size: 18px;
+  font-size: 16px;
   color: #D4AF37;
-  flex-shrink: 0;
-  line-height: 1;
-  padding-top: 2px;
-}
-.step-text {
-  font-size: 13px;
-  color: #d1d1d1;
-  line-height: 1.6;
-}
-
-/* Interactive Form Mock / Field Selector */
-.form-preview-card {
-  background: #181818;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 14px;
-  padding: 24px;
-  margin-bottom: 24px;
-}
-.form-field-row {
-  padding: 14px 16px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  background: #121212;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  margin: 28px 0 16px 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.form-field-row:hover {
-  background: #1c1c1c;
-  border-color: rgba(212, 175, 55, 0.3);
-}
-.form-field-row.active {
-  background: rgba(212, 175, 55, 0.08);
-  border-color: #D4AF37;
-}
-.field-title {
-  font-size: 13px;
-  color: #ffffff;
-  font-weight: 500;
-}
-.field-meta {
-  font-size: 11px;
-  color: #888888;
-  margin-top: 2px;
-}
-.field-status-tag {
-  font-size: 11px;
-  color: #D4AF37;
-  background: rgba(212, 175, 55, 0.1);
-  padding: 3px 8px;
-  border-radius: 4px;
-}
-
-/* External Portal CTA Action */
-.external-cta-box {
-  background: rgba(212, 175, 55, 0.05);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  margin-top: 20px;
-}
-.external-btn {
-  display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+.form-section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Interactive Input Fields */
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+.form-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #cccccc;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.form-label .req {
+  color: #ef4444;
+}
+.form-label .helper {
+  font-size: 11px;
+  color: #777777;
+  font-weight: 400;
+}
+.form-control {
+  width: 100%;
+  background: #1c1c1c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: #ffffff;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+.form-control:focus {
+  border-color: #D4AF37;
+  background: #202020;
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2);
+}
+.form-control.active-field {
+  border-color: #D4AF37;
+  background: rgba(212, 175, 55, 0.04);
+}
+
+/* Form Action Buttons */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+.btn-save-draft {
+  padding: 12px 24px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-save-draft:hover {
+  border-color: #D4AF37;
+  color: #D4AF37;
+}
+.btn-submit-claim {
+  padding: 12px 28px;
   background: #D4AF37;
   color: #0c0c0c;
-  padding: 12px 24px;
+  border: none;
   border-radius: 9999px;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.05em;
-  text-decoration: none;
-  transition: opacity 0.2s;
-  margin-top: 10px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.2s ease;
 }
-.external-btn:hover {
+.btn-submit-claim:hover {
   opacity: 0.9;
 }
+.autosave-indicator {
+  font-size: 11px;
+  color: #888888;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
 
-/* RIGHT PANEL: Copilot Guidance & Checklist */
+/* RIGHT PANEL: Claim Copilot Guidance */
 .copilot-panel {
   background: #141414;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -254,8 +258,6 @@
   position: sticky;
   top: 100px;
 }
-
-/* Active Field Guidance Card */
 .guidance-box {
   background: #1c1c1c;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -276,6 +278,13 @@
   font-family: var(--font-serif, "Playfair Display", serif);
   font-size: 18px;
   color: #ffffff;
+}
+.field-status-tag {
+  font-size: 11px;
+  color: #D4AF37;
+  background: rgba(212, 175, 55, 0.1);
+  padding: 3px 8px;
+  border-radius: 4px;
 }
 .guidance-section-title {
   font-size: 11px;
@@ -299,8 +308,6 @@
   font-size: 12px;
   margin-top: 4px;
 }
-
-/* Source Reference Link */
 .source-ref-link {
   display: inline-flex;
   align-items: center;
@@ -311,7 +318,7 @@
   margin-top: 14px;
 }
 
-/* Document Checklist Section */
+/* Checklist */
 .checklist-section {
   margin-top: 28px;
   padding-top: 24px;
@@ -393,16 +400,16 @@
   <div class="copilot-header">
     <div class="copilot-title-group">
       <h1>
-        Claim Copilot Workspace
-        <span class="copilot-badge">&#9679; Official Regulatory Guidance</span>
+        Claim Forms &amp; Copilot Workspace
+        <span class="copilot-badge">&#9679; {{ procedure.institution_name }}</span>
       </h1>
       <p class="copilot-subtext">
-        Guiding legal heir <strong style="color: #ffffff;">{{ claimant_name }}</strong> through verified statutory procedures for <strong style="color: #ffffff;">{{ deceased_name }}</strong>.
+        Unified online claim preparation for claimant <strong style="color: #ffffff;">{{ claimant_name }}</strong> regarding assets of <strong style="color: #ffffff;">{{ deceased_name }}</strong>.
       </p>
     </div>
     <div>
       <a href="{% url 'results' session_id=session.id %}" style="font-size: 13px; color: #888888; text-decoration: none; padding: 8px 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 9999px;">
-        &larr; Back to Discovered Assets
+        &larr; Back to Assets
       </a>
     </div>
   </div>
@@ -420,91 +427,223 @@
   <div class="copilot-grid">
 
     <!-- ========================================================
-         LEFT PANEL: Official Form & Statutory Instructions
+         LEFT PANEL: THE ACTUAL FORM TO FILL ON WEALTHPASS
     ======================================================== -->
-    <div class="official-panel">
-      <div class="panel-eyebrow">{{ procedure.institution_name }} &bull; {{ procedure.form_identifier }}</div>
-      <h2 class="panel-heading">{{ procedure.form_name }}</h2>
-
-      <!-- Capability Distinction Notice -->
-      <div class="capability-banner">
-        <strong>Official External Form Guidance:</strong> WealthPass provides verified procedural guidance and checklist assistance. Under official regulatory guidelines, the claimant reviews and files the final claim directly with the servicing institution or official portal. WealthPass never charges an arbitrary fee or executes unauthorized submissions.
-      </div>
-
-      <!-- Eligibility & Legal Framework -->
-      <div style="margin-bottom: 24px; padding: 16px 20px; background: #161616; border-radius: 12px; border: 1px solid rgba(255,255,255,0.04);">
-        <div style="font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #D4AF37; margin-bottom: 8px;">Statutory Eligibility Framework</div>
-        <p style="font-size: 13px; color: #bbbbbb; line-height: 1.6; margin: 0; white-space: pre-line;">{{ procedure.eligibility_notes }}</p>
-      </div>
-
-      <!-- Step-by-Step Official Recovery Roadmap -->
-      <div style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #888888; margin-bottom: 12px;">Official Step-by-Step Procedure</div>
-      <div class="official-steps">
-        {% for step in procedure.step_by_step_instructions %}
-        <div class="step-card">
-          <div class="step-idx">0{{ forloop.counter }}</div>
-          <div class="step-text">{{ step }}</div>
-        </div>
-        {% endfor %}
-      </div>
-
-      <!-- Form Field Inspection List (Interactive) -->
-      <div style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #888888; margin: 24px 0 12px 0;">Official Form Field Breakdown &bull; Select Field to Inspect</div>
-      <div class="form-preview-card">
-        {% for f in procedure.fields_catalog %}
-        <div class="form-field-row {% if forloop.first %}active{% endif %}" onclick="selectField('{{ f.field_id }}', this)">
-          <div>
-            <div class="field-title">{{ f.label }}</div>
-            <div class="field-meta">Document: {{ f.supporting_doc }}</div>
-          </div>
-          <div class="field-status-tag">{% if f.is_mandatory %}Mandatory{% else %}Optional{% endif %}</div>
-        </div>
-        {% endfor %}
-      </div>
-
-      <!-- External Institution Portal CTA -->
-      <div class="external-cta-box">
-        <div style="font-size: 13px; color: #ffffff; font-weight: 500;">Ready to file directly with {{ procedure.institution_name }}?</div>
-        <div style="font-size: 12px; color: #888888; margin-top: 4px;">Open the official submission portal or download the statutory Form 14 package.</div>
-        <div style="margin-top: 14px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-          {% if procedure.official_portal_url %}
-          <a href="{{ procedure.official_portal_url }}" target="_blank" rel="noopener noreferrer" class="external-btn">
-            Open Official Portal &rarr;
-          </a>
-          {% endif %}
-          <a href="{% url 'print_forms' session_id=session.id %}" target="_blank" style="display: inline-flex; align-items: center; padding: 12px 20px; border-radius: 9999px; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #ffffff; font-size: 13px; text-decoration: none;">
-            Download Statutory Form 14 PDF
-          </a>
+    <div class="form-panel">
+      <div class="form-panel-header">
+        <div class="panel-eyebrow">{{ procedure.institution_name }} &bull; {{ procedure.form_identifier }}</div>
+        <h2 class="panel-heading">{{ procedure.form_name }}</h2>
+        <div class="form-instruction-pill">
+          Fill all fields below directly on WealthPass. Green AI Copilot automatically guides each field on the right.
         </div>
       </div>
 
+      <form id="onlineClaimForm" onsubmit="submitFormOnline(event)">
+        <!-- SECTION 1: DECEASED RECORD -->
+        <div class="form-section-title">Section 1: Deceased Record &amp; Account Identity</div>
+        
+        <div class="form-group">
+          <label class="form-label" for="field_deceased_name">
+            <span>Name of Deceased Account Holder / Insured <span class="req">*</span></span>
+            <span class="helper">Death Certificate / Records</span>
+          </label>
+          <input type="text" id="field_deceased_name" name="deceased_name" class="form-control" value="{{ progress.form_data.deceased_name|default:deceased_name }}" onfocus="focusField('deceased_name')" required>
+        </div>
+
+        {% if procedure.institution_id == 'lic_india' %}
+        <div class="form-group">
+          <label class="form-label" for="field_policy_number">
+            <span>LIC Policy Number <span class="req">*</span></span>
+            <span class="helper">9-Digit Policy Bond</span>
+          </label>
+          <input type="text" id="field_policy_number" name="policy_number" class="form-control" value="{{ progress.form_data.policy_number|default:'' }}" placeholder="e.g. 182749102" onfocus="focusField('policy_number')" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field_cause_of_death">
+            <span>Nature &amp; Cause of Death <span class="req">*</span></span>
+            <span class="helper">Doctor's Certificate / Hospital Summary</span>
+          </label>
+          <input type="text" id="field_cause_of_death" name="cause_of_death" class="form-control" value="{{ progress.form_data.cause_of_death|default:'Natural Causes' }}" onfocus="focusField('cause_of_death')" required>
+        </div>
+
+        {% elif procedure.institution_id == 'epfo' %}
+        <div class="form-group">
+          <label class="form-label" for="field_uan">
+            <span>Universal Account Number (UAN) <span class="req">*</span></span>
+            <span class="helper">12-Digit EPF Identifier</span>
+          </label>
+          <input type="text" id="field_uan" name="uan" class="form-control" value="{{ progress.form_data.uan|default:'' }}" placeholder="e.g. 101928374829" onfocus="focusField('uan')" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field_member_id">
+            <span>EPF Member ID (Establishment &amp; PF Account) <span class="req">*</span></span>
+            <span class="helper">Salary Slip / Form 16</span>
+          </label>
+          <input type="text" id="field_member_id" name="member_id" class="form-control" value="{{ progress.form_data.member_id|default:'' }}" placeholder="e.g. MHBAN00123450000012345" onfocus="focusField('member_id')" required>
+        </div>
+
+        {% elif procedure.institution_id == 'iepf' %}
+        <div class="form-group">
+          <label class="form-label" for="field_company_cin">
+            <span>Corporate Identification Number (CIN) <span class="req">*</span></span>
+            <span class="helper">21-Digit MCA Code</span>
+          </label>
+          <input type="text" id="field_company_cin" name="company_cin" class="form-control" value="{{ progress.form_data.company_cin|default:'' }}" placeholder="e.g. L65110MH1994PLC080870" onfocus="focusField('company_cin')" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field_folio_number">
+            <span>Folio Number / DP ID Client ID <span class="req">*</span></span>
+            <span class="helper">Share Certificate Face</span>
+          </label>
+          <input type="text" id="field_folio_number" name="folio_number" class="form-control" value="{{ progress.form_data.folio_number|default:'' }}" placeholder="e.g. 00294182" onfocus="focusField('folio_number')" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field_demat_boid">
+            <span>Target Claimant Demat Account (BOID) <span class="req">*</span></span>
+            <span class="helper">Client Master List (CML)</span>
+          </label>
+          <input type="text" id="field_demat_boid" name="demat_boid" class="form-control" value="{{ progress.form_data.demat_boid|default:'' }}" placeholder="16-Digit Demat Number" onfocus="focusField('demat_boid')" required>
+        </div>
+
+        {% elif procedure.institution_id == 'cams_kfintech' %}
+        <div class="form-group">
+          <label class="form-label" for="field_amc_name">
+            <span>Asset Management Company (Mutual Fund House) <span class="req">*</span></span>
+            <span class="helper">CAS / Account Statement</span>
+          </label>
+          <input type="text" id="field_amc_name" name="amc_name" class="form-control" value="{{ progress.form_data.amc_name|default:'' }}" placeholder="e.g. HDFC Mutual Fund / SBI Mutual Fund" onfocus="focusField('amc_name')" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field_folio_number">
+            <span>Mutual Fund Folio Number <span class="req">*</span></span>
+            <span class="helper">Consolidated Account Statement</span>
+          </label>
+          <input type="text" id="field_folio_number" name="folio_number" class="form-control" value="{{ progress.form_data.folio_number|default:'' }}" placeholder="e.g. 1049281/92" onfocus="focusField('folio_number')" required>
+        </div>
+
+        {% else %}
+        <!-- Default Bank Deposits (SBI / Canara / etc.) -->
+        <div class="form-group">
+          <label class="form-label" for="field_account_number">
+            <span>Deceased Bank Account Number <span class="req">*</span></span>
+            <span class="helper">Bank Passbook / Deposit Advice</span>
+          </label>
+          <input type="text" id="field_account_number" name="account_number" class="form-control" value="{{ progress.form_data.account_number|default:current_asset.masked_reference }}" placeholder="e.g. 20491823719" onfocus="focusField('account_number')" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field_branch_name_ifsc">
+            <span>Branch Name &amp; IFSC Code <span class="req">*</span></span>
+            <span class="helper">Header of Passbook / Cheque</span>
+          </label>
+          <input type="text" id="field_branch_name_ifsc" name="branch_name_ifsc" class="form-control" value="{{ progress.form_data.branch_name_ifsc|default:'SBIN0000001 - Main Branch' }}" onfocus="focusField('branch_name_ifsc')" required>
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+          <label class="form-label" for="field_date_of_death">
+            <span>Date of Demise <span class="req">*</span></span>
+            <span class="helper">Civil Death Certificate</span>
+          </label>
+          <input type="date" id="field_date_of_death" name="date_of_death" class="form-control" value="{{ progress.form_data.date_of_death|default:session.date_of_death|date:'Y-m-d' }}" onfocus="focusField('date_of_death')" required>
+        </div>
+
+        <!-- SECTION 2: CLAIMANT / BENEFICIARY IDENTITY -->
+        <div class="form-section-title">Section 2: Claimant / Nominee Information</div>
+
+        <div class="form-group">
+          <label class="form-label" for="field_claimant_name">
+            <span>Full Legal Name of Claimant <span class="req">*</span></span>
+            <span class="helper">Aadhaar / PAN Card</span>
+          </label>
+          <input type="text" id="field_claimant_name" name="claimant_name" class="form-control" value="{{ progress.form_data.claimant_name|default:claimant_name }}" onfocus="focusField('claimant_capacity')" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field_claimant_capacity">
+            <span>Capacity / Relationship with Deceased <span class="req">*</span></span>
+            <span class="helper">Nominee / Legal Heir / Son / Daughter</span>
+          </label>
+          <select id="field_claimant_capacity" name="claimant_capacity" class="form-control" onfocus="focusField('claimant_capacity')" required>
+            <option value="Registered Nominee">Registered Nominee</option>
+            <option value="Surviving Legal Heir (Son)">Surviving Legal Heir (Son)</option>
+            <option value="Surviving Legal Heir (Daughter)">Surviving Legal Heir (Daughter)</option>
+            <option value="Surviving Spouse (Widow/Widower)">Surviving Spouse (Widow/Widower)</option>
+            <option value="Executor of Registered Will">Executor of Registered Will</option>
+          </select>
+        </div>
+
+        <!-- SECTION 3: SETTLEMENT / PAYOUT DESTINATION -->
+        <div class="form-section-title">Section 3: Electronic Settlement Bank Destination</div>
+
+        <div class="form-group">
+          <label class="form-label" for="field_settlement_account_no">
+            <span>Beneficiary Settlement Account Number <span class="req">*</span></span>
+            <span class="helper">Your Active Bank Account</span>
+          </label>
+          <input type="text" id="field_settlement_account_no" name="settlement_account_no" class="form-control" value="{{ progress.form_data.settlement_account_no|default:'' }}" placeholder="9 to 18 numeric digits" onfocus="focusField('settlement_account_no')" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field_settlement_ifsc">
+            <span>Beneficiary Bank IFSC Code <span class="req">*</span></span>
+            <span class="helper">11-Character Code on Cheque Leaf</span>
+          </label>
+          <input type="text" id="field_settlement_ifsc" name="settlement_ifsc" class="form-control" value="{{ progress.form_data.settlement_ifsc|default:'' }}" placeholder="e.g. SBIN0001234" onfocus="focusField('settlement_ifsc')" required>
+        </div>
+
+        <!-- STATUTORY INDEMNITY & DECLARATION -->
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 18px; margin-top: 24px;">
+          <label style="display: flex; gap: 12px; cursor: pointer; align-items: flex-start;">
+            <input type="checkbox" id="statutoryDeclaration" name="statutory_declaration" style="accent-color: #D4AF37; width: 16px; height: 16px; margin-top: 2px;" required checked>
+            <span style="font-size: 12px; color: #bbbbbb; line-height: 1.6;">
+              I hereby solemnly declare that the statements made above are true and correct to the best of my knowledge. As a claimant under official guidelines, I confirm that I hold lawful entitlement to receive settlement and undertake to indemnify the institution against any conflicting third-party claims.
+            </span>
+          </label>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="form-actions">
+          <button type="button" class="btn-save-draft" onclick="saveDraftOnline()">Save Draft</button>
+          <button type="submit" class="btn-submit-claim" id="submitBtn">
+            <span>Complete &amp; Prepare Official Packet</span>
+            &rarr;
+          </button>
+          <div class="autosave-indicator" id="autosaveIndicator">&#10003; All changes saved to WealthPass</div>
+        </div>
+      </form>
     </div>
 
     <!-- ========================================================
-         RIGHT PANEL: WealthPass Claim Copilot
+         RIGHT PANEL: WEALTHPASS GREEN AI CLAIM COPILOT
     ======================================================== -->
     <div class="copilot-panel">
-      <div class="panel-eyebrow">WealthPass Claim Copilot</div>
+      <div class="panel-eyebrow">Green AI Claim Copilot</div>
       <h3 style="font-family: var(--font-serif, 'Playfair Display', serif); font-size: 20px; margin: 0 0 16px 0; color: #ffffff;">Field Explanations &amp; Guidance</h3>
 
       <!-- Contextual Field Guidance Card -->
       <div class="guidance-box" id="guidanceBox">
         <div class="guidance-field-header">
-          <div class="guidance-field-name" id="gFieldLabel">Loading field...</div>
-          <div id="gMandatoryBadge" class="field-status-tag">Required</div>
+          <div class="guidance-field-name" id="gFieldLabel">Select any form field</div>
+          <div id="gMandatoryBadge" class="field-status-tag">Copilot Active</div>
         </div>
 
         <div class="guidance-section-title">What Information is Requested</div>
-        <p class="guidance-text" id="gExplanation">Select a form field from the left panel to inspect official instructions.</p>
+        <p class="guidance-text" id="gExplanation">Click or focus on any form field on the left. The Claim Copilot instantly explains the requirement from verified regulatory rules.</p>
 
         <div class="guidance-section-title">Where to Find This Information</div>
-        <p class="guidance-text" id="gWhereToFind">&mdash;</p>
+        <p class="guidance-text" id="gWhereToFind">Official document issued by {{ procedure.institution_name }}</p>
 
         <div class="guidance-section-title">Expected Format</div>
-        <div class="guidance-tag" id="gExpectedFormat">&mdash;</div>
+        <div class="guidance-tag" id="gExpectedFormat">Standard Official Format</div>
 
         <div class="guidance-section-title">Supporting Document</div>
-        <p class="guidance-text" id="gSupportingDocs">&mdash;</p>
+        <p class="guidance-text" id="gSupportingDocs">Certified Death Certificate / Claimant Identity</p>
 
         <a id="gOfficialSource" href="{{ procedure.official_source_url }}" target="_blank" rel="noopener noreferrer" class="source-ref-link">
           Official Regulatory Citation &rarr;
@@ -531,7 +670,7 @@
         </div>
       </div>
 
-      <!-- Self-Reported External Submission Tracker -->
+      <!-- Submission Status & External Docket Recording -->
       <div class="submission-tracker-box">
         <div style="font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #888888; margin-bottom: 8px;">Claim Tracking Status</div>
         <div class="tracker-status-tag {% if progress.is_institution_confirmed %}verified{% endif %}" id="displayStatusTag">
@@ -539,17 +678,17 @@
         </div>
 
         <div style="font-size: 12px; color: #bbbbbb; line-height: 1.5;">
-          Once you submit the claim dossier at the branch or online portal, record your acknowledgement number to track the 15-day statutory turnaround.
+          Once your form is finalized, download your pre-filled packet and record your branch inward docket number to track statutory recovery.
         </div>
 
         <div id="submissionRecordForm" style="margin-top: 12px; display: none;">
           <input type="text" id="ackNumberInput" placeholder="Acknowledgement / Docket / Inward No." style="width: 100%; background: #121212; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 12px; margin-bottom: 8px; outline: none;">
-          <input type="text" id="branchInput" placeholder="Servicing Branch Name (e.g. Mumbai Main Branch)" style="width: 100%; background: #121212; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 12px; margin-bottom: 8px; outline: none;">
-          <button onclick="submitExternalEvidence()" style="width: 100%; padding: 8px; background: #D4AF37; color: #000; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Save Acknowledgement</button>
+          <input type="text" id="branchInput" placeholder="Servicing Branch Name (e.g. Main Branch)" style="width: 100%; background: #121212; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 12px; margin-bottom: 8px; outline: none;">
+          <button type="button" onclick="submitExternalEvidence()" style="width: 100%; padding: 8px; background: #D4AF37; color: #000; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Save Acknowledgement</button>
         </div>
 
-        <button class="record-submission-btn" id="toggleAckBtn" onclick="document.getElementById('submissionRecordForm').style.display='block'; this.style.display='none';">
-          + Record Submission Acknowledgement
+        <button type="button" class="record-submission-btn" id="toggleAckBtn" onclick="document.getElementById('submissionRecordForm').style.display='block'; this.style.display='none';">
+          + Record Branch Inward Acknowledgement
         </button>
       </div>
 
@@ -565,19 +704,35 @@ const procedureVersion = "{{ procedure.version }}";
 const currentSessionId = "{{ session.id }}";
 const currentAssetId = "{{ current_asset.id }}";
 
-// Fetch initial field guidance on page load
 document.addEventListener('DOMContentLoaded', () => {
-  const firstRow = document.querySelector('.form-field-row');
-  if (firstRow) {
-    firstRow.click();
+  // Focus first input field and load its guidance
+  const firstInput = document.querySelector('.form-control');
+  if (firstInput) {
+    firstInput.focus();
+    const fieldName = firstInput.name || firstInput.id.replace('field_', '');
+    focusField(fieldName);
   }
   updateChecklistCounter();
+
+  // Attach autosave on input change
+  const form = document.getElementById('onlineClaimForm');
+  form.addEventListener('input', debounce(autoSaveFormData, 1000));
 });
 
-// Select and fetch field guidance
-async function selectField(fieldId, element) {
-  document.querySelectorAll('.form-field-row').forEach(r => r.classList.remove('active'));
-  if (element) element.classList.add('active');
+// Debounce helper
+function debounce(func, wait) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
+// Focus field and fetch Copilot guidance
+async function focusField(fieldId) {
+  document.querySelectorAll('.form-control').forEach(el => el.classList.remove('active-field'));
+  const activeInput = document.getElementById(`field_${fieldId}`);
+  if (activeInput) activeInput.classList.add('active-field');
 
   const labelEl = document.getElementById('gFieldLabel');
   const expEl = document.getElementById('gExplanation');
@@ -612,11 +767,104 @@ async function selectField(fieldId, element) {
       srcEl.href = g.official_source_reference;
     }
   } catch (err) {
-    console.error('Copilot guidance error:', err);
+    console.error('Copilot guidance fetch error:', err);
   }
 }
 
-// Checklist Progress Tracker
+// Collect form field values
+function getFormValues() {
+  const form = document.getElementById('onlineClaimForm');
+  const formData = new FormData(form);
+  const values = {};
+  for (const [k, v] of formData.entries()) {
+    values[k] = v;
+  }
+  return values;
+}
+
+// Autosave form data
+async function autoSaveFormData() {
+  const indicator = document.getElementById('autosaveIndicator');
+  indicator.textContent = '⏳ Saving changes...';
+  const values = getFormValues();
+
+  try {
+    await fetch(`/api/claims/${currentSessionId}/copilot-progress/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({
+        asset_id: currentAssetId,
+        form_data: values,
+        status: 'IN_PROGRESS'
+      })
+    });
+    indicator.textContent = '✓ All changes saved to WealthPass';
+  } catch (err) {
+    indicator.textContent = '⚠️ Autosave error';
+  }
+}
+
+// Manual Save Draft
+async function saveDraftOnline() {
+  await autoSaveFormData();
+  alert('Form draft saved successfully! You can resume anytime.');
+}
+
+// Submit Form Online
+async function submitFormOnline(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳ Preparing Claim Package...</span>';
+
+  const values = getFormValues();
+
+  try {
+    // 1. Save progress state
+    await fetch(`/api/claims/${currentSessionId}/copilot-progress/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({
+        asset_id: currentAssetId,
+        form_data: values,
+        status: 'READY_TO_SUBMIT'
+      })
+    });
+
+    // 2. Submit to digital claim endpoint
+    const res = await fetch(`/api/claims/${currentSessionId}/submit-online/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({
+        asset_id: currentAssetId,
+        claimant_name: values.claimant_name,
+        settlement_bank: '{{ procedure.institution_name }}',
+        settlement_acc_no: values.settlement_account_no,
+        settlement_ifsc: values.settlement_ifsc,
+        statutory_indemnity: true
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      window.location.href = data.print_url || `/print_forms/${currentSessionId}/`;
+    }
+  } catch (err) {
+    alert('Error submitting claim. Please try again.');
+    btn.disabled = false;
+    btn.innerHTML = '<span>Complete &amp; Prepare Official Packet &rarr;</span>';
+  }
+}
+
+// Document Checklist
 function updateChecklistCounter() {
   const cbs = document.querySelectorAll('.checklist-cb');
   const checked = document.querySelectorAll('.checklist-cb:checked').length;
@@ -637,7 +885,7 @@ async function saveChecklistProgress() {
       body: JSON.stringify({
         asset_id: currentAssetId,
         checked_documents: checked,
-        status: checked.length > 0 ? 'DOCUMENTS_COLLECTED' : 'PREPARATION_STARTED'
+        status: checked.length > 0 ? 'DOCUMENTS_COLLECTED' : 'IN_PROGRESS'
       })
     });
   } catch (err) {
@@ -645,7 +893,7 @@ async function saveChecklistProgress() {
   }
 }
 
-// External Submission Evidence Recording
+// Submission Acknowledgement Docket
 async function submitExternalEvidence() {
   const ackNo = document.getElementById('ackNumberInput').value.trim();
   const branch = document.getElementById('branchInput').value.trim();

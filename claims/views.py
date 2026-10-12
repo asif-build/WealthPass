@@ -2890,6 +2890,7 @@ def api_copilot_progress(request, session_id):
                 'status_display': progress.get_status_display(),
                 'checked_documents': progress.checked_document_ids,
                 'completed_fields': progress.completed_field_ids,
+                'form_data': progress.form_data or {},
                 'user_notes': progress.user_notes,
                 'acknowledgement_number': progress.acknowledgement_number,
                 'servicing_branch': progress.servicing_branch_or_desk,
@@ -2931,11 +2932,15 @@ def api_copilot_progress(request, session_id):
             }
         )
 
-        # Update checklist fields
+        # Update checklist and form data
         if 'checked_documents' in data:
             progress.checked_document_ids = data['checked_documents']
         if 'completed_fields' in data:
             progress.completed_field_ids = data['completed_fields']
+        if 'form_data' in data:
+            current_fd = progress.form_data or {}
+            current_fd.update(data['form_data'])
+            progress.form_data = current_fd
         if 'user_notes' in data:
             progress.user_notes = data['user_notes']
 
