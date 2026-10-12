@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ annex }} - Formal Claim Document &mdash; {{ bank_name }}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 15mm 20mm 15mm;
+    }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 11pt;
+      line-height: 1.5;
+      color: #000;
+      background: #fff;
+      margin: 0;
+      padding: 20px 30px;
+    }
+    .no-print {
+      margin-bottom: 25px;
+      padding: 12px 20px;
+      background: #f0f4f8;
+      border: 1px solid #c0d0e0;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 13px;
+    }
+    .print-btn {
+      padding: 8px 18px;
+      background: #0052cc;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #000;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+    .bank-title {
+      font-size: 16pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0 0 4px 0;
+    }
+    .form-annex-title {
+      font-size: 13pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin: 4px 0;
+    }
+    .statutory-note {
+      font-size: 9pt;
+      font-style: italic;
+      margin: 0;
+    }
+    .meta-box {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      font-size: 10pt;
+    }
+    .section-title {
+      font-weight: bold;
+      font-size: 11pt;
+      background: #eeeeee;
+      padding: 4px 8px;
+      border-left: 4px solid #000;
+      margin: 16px 0 8px 0;
+      text-transform: uppercase;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+    }
+    table.data-table th, table.data-table td {
+      border: 1px solid #777;
+      padding: 6px 10px;
+      font-size: 10.5pt;
+      text-align: left;
+    }
+    table.data-table th {
+      background: #fafafa;
+      width: 35%;
+      font-weight: normal;
+    }
+    table.data-table td {
+      font-weight: bold;
+    }
+    .declaration-box {
+      border: 1px solid #444;
+      padding: 10px 14px;
+      margin: 16px 0;
+      font-size: 9.5pt;
+      line-height: 1.45;
+      text-align: justify;
+      background: #fdfdfd;
+    }
+    .signatures {
+      margin-top: 50px;
+      display: flex;
+      justify-content: space-between;
+      page-break-inside: avoid;
+    }
+    .sig-block {
+      width: 42%;
+      text-align: center;
+      border-top: 1px solid #000;
+      padding-top: 8px;
+      font-size: 10pt;
+    }
+    .branch-acknowledgement {
+      margin-top: 35px;
+      border: 1px dashed #000;
+      padding: 12px 16px;
+      font-size: 9.5pt;
+      page-break-inside: avoid;
+    }
+    @media print {
+      .no-print { display: none !important; }
+      body { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="no-print">
+    <div>
+      <strong>WealthPass Official Claim Document Generator</strong> &mdash; Generated on {{ generated_date }}
+    </div>
+    <div>
+      <button class="print-btn" onclick="window.print()">🖨️ Print Form / Save as PDF</button>
+      <button class="print-btn" style="background:#555; margin-left:8px;" onclick="window.close()">Close</button>
+    </div>
+  </div>
+
+  <div class="header">
+    <div class="bank-title">{{ bank_name }}</div>
+    <div class="form-annex-title">{{ annex }}: Application for Settlement of Claim</div>
+    <p class="statutory-note">
+      Settlement of Claim in respect of Deceased Depositor &bull; Compliant with RBI Master Directions 2025 (RBI/2025-26/82)
+    </p>
+  </div>
+
+  <div class="meta-box">
+    <div><strong>To:</strong> The Branch Manager, {{ bank_name }}<br>Branch: {{ branch_name|default:"____________________" }} (IFSC: {{ branch_ifsc|default:"__________" }})</div>
+    <div style="text-align: right;"><strong>Date:</strong> {{ generated_date }}<br><strong>Statutory SLA:</strong> 15 Calendar Days</div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section-title">1. Particulars of Deceased Account Holder</div>
+  <table class="data-table">
+    <tr>
+      <th>Name of the Deceased</th>
+      <td>{{ deceased_name|default:"________________________________________" }}</td>
+    </tr>
+    <tr>
+      <th>Date of Demise</th>
+      <td>{{ date_of_demise|default:"____________________" }}</td>
+    </tr>
+    <tr>
+      <th>Death Certificate Reg. No.</th>
+      <td>{{ death_cert_no|default:"____________________" }}</td>
+    </tr>
+    <tr>
+      <th>Account / Deposit Number(s)</th>
+      <td>{{ account_number|default:"________________________________________" }}</td>
+    </tr>
+  </table>
+
+  <!-- SECTION 2 -->
+  <div class="section-title">2. Particulars of Claimant / Registered Nominee</div>
+  <table class="data-table">
+    <tr>
+      <th>Full Legal Name of Claimant</th>
+      <td>{{ claimant_name|default:"________________________________________" }}</td>
+    </tr>
+    <tr>
+      <th>Relationship to Deceased</th>
+      <td>{{ relationship|default:"Nominee / Legal Heir" }}</td>
+    </tr>
+    <tr>
+      <th>Mobile Number &amp; Contact</th>
+      <td>{{ claimant_mobile|default:"____________________" }}</td>
+    </tr>
+    <tr>
+      <th>Permanent Residential Address</th>
+      <td>{{ claimant_address|default:"____________________________________________________________________" }}</td>
+    </tr>
+    <tr>
+      <th>Settlement Credit Account No.</th>
+      <td>{{ settlement_account|default:"____________________" }} ({{ settlement_bank|default:"Bank Name" }}, IFSC: {{ settlement_ifsc|default:"__________" }})</td>
+    </tr>
+  </table>
+
+  <!-- SECTION 3: SPECIFIC ANNEX CLAUSES -->
+  {% if legal_heirs %}
+  <div class="section-title">3. Surviving Legal Heirs Disclosure (Per Annex I-C / I-E)</div>
+  <table class="data-table">
+    <tr>
+      <th>Class-I Legal Heirs</th>
+      <td>{{ legal_heirs }}</td>
+    </tr>
+  </table>
+  {% endif %}
+
+  {% if surety_1 or surety_2 %}
+  <div class="section-title">3. Sureties to the Letter of Indemnity (Per Annex I-D)</div>
+  <table class="data-table">
+    <tr>
+      <th>Independent Surety 1</th>
+      <td>{{ surety_1|default:"Name, Address & Solvency Declaration" }}</td>
+    </tr>
+    <tr>
+      <th>Independent Surety 2</th>
+      <td>{{ surety_2|default:"Name, Address & Solvency Declaration" }}</td>
+    </tr>
+  </table>
+  {% endif %}
+
+  {% if locker_number %}
+  <div class="section-title">3. Safe Deposit Locker Particulars (Per Annex I-G)</div>
+  <table class="data-table">
+    <tr>
+      <th>Locker Number &amp; Key No.</th>
+      <td>Locker No: {{ locker_number }} &bull; Key No: {{ key_number|default:"__________" }}</td>
+    </tr>
+  </table>
+  {% endif %}
+
+  <!-- STATUTORY DECLARATION -->
+  <div class="declaration-box">
+    <strong>STATUTORY DECLARATION:</strong> I/We hereby solemnly declare that the particulars stated above are true, complete, and correct to the best of my/our knowledge and belief. I/We confirm that payment of the deposit balance/delivery of articles as requested herein shall constitute a full, complete, and valid discharge of the Bank's statutory liability under the Banking Regulation Act, 1949 and RBI Master Directions (RBI/2025-26/82).
+  </div>
+
+  <div class="signatures">
+    <div class="sig-block">
+      Signature / Thumb Impression of Claimant<br>
+      <strong>({{ claimant_name|default:"Claimant" }})</strong>
+    </div>
+    <div class="sig-block">
+      Signature of Witness / Certifying Official<br>
+      Name: __________________________<br>
+      Address/ID: ______________________
+    </div>
+  </div>
+
+  <!-- BRANCH INWARD ACKNOWLEDGEMENT -->
+  <div class="branch-acknowledgement">
+    <strong>OFFICIAL BRANCH INWARD ACKNOWLEDGEMENT (MANDATORY PER RBI PARA 27-28)</strong><br>
+    Received claim application with complete supporting documents from <strong>{{ claimant_name|default:"____________________" }}</strong> on Date: ____________.<br>
+    Docket Inward Reference No: ________________________ &bull; Branch Official Seal &amp; Signature: ________________________<br>
+    <em>Note: The Bank is mandated to process settlement within a maximum of 15 calendar days from the inward date.</em>
+  </div>
+
+</body>
+</html>

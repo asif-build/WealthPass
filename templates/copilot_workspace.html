@@ -3,19 +3,20 @@
 
 {% block title %}Claim Copilot &amp; Official Form Filing &mdash; {{ procedure.institution_name }} | WealthPass{% endblock %}
 
-{% block extra_head %}
+{% block extra_css %}
 <style>
 /* ========================================================
    WEALTHPASS CLAIM COPILOT & OFFICIAL FORM WORKSPACE
    Dark Luxury Palette: #0c0c0c background, #141414 cards, #D4AF37 gold
 ======================================================== */
 .copilot-container {
-  min-height: 100vh;
-  background: #0c0c0c;
+  min-height: calc(100vh - 76px);
+  background: var(--black, #0c0c0c);
   color: #ffffff;
-  padding: 80px 24px 60px;
-  max-width: 1680px;
+  padding: 40px 24px 60px;
+  max-width: 1440px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* Header & Status Bar */

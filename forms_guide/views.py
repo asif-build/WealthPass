@@ -5,6 +5,7 @@ displays bank-specific requirements, and provides verified download links.
 """
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
+from django.utils import timezone
 from .models import BankDirectory, BankFormLink, BankExtraRequirement, FormAlias, RBIAnnex, ScenarioChoice, DirectoryStatus
 
 
@@ -182,4 +183,83 @@ def energy_benchmark_view(request):
         'logs': telemetry_logs,
     }
     return render(request, 'forms_guide/energy_benchmark.html', context)
+
+
+def fill_form_online_view(request):
+    """
+    Renders the interactive Online Claim Form Preparation experience on WealthPass.
+    Allows claimants to fill, auto-fill, and prepare official claim forms for any bank
+    (SBI, PNB, Bank of Baroda, HDFC, ICICI, etc.) with live Wealth Buddy guidance.
+    """
+    bank_code = request.GET.get('bank', 'sbi').strip().lower()
+    annex = request.GET.get('annex', 'Annex I-A').strip()
+    scenario = request.GET.get('scenario', 'nominee').strip().lower()
+    form_id = request.GET.get('form_id')
+    form_label = request.GET.get('form_label', '')
+
+    current_bank = BankDirectory.objects.filter(bank_code=bank_code).first()
+    if not current_bank:
+        current_bank = BankDirectory.objects.first()
+
+    form_obj = None
+    if form_id:
+        try:
+            form_obj = BankFormLink.objects.filter(id=int(form_id)).first()
+        except Exception:
+            pass
+
+    sections = FormGuideSection.objects.filter(annex=annex).order_by('section_number')
+    if not sections.exists():
+        sections = FormGuideSection.objects.filter(annex='Annex I-A').order_by('section_number')
+
+    extras = current_bank.extra_requirements.filter(scenario=scenario) if current_bank else []
+
+    context = {
+        'current_bank': current_bank,
+        'annex': annex,
+        'scenario': scenario,
+        'form_obj': form_obj,
+        'form_label': form_label or (form_obj.label_as_published if form_obj else f"{current_bank.bank} - {annex}"),
+        'sections': sections,
+        'extras': extras,
+        'all_banks': BankDirectory.objects.all().order_by('bank'),
+        'all_annexes': RBIAnnex.choices,
+    }
+    return render(request, 'forms_guide/fill_form_online.html', context)
+
+
+@csrf_exempt
+def fill_form_print_view(request):
+    """
+    Generates a formal, printable RBI Standard Claim Document with filled values.
+    """
+    data = request.POST if request.method == 'POST' else request.GET
+    bank_name = data.get('bank_name', 'State Bank of India')
+    annex = data.get('annex', 'Annex I-A')
+
+    context = {
+        'bank_name': bank_name,
+        'annex': annex,
+        'deceased_name': data.get('deceased_name', ''),
+        'account_number': data.get('account_number', ''),
+        'date_of_demise': data.get('date_of_demise', ''),
+        'death_cert_no': data.get('death_cert_no', ''),
+        'branch_name': data.get('branch_name', ''),
+        'branch_ifsc': data.get('branch_ifsc', ''),
+        'claimant_name': data.get('claimant_name', ''),
+        'relationship': data.get('relationship', ''),
+        'claimant_mobile': data.get('claimant_mobile', ''),
+        'claimant_address': data.get('claimant_address', ''),
+        'settlement_bank': data.get('settlement_bank', ''),
+        'settlement_account': data.get('settlement_account', ''),
+        'settlement_ifsc': data.get('settlement_ifsc', ''),
+        'legal_heirs': data.get('legal_heirs', ''),
+        'surety_1': data.get('surety_1', ''),
+        'surety_2': data.get('surety_2', ''),
+        'locker_number': data.get('locker_number', ''),
+        'key_number': data.get('key_number', ''),
+        'generated_date': timezone.now().strftime('%d %B %Y'),
+    }
+    return render(request, 'forms_guide/print_form_document.html', context)
+
 

@@ -199,3 +199,28 @@ class BankDirectoryTests(TestCase):
         self.assertContains(dash_resp, "ESTIMATED")
         self.assertContains(dash_resp, "Green AI")
 
+    def test_11_fill_form_online_view_renders(self):
+        """Tests that /guide/fill-form/ renders the online form editor with Green AI auto-fill and Buddy."""
+        resp = self.client.get('/guide/fill-form/?bank=sbi&annex=Annex+I-A&scenario=nominee')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Fill Annex I-A")
+        self.assertContains(resp, "State Bank of India")
+        self.assertContains(resp, "Auto-Fill With Green AI")
+        self.assertContains(resp, "Particulars of Deceased Depositor")
+
+    def test_12_fill_form_print_document_generation(self):
+        """Tests that /guide/fill-form/print/ generates a printable formal claim document."""
+        resp = self.client.post('/guide/fill-form/print/', {
+            'bank_name': 'State Bank of India',
+            'annex': 'Annex I-A',
+            'deceased_name': 'Late Ramesh Chandra Sharma',
+            'account_number': '20491823719',
+            'claimant_name': 'Sunita Sharma'
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Late Ramesh Chandra Sharma")
+        self.assertContains(resp, "20491823719")
+        self.assertContains(resp, "STATUTORY DECLARATION")
+        self.assertContains(resp, "OFFICIAL BRANCH INWARD ACKNOWLEDGEMENT")
+
+
