@@ -1,191 +1,381 @@
 {% extends 'core/base.html' %}
+{% block title %}Estate Bridge Liquidity Advance - WealthPass{% endblock %}
 
 {% block extra_css %}
 <style>
-.loan-page {
-  background: var(--black);
-  min-height: 100vh;
-  display: flex;
-  padding-top: 76px;
-}
-.loan-left {
-  flex: 1.1;
-  padding: 120px 80px;
-  border-right: 1px solid var(--border);
-}
-.loan-right {
-  flex: 1;
-  padding: 120px 64px;
-  background: var(--black-soft);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-}
-.loan-card {
-  width: 100%;
-  max-width: 480px;
-  border: 1px solid var(--border-gold);
-  background: var(--black-lifted);
-  padding: 52px;
-  border-radius: var(--radius-sm);
-}
+  .loan-page {
+    background-color: var(--wp-mist);
+    min-height: calc(100vh - 72px);
+    padding: 64px 0 96px;
+  }
 
-.approval-list { margin-top: 48px; display: flex; flex-direction: column; gap: 0; }
-.approval-item {
-  font-family: var(--font-sans);
-  font-weight: 300;
-  font-size: 15px;
-  color: var(--white-muted);
-  padding: 16px 0;
-  border-bottom: 1px solid var(--border);
-}
-.approval-item:last-child { border-bottom: none; }
+  .loan-grid {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-4);
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 48px;
+    align-items: start;
+  }
 
-.nbfc-card {
-  border: 1px solid var(--border);
-  padding: 28px;
-  margin-top: 48px;
-  border-radius: var(--radius-sm);
-}
+  /* Left Panel */
+  .loan-info {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: sticky;
+    top: 104px;
+  }
 
-.table-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--border);
-  padding: 20px 0;
-}
-.table-row:last-of-type { border-bottom: none; }
-.table-label {
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--white-faint);
-}
-.table-value {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  font-size: 24px;
-  color: var(--white);
-}
-.table-value.gold { color: var(--gold); }
+  .loan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--wp-trust-blue);
+    background: var(--wp-trust-blue-light);
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    width: fit-content;
+  }
 
-@media (max-width: 1024px) {
-  .loan-page { flex-direction: column; }
-  .loan-left, .loan-right { padding: 80px 24px; border-right: none; }
-  .loan-right { border-top: 1px solid var(--border); }
-}
+  .loan-headline {
+    font-size: 40px;
+    line-height: 48px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--wp-ink-navy);
+    margin: 0;
+  }
+  .loan-headline span {
+    color: var(--wp-trust-blue);
+  }
+
+  .loan-desc {
+    font-size: 15px;
+    line-height: 24px;
+    color: var(--wp-text-muted);
+    margin: 0;
+  }
+
+  .approval-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .approval-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--wp-text-primary);
+  }
+
+  .approval-item i {
+    color: var(--wp-success);
+    font-size: 18px;
+  }
+
+  .nbfc-card {
+    background: var(--wp-surface-white);
+    border: 1px solid var(--wp-border);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .nbfc-logo-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--wp-trust-blue-light);
+    color: var(--wp-trust-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  /* Right Panel - Loan Form Card */
+  .loan-card {
+    background: var(--wp-surface-white);
+    border: 1px solid var(--wp-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+    padding: 40px;
+    box-sizing: border-box;
+  }
+
+  .loan-card-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--wp-ink-navy);
+    margin: 0 0 4px;
+  }
+
+  .loan-card-sub {
+    font-size: 13px;
+    color: var(--wp-text-muted);
+    margin: 0 0 24px;
+  }
+
+  .loan-details-table {
+    border: 1px solid var(--wp-border-subtle);
+    border-radius: var(--radius-input);
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+
+  .table-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    background: var(--wp-surface-white);
+    border-bottom: 1px solid var(--wp-border-subtle);
+  }
+  .table-row:nth-child(even) {
+    background: var(--wp-mist);
+  }
+  .table-row:last-child {
+    border-bottom: none;
+  }
+
+  .table-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--wp-text-muted);
+  }
+
+  .table-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--wp-ink-navy);
+  }
+
+  .table-value.gold {
+    color: var(--wp-trust-blue);
+    font-size: 24px;
+  }
+
+  /* Slider */
+  .slider-box {
+    background: var(--wp-mist);
+    border: 1px solid var(--wp-border-subtle);
+    border-radius: var(--radius-input);
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+
+  .slider-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--wp-text-muted);
+    margin-bottom: 12px;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--wp-trust-blue);
+    cursor: pointer;
+  }
+
+  /* Checkbox & CTA */
+  .custom-checkbox-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 28px;
+    cursor: pointer;
+  }
+
+  .custom-checkbox-input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--wp-trust-blue);
+    margin-top: 2px;
+    cursor: pointer;
+  }
+
+  .custom-checkbox-text {
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--wp-text-muted);
+  }
+
+  .btn-accept-loan {
+    width: 100%;
+    min-height: 52px;
+    background: var(--wp-trust-blue);
+    color: var(--wp-surface-white);
+    border: none;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-family-base);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all var(--transition-fast);
+    box-shadow: 0 4px 14px rgba(27, 95, 209, 0.25);
+  }
+
+  .btn-accept-loan:hover {
+    background: var(--wp-trust-blue-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(27, 95, 209, 0.35);
+  }
+
+  @media (max-width: 992px) {
+    .loan-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .loan-info {
+      position: static;
+    }
+    .loan-card {
+      padding: 24px;
+    }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="loan-page">
+  <div class="loan-grid">
 
-  <!-- LEFT -->
-  <div class="loan-left">
-    <div class="scroll-reveal">
-      <div class="label" style="color: var(--gold); margin-bottom: 40px;">WHY YOU ARE APPROVED</div>
-      <h2 class="animate-words" style="font-family: var(--font-sans); font-weight: 300; font-size: 42px; line-height: 1.2; color: var(--white); letter-spacing: -0.01em;">Your claim is <span style="font-family: var(--font-serif); font-style: italic; color: var(--gold);">verified</span>.<br>The loan is <span style="font-family: var(--font-serif); font-style: italic; color: var(--gold);">secured</span>.</h2>
-      <div class="gold-rule"></div>
-      <p class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); line-height: 1.85; max-width: 440px; margin-top: 24px;">
-        SwiftCredit NBFC is lending ₹{{ loan_amount }} against your confirmed ₹{{ total_assets }} claim. They carry near-zero risk. So they say yes — in seconds.
+    <!-- LEFT: Approval & Underwriting -->
+    <div class="loan-info">
+      <div class="loan-badge">STATUTORY ESTATE LIQUIDITY</div>
+      <h1 class="loan-headline">Your claim is <span>verified</span>.<br>The advance is <span>secured</span>.</h1>
+      <p class="loan-desc">
+        SwiftCredit NBFC provides instant advance liquidity against your confirmed ₹{{ total_assets }} estate claim. With verified statutory claim data, underwriting completes in under 60 seconds.
       </p>
 
       <div class="approval-list">
-        <div class="approval-item">— Government-verified claim</div>
-        <div class="approval-item">— Fraud score 2 / 100</div>
-        <div class="approval-item">— Aadhaar-confirmed identity</div>
-        <div class="approval-item">— Eligible nominee status confirmed</div>
+        <div class="approval-item">
+          <i class="ph ph-check-circle"></i>
+          <span>Statutory registry verified claim</span>
+        </div>
+        <div class="approval-item">
+          <i class="ph ph-check-circle"></i>
+          <span>Fraud assessment score: Low Risk</span>
+        </div>
+        <div class="approval-item">
+          <i class="ph ph-check-circle"></i>
+          <span>Aadhaar biometric authenticated identity</span>
+        </div>
+        <div class="approval-item">
+          <i class="ph ph-check-circle"></i>
+          <span>Legal heir &amp; nominee title confirmed</span>
+        </div>
       </div>
 
       <div class="nbfc-card">
-        <div class="label" style="margin-bottom: 12px; color: var(--white);">SWIFTCREDIT NBFC</div>
-        <p class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 13px; color: var(--white-faint);">RBI Registered &middot; License NBFC-2019-1234</p>
+        <div class="nbfc-logo-box">
+          <i class="ph ph-bank"></i>
+        </div>
+        <div>
+          <div style="font-size: 14px; font-weight: 700; color: var(--wp-ink-navy);">SwiftCredit NBFC</div>
+          <div style="font-size: 12px; color: var(--wp-text-muted);">RBI Registered &bull; License NBFC-2019-1234</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- RIGHT -->
-  <div class="loan-right">
-    <div class="loan-card premium-form-card scroll-reveal">
-      <div class="label" style="color: var(--gold); margin-bottom: 12px;">BRIDGE LOAN</div>
-      <h3 class="animate-words" style="font-family: var(--font-sans); font-weight: 300; font-size: 36px; color: var(--white); margin-bottom: 4px;">Instant <span style="font-family: var(--font-serif); font-style: italic; color: var(--gold);">Approval</span></h3>
-      <div class="gold-rule"></div>
+    <!-- RIGHT: Loan Customization Card -->
+    <div class="loan-card">
+      <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wp-trust-blue); margin-bottom: 6px;">
+        PRE-APPROVED OFFER
+      </div>
+      <h2 class="loan-card-title">Instant Advance Approval</h2>
+      <p class="loan-card-sub">0% interest rate during standard 90-day estate settlement.</p>
 
-      <div style="margin-top: 8px;">
+      <div class="loan-details-table">
         <div class="table-row">
-          <div class="table-label">VERIFIED CLAIM</div>
+          <div class="table-label">Verified Estate Value</div>
           <div class="table-value">₹{{ total_assets }}</div>
         </div>
         <div class="table-row">
-          <div class="table-label">LOAN AMOUNT</div>
+          <div class="table-label">Advance Amount</div>
           <div class="table-value gold" id="display-loan-amount">₹{{ loan_amount }}</div>
         </div>
         <div class="table-row">
-          <div class="table-label">INTEREST RATE</div>
-          <div class="table-value">0%</div>
+          <div class="table-label">Interest Rate</div>
+          <div class="table-value" style="color: var(--wp-success);">0%</div>
         </div>
         <div class="table-row">
-          <div class="table-label">TENURE</div>
+          <div class="table-label">Tenure</div>
           <div class="table-value">90 Days</div>
         </div>
         <div class="table-row">
-          <div class="table-label">REPAYMENT</div>
-          <div class="table-value" style="font-size: 15px; text-align: right; max-width: 200px;">Automatic on claim release</div>
+          <div class="table-label">Repayment</div>
+          <div class="table-value" style="font-size: 14px; text-align: right; max-width: 220px;">Automatic on institutional claim release</div>
         </div>
       </div>
 
-      <div style="margin-top: 40px;">
-        <div class="label" style="color: var(--white-faint); margin-bottom: 24px;">ADJUST LOAN AMOUNT</div>
-        <input type="range" id="loan-slider" min="10000" max="{{ loan_amount }}" value="{{ loan_amount }}" step="1000" style="width: 100%; cursor: pointer;">
-        <div style="display:flex; justify-content:space-between; margin-top:8px; font-family:var(--font-sans); font-size:12px; color:var(--white-muted);">
-          <span>₹10k</span>
-          <span>₹{{ loan_amount }}</span>
+      <div class="slider-box">
+        <div class="slider-label-row">
+          <span>ADJUST ADVANCE AMOUNT</span>
+          <span style="color: var(--wp-trust-blue); font-weight: 700;">₹10k — ₹{{ loan_amount }}</span>
+        </div>
+        <input type="range" id="loan-slider" min="10000" max="{{ loan_amount }}" value="{{ loan_amount }}" step="1000">
+        <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:var(--wp-text-muted);">
+          <span>Min: ₹10,000</span>
+          <span>Max: ₹{{ loan_amount }}</span>
         </div>
       </div>
 
-      <form action="{% url 'accept_loan' session_id=session_id %}" method="POST" id="loan-form" style="margin-top: 40px;">
+      <form action="{% url 'accept_loan' session_id=session_id %}" method="POST" id="loan-form">
         {% csrf_token %}
-        <label class="custom-checkbox-wrapper" style="margin-bottom: 32px;">
+        <label class="custom-checkbox-wrapper">
           <input type="checkbox" class="custom-checkbox-input" id="loan-affidavit" required>
-          <div class="custom-checkbox-box"></div>
           <div class="custom-checkbox-text">
-            I authorise SwiftCredit NBFC to disburse <span id="auth-amount-text">₹{{ loan_amount }}</span> to my registered bank account and automatically recover it upon claim release.
+            I authorise SwiftCredit NBFC to disburse <span id="auth-amount-text" style="font-weight: 600; color: var(--wp-ink-navy);">₹{{ loan_amount }}</span> to my registered bank account and automatically recover it upon final claim release.
           </div>
         </label>
 
-        <button type="submit" class="premium-cta-btn btn-full" id="loan-btn">
-          <span>ACCEPT & RECEIVE <span id="btn-amount-text" style="display:inline-block; margin-left:4px;">₹{{ loan_amount }}</span></span>
-          <div class="arrow-circle">
-            <svg class="arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
-          </div>
+        <button type="submit" class="btn-accept-loan" id="loan-btn">
+          <span>ACCEPT &amp; RECEIVE <span id="btn-amount-text">₹{{ loan_amount }}</span></span>
+          <i class="ph ph-arrow-right"></i>
         </button>
       </form>
     </div>
+
   </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const affidavit = document.getElementById('loan-affidavit');
-  const btn = document.getElementById('loan-btn');
   const slider = document.getElementById('loan-slider');
   const displayAmount = document.getElementById('display-loan-amount');
   const btnAmountText = document.getElementById('btn-amount-text');
   const authAmountText = document.getElementById('auth-amount-text');
 
-
-
-  slider.addEventListener('input', function() {
-    const val = parseInt(this.value).toLocaleString('en-IN');
-    if (displayAmount) displayAmount.textContent = '₹' + val;
-    if (btnAmountText) btnAmountText.textContent = '₹' + val;
-    if (authAmountText) authAmountText.textContent = '₹' + val;
-  });
+  if (slider) {
+    slider.addEventListener('input', function() {
+      const val = parseInt(this.value).toLocaleString('en-IN');
+      if (displayAmount) displayAmount.textContent = '₹' + val;
+      if (btnAmountText) btnAmountText.textContent = '₹' + val;
+      if (authAmountText) authAmountText.textContent = '₹' + val;
+    });
+  }
 });
 </script>
 {% endblock %}

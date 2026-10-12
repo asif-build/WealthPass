@@ -1,85 +1,150 @@
 {% extends 'core/base.html' %}
+{% block title %}Advance Disbursed - WealthPass{% endblock %}
 
 {% block extra_css %}
 <style>
-.success-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--black);
-  padding: 120px 24px;
-  text-align: center;
-}
-.success-container {
-  width: 100%;
-  max-width: 640px;
-}
+  .success-page {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--wp-mist);
+    padding: 64px 20px 96px;
+  }
 
-/* Gold line draw animation */
-.gold-draw-line {
-  width: 0;
-  height: 1px;
-  background: var(--gold);
-  margin: 0 auto 80px;
-  animation: drawLine 1s var(--ease) forwards;
-}
-@keyframes drawLine {
-  from { width: 0; }
-  to { width: 100%; }
-}
+  .success-container {
+    width: 100%;
+    max-width: 620px;
+    background: var(--wp-surface-white);
+    border: 1px solid var(--wp-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+    padding: 48px;
+    text-align: center;
+    box-sizing: border-box;
+  }
 
-.success-content {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 0.6s var(--ease) 1s forwards;
-}
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
-}
+  .success-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--wp-success);
+    background: var(--wp-success-light);
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 24px;
+  }
 
-.detail-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 0;
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-}
-.detail-row:last-of-type { border-bottom: none; }
-.detail-label {
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--white-faint);
-}
-.detail-value {
-  font-family: var(--font-sans);
-  font-weight: 300;
-  font-size: 14px;
-  color: var(--white-muted);
-}
+  .transfer-amount-hero {
+    font-size: 64px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--wp-trust-blue);
+    line-height: 1.1;
+    margin: 0 0 12px;
+  }
 
-/* Claim Tracker */
-.tracker-row {
-  border-bottom: 1px solid var(--border);
-  padding: 20px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-align: left;
-  position: relative;
-}
-.tracker-progress {
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  height: 1px;
-  background: var(--gold);
-  opacity: 0.4;
-}
+  .transfer-desc {
+    font-size: 15px;
+    color: var(--wp-text-muted);
+    margin: 0 0 36px;
+  }
+
+  .detail-table {
+    border: 1px solid var(--wp-border-subtle);
+    border-radius: var(--radius-input);
+    overflow: hidden;
+    margin-bottom: 36px;
+    text-align: left;
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    background: var(--wp-surface-white);
+    border-bottom: 1px solid var(--wp-border-subtle);
+  }
+  .detail-row:nth-child(even) {
+    background: var(--wp-mist);
+  }
+  .detail-row:last-child {
+    border-bottom: none;
+  }
+
+  .detail-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--wp-text-muted);
+  }
+
+  .detail-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--wp-ink-navy);
+  }
+
+  /* Active Claims Tracker */
+  .tracker-box {
+    text-align: left;
+    margin-top: 36px;
+  }
+
+  .tracker-box-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--wp-text-muted);
+    margin-bottom: 16px;
+  }
+
+  .tracker-row {
+    background: var(--wp-mist);
+    border: 1px solid var(--wp-border-subtle);
+    border-radius: var(--radius-input);
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tracker-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: var(--wp-trust-blue);
+    border-radius: var(--radius-pill);
+  }
+
+  .quote-box {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--wp-border);
+    font-size: 14px;
+    color: var(--wp-text-muted);
+    font-style: italic;
+  }
+
+  @media (max-width: 600px) {
+    .success-container {
+      padding: 32px 20px;
+    }
+    .transfer-amount-hero {
+      font-size: 48px;
+    }
+  }
 </style>
 {% endblock %}
 
@@ -87,70 +152,65 @@
 <div class="success-page">
   <div class="success-container">
 
-    <div class="gold-draw-line"></div>
+    <div class="success-badge">
+      <i class="ph ph-check-circle"></i>
+      <span>TRANSFER AUTHORIZED</span>
+    </div>
 
-    <div class="success-content">
-      <div class="label" style="color: var(--gold); letter-spacing: 0.22em; margin-bottom: 32px;">TRANSFER COMPLETE</div>
+    <h1 class="transfer-amount-hero">₹{{ loan_amount }}</h1>
+    <p class="transfer-desc">
+      Disbursing to verified bank account ending <strong>****{{ account_last4 }}</strong>
+    </p>
 
-      <h1 class="animate-words" style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 80px; color: var(--white); line-height: 1; margin-bottom: 24px;">
-        ₹{{ loan_amount }}
-      </h1>
+    <!-- Transfer Details Table -->
+    <div class="detail-table">
+      <div class="detail-row">
+        <span class="detail-label">TRANSACTION REFERENCE</span>
+        <span class="detail-value" style="font-family: monospace;">{{ reference_no }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">DISBURSING PARTNER</span>
+        <span class="detail-value">SwiftCredit NBFC</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">SETTLEMENT TIMELINE</span>
+        <span class="detail-value" style="color: var(--wp-success);">Within 2 Hours via IMPS</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">REPAYMENT TERMS</span>
+        <span class="detail-value">Automatic upon institutional claim release</span>
+      </div>
+    </div>
 
-      <p class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); margin-bottom: 48px;">
-        Transferred to account ending ****{{ account_last4 }}
-      </p>
+    <!-- Active Claims Tracker -->
+    <div class="tracker-box">
+      <div class="tracker-box-label">YOUR ACTIVE INSTITUTIONAL CLAIMS</div>
 
-      <div class="gold-rule center"></div>
-
-      <!-- Transfer Details -->
-      <div style="margin: 48px 0;">
-        <div class="detail-row">
-          <div class="detail-label">REFERENCE</div>
-          <div class="detail-value">{{ reference_no }}</div>
+      <div class="tracker-row">
+        <div>
+          <div style="font-size: 15px; font-weight: 600; color: var(--wp-ink-navy);">LIC Insurance Policy</div>
+          <div style="font-size: 12px; color: var(--wp-text-muted); margin-top: 2px;">₹5,00,000 &bull; Claim Form Packet Submitted</div>
         </div>
-        <div class="detail-row">
-          <div class="detail-label">PARTNER</div>
-          <div class="detail-value">SwiftCredit NBFC</div>
-        </div>
-        <div class="detail-row">
-          <div class="detail-label">EXPECTED</div>
-          <div class="detail-value">Within 2 hours</div>
-        </div>
-        <div class="detail-row">
-          <div class="detail-label">REPAYMENT</div>
-          <div class="detail-value">Automatic on claim release</div>
-        </div>
+        <span style="font-size: 11px; font-weight: 700; color: var(--wp-trust-blue); background: var(--wp-trust-blue-light); padding: 4px 10px; border-radius: var(--radius-pill);">
+          IN PROGRESS
+        </span>
+        <div class="tracker-progress-bar" style="width: 45%;"></div>
       </div>
 
-      <!-- Claim Tracker -->
-      <div style="margin-top: 64px; text-align: left;">
-        <div class="label" style="margin-bottom: 32px;">YOUR ACTIVE CLAIMS</div>
-
-        <div class="tracker-row">
-          <div>
-            <div class="animate-words" style="font-family: var(--font-serif); font-weight: 500; font-size: 20px; color: var(--white);">LIC Insurance</div>
-            <div class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 13px; color: var(--white-faint); margin-top: 4px;">₹5,00,000 · Policy Form Submitted</div>
-          </div>
-          <div class="badge badge-verified">IN PROGRESS</div>
-          <div class="tracker-progress" style="width: 45%;"></div>
+      <div class="tracker-row">
+        <div>
+          <div style="font-size: 15px; font-weight: 600; color: var(--wp-ink-navy);">State Bank of India</div>
+          <div style="font-size: 12px; color: var(--wp-text-muted); margin-top: 2px;">₹1,42,000 &bull; Branch Processing</div>
         </div>
-
-        <div class="tracker-row">
-          <div>
-            <div class="animate-words" style="font-family: var(--font-serif); font-weight: 500; font-size: 20px; color: var(--white);">State Bank of India</div>
-            <div class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 13px; color: var(--white-faint); margin-top: 4px;">₹1,42,000 · NOC Collection Pending</div>
-          </div>
-          <div class="badge badge-warning">ACTION NEEDED</div>
-          <div class="tracker-progress" style="width: 20%;"></div>
-        </div>
+        <span style="font-size: 11px; font-weight: 700; color: var(--wp-warning); background: var(--wp-warning-light); padding: 4px 10px; border-radius: var(--radius-pill);">
+          PROCESSING
+        </span>
+        <div class="tracker-progress-bar" style="width: 25%;"></div>
       </div>
+    </div>
 
-      <!-- Final line -->
-      <div style="margin-top: 80px; padding-top: 48px; border-top: 1px solid var(--border);">
-        <p style="font-family: var(--font-serif); font-weight: 400; font-style: italic; font-size: 24px; color: var(--white-faint); line-height: 1.6;">
-          "Because your family deserves<br>every rupee that is rightfully theirs."
-        </p>
-      </div>
+    <div class="quote-box">
+      &ldquo;WealthPass ensures your family receives every rupee that is rightfully theirs.&rdquo;
     </div>
 
   </div>

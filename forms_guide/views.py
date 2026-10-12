@@ -165,6 +165,7 @@ def energy_benchmark_view(request):
     Green AI Energy Benchmark Dashboard.
     Visualizes honest MEASURED latency & payload savings vs ESTIMATED cloud inference baselines.
     """
+    from claims.models import DiscoveredAsset
     telemetry_logs = EnergyTelemetry.objects.all().order_by('-timestamp')[:50]
     aggregates = EnergyTelemetry.objects.aggregate(
         total_queries=Count('id'),
@@ -174,6 +175,14 @@ def energy_benchmark_view(request):
         total_energy_saved_j=Sum('baseline_energy_j') - Sum('optimized_energy_j') if EnergyTelemetry.objects.exists() else 0.0
     )
 
+    asset_breakdown = list(
+        DiscoveredAsset.objects.values('institution').annotate(
+            count=Count('id'), total_val=Sum('amount')
+        ).order_by('-count')
+    )
+    total_assets_count = DiscoveredAsset.objects.count()
+    total_assets_val = float(DiscoveredAsset.objects.aggregate(total=Sum('amount'))['total'] or 0)
+
     context = {
         'total_queries': aggregates['total_queries'] or 0,
         'avg_latency': round(aggregates['avg_latency'] or 12.4, 2),
@@ -181,6 +190,9 @@ def energy_benchmark_view(request):
         'total_co2_g': round((aggregates['total_co2_mg'] or 0) / 1000.0, 3),
         'total_energy_saved_kj': round((aggregates['total_energy_saved_j'] or 0) / 1000.0, 3),
         'logs': telemetry_logs,
+        'asset_breakdown': asset_breakdown,
+        'total_assets_count': total_assets_count,
+        'total_assets_val': total_assets_val,
     }
     return render(request, 'forms_guide/energy_benchmark.html', context)
 

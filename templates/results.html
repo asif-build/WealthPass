@@ -1,322 +1,537 @@
 {% extends 'core/base.html' %}
+{% block title %}Discovered Assets Dossier - {{ deceased_name }} - WealthPass{% endblock %}
 
 {% block extra_css %}
 <style>
-.results-page {
-  background: radial-gradient(circle at top center, var(--black-soft) 0%, var(--black) 100%);
-  min-height: 100vh;
-}
-.results-header {
-  padding: 160px 0 100px;
-  border-bottom: 1px solid var(--border-soft);
-  text-align: center;
-}
-.total-block {
-  text-align: center;
-  padding: 140px 0;
-  border-bottom: 1px solid var(--border-soft);
-  background: linear-gradient(to bottom, transparent, rgba(5, 150, 105, 0.03) 50%, transparent);
-}
-.total-label {
-  font-family: var(--font-sans);
-  font-weight: 400;
-  font-size: 12px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--gold-light);
-  margin-bottom: 32px;
-}
-.total-num {
-  font-family: var(--font-serif);
-  font-weight: 300;
-  font-size: 140px;
-  color: var(--gold);
-  line-height: 1;
-  display: block;
-  text-shadow: 0 4px 64px rgba(5, 150, 105, 0.2);
-}
-.asset-card {
-  border-bottom: 1px solid var(--border-soft);
-  padding: 80px 0;
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 80px;
-  align-items: center;
-  transition: var(--slow);
-  position: relative;
-}
-.asset-card::before {
-  content: '';
-  position: absolute;
-  left: -20px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--gold);
-  opacity: 0;
-  transition: var(--slow);
-}
-.asset-card:hover {
-  background: linear-gradient(90deg, rgba(5, 150, 105, 0.04) 0%, transparent 50%);
-}
-.asset-card:hover::before {
-  opacity: 1;
-}
+  .results-page {
+    background-color: var(--wp-mist);
+    min-height: calc(100vh - 72px);
+    padding-bottom: 96px;
+  }
 
-.asset-right { text-align: right; }
-.asset-amount {
-  font-family: var(--font-serif);
-  font-weight: 300;
-  font-size: 72px;
-  color: var(--white);
-  line-height: 1;
-  margin: 24px 0;
-}
+  .results-hero {
+    background: var(--wp-surface-white);
+    border-bottom: 1px solid var(--wp-border);
+    padding: 64px 0 48px;
+  }
 
-.doc-list { margin-top: 32px; }
-.doc-item {
-  font-family: var(--font-sans);
-  font-weight: 400;
-  font-size: 13px;
-  color: var(--white-muted);
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border-soft);
-  letter-spacing: 0.02em;
-}
-.doc-item:last-child { border-bottom: none; }
+  .results-header-tag {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--wp-trust-blue);
+    background: var(--wp-trust-blue-light);
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    display: inline-block;
+    margin-bottom: 16px;
+  }
 
-.next-steps { margin-top: 32px; }
-.next-step {
-  display: flex;
-  gap: 24px;
-  padding: 12px 0;
-  align-items: flex-start;
-}
-.step-num-small {
-  font-family: var(--font-serif);
-  font-weight: 300;
-  font-size: 20px;
-  color: var(--gold-dark);
-  flex-shrink: 0;
-  min-width: 24px;
-}
+  .results-hero-title {
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--wp-ink-navy);
+    margin: 0 0 12px;
+  }
 
-.action-btns { display: flex; flex-direction: column; gap: 16px; margin-top: 40px; align-items: flex-end; }
+  .results-claimant-info {
+    font-size: 15px;
+    color: var(--wp-text-muted);
+    margin: 0;
+  }
+  .results-claimant-info strong {
+    color: var(--wp-ink-navy);
+  }
 
-.loan-banner {
-  border: 1px solid var(--border-gold);
-  background: rgba(5, 150, 105, 0.02);
-  padding: 100px 80px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 120px 0;
-}
-.loan-amount-big {
-  font-family: var(--font-serif);
-  font-weight: 300;
-  font-size: 96px;
-  color: var(--white);
-  line-height: 1;
-}
+  /* Total Valuation Card */
+  .valuation-card {
+    background: var(--wp-surface-white);
+    border: 1px solid var(--wp-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+    padding: 40px;
+    text-align: center;
+    margin: 36px 0;
+  }
 
-@media (max-width: 1024px) {
-  .asset-card { grid-template-columns: 1fr; gap: 40px; text-align: center; }
-  .asset-right { text-align: center; }
-  .action-btns { align-items: center; }
-  .loan-banner { flex-direction: column; gap: 48px; text-align: center; padding: 60px 40px; }
-}
+  .valuation-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--wp-text-muted);
+    margin-bottom: 12px;
+  }
+
+  .total-num {
+    font-size: 72px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--wp-trust-blue);
+    line-height: 1.1;
+    display: block;
+  }
+
+  .valuation-subtitle {
+    font-size: 15px;
+    color: var(--wp-text-muted);
+    margin-top: 14px;
+  }
+
+  /* Roadmap Section */
+  .roadmap-card {
+    background: var(--wp-surface-white);
+    border: 1px solid var(--wp-border);
+    border-radius: var(--radius-card);
+    padding: 40px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 40px;
+  }
+
+  .roadmap-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--wp-border);
+    margin-bottom: 32px;
+  }
+
+  .roadmap-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--wp-ink-navy);
+    margin: 0;
+  }
+
+  .roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .roadmap-step {
+    background: var(--wp-mist);
+    border: 1px solid var(--wp-border-subtle);
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  .step-num-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--wp-trust-blue);
+    margin-bottom: 8px;
+  }
+
+  .roadmap-step h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--wp-ink-navy);
+    margin: 0 0 6px;
+  }
+
+  .roadmap-step p {
+    font-size: 13px;
+    color: var(--wp-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Asset Cards */
+  .asset-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .asset-card {
+    background: var(--wp-surface-white);
+    border: 1px solid var(--wp-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+    padding: 36px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 36px;
+    align-items: start;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .asset-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 12px;
+  }
+
+  .tag-green {
+    background: var(--wp-success-light);
+    color: var(--wp-success);
+    border: 1px solid rgba(19, 138, 91, 0.2);
+  }
+
+  .tag-amber {
+    background: var(--wp-warning-light);
+    color: var(--wp-warning);
+    border: 1px solid rgba(178, 106, 0, 0.2);
+  }
+
+  .tag-default {
+    background: var(--wp-mist);
+    color: var(--wp-text-muted);
+    border: 1px solid var(--wp-border);
+  }
+
+  .asset-inst-name {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--wp-ink-navy);
+    margin: 0 0 10px;
+  }
+
+  .asset-message {
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--wp-text-muted);
+    margin: 0 0 24px;
+  }
+
+  .meta-sub-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--wp-text-muted);
+    margin-bottom: 10px;
+  }
+
+  .doc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .doc-item {
+    font-size: 13px;
+    color: var(--wp-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .doc-item i {
+    color: var(--wp-trust-blue);
+    font-size: 15px;
+  }
+
+  .protocol-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .protocol-step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--wp-text-primary);
+  }
+
+  .protocol-num {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--wp-trust-blue);
+    flex-shrink: 0;
+  }
+
+  /* Right column of card */
+  .asset-right-col {
+    background: var(--wp-mist);
+    border: 1px solid var(--wp-border-subtle);
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .asset-amount-val {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--wp-ink-navy);
+    margin: 16px 0;
+  }
+
+  .asset-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  /* Bridge Loan Banner */
+  .bridge-banner {
+    background: linear-gradient(135deg, #0D1B3D 0%, #14285A 100%);
+    color: var(--wp-surface-white);
+    border-radius: var(--radius-card);
+    padding: 48px;
+    margin-top: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    box-shadow: 0 16px 40px rgba(13, 27, 61, 0.15);
+  }
+
+  .bridge-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--wp-warm-accent);
+    margin-bottom: 8px;
+  }
+
+  .bridge-amount {
+    font-size: 54px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--wp-surface-white);
+    margin: 0 0 8px;
+  }
+
+  .bridge-desc {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+    max-width: 480px;
+  }
+
+  @media (max-width: 992px) {
+    .asset-card {
+      grid-template-columns: 1fr;
+      padding: 24px;
+    }
+    .total-num {
+      font-size: 52px;
+    }
+    .bridge-banner {
+      padding: 32px 24px;
+      flex-direction: column;
+      text-align: center;
+    }
+    .bridge-desc {
+      max-width: 100%;
+    }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="results-page">
-  <!-- HEADER -->
-  <section class="results-header scroll-reveal">
-    <div class="container">
-      <div class="label" style="color: var(--gold); margin-bottom: 24px; letter-spacing: 0.25em;">ASSETS DISCOVERED</div>
-      <h1 class="hero-h1 animate-words" style="font-size: 72px; letter-spacing: 0.05em;">{{ deceased_name }}</h1>
-      <p class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted); margin-top: 24px; letter-spacing: 0.1em; text-transform: uppercase;">
-        Claimant: <span style="color: var(--white);">{{ claimant_name }}</span> &mdash; {{ relation }}
+  <!-- HERO HEADER -->
+  <header class="results-hero">
+    <div class="wp-container">
+      <div class="results-header-tag">VERIFIED FINANCIAL DISCOVERY DOSSIER</div>
+      <h1 class="results-hero-title">{{ deceased_name }}</h1>
+      <p class="results-claimant-info">
+        Authorized Claimant: <strong>{{ claimant_name }}</strong> &bull; Relationship: <strong>{{ relation }}</strong>
       </p>
-      <div class="gold-rule center"></div>
     </div>
-  </section>
+  </header>
 
-  <!-- TOTAL -->
-  <section class="total-block scroll-reveal" style="transition-delay: 0.1s;">
-    <div class="total-label">VERIFIED FINANCIAL DISCOVERY</div>
-    {% if total_assets > 0 %}
-    <span class="total-num" id="total-counter">₹{{ total_assets|floatformat:0 }}</span>
-    {% else %}
-    <span class="total-num" style="font-size: 54px; line-height: 1.2; letter-spacing: 0.04em;">{{ classified_assets|length }} ACCOUNTS VERIFIED</span>
-    <div style="font-family: var(--font-sans); font-size: 13px; color: var(--gold); margin-top: 16px; letter-spacing: 0.2em; text-transform: uppercase;">
-      VALUATION PENDING SERVICING BRANCH CLEARANCE
-    </div>
-    {% endif %}
-    <div class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--white-muted); margin-top: 20px; letter-spacing: 0.08em; text-transform: uppercase;">
-      Secured across {{ classified_assets|length }} institution{{ classified_assets|length|pluralize }} &mdash; Official Statutory Claim Dossier Ready
-    </div>
-  </section>
-
-  <!-- ACTIONABLE RECOVERY ROADMAP -->
-  <section class="container" style="padding-top: 60px; padding-bottom: 20px;">
-    <div style="background: rgba(18, 18, 18, 0.95); border: 1px solid var(--border-gold); border-radius: 24px; padding: 48px; position: relative; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; margin-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 24px;">
-        <div>
-          <span style="color: var(--gold); font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 8px;">Actionable Recovery Guide</span>
-          <h2 style="font-family: var(--font-serif); font-size: 36px; color: #fff; margin: 0;">What You Must Do Next To Claim These Assets</h2>
+  <div class="wp-container">
+    <!-- TOTAL VALUATION CARD -->
+    <div class="valuation-card">
+      <div class="valuation-label">AGGREGATED RECOVERABLE VALUE</div>
+      {% if total_assets > 0 %}
+        <span class="total-num" id="total-counter">₹{{ total_assets|floatformat:0 }}</span>
+      {% else %}
+        <span class="total-num" style="font-size: 42px;">{{ classified_assets|length }} Accounts Identified</span>
+        <div style="font-size: 13px; color: var(--wp-warning); font-weight: 600; margin-top: 8px;">
+          Valuation pending servicing branch clearance
         </div>
-        <a href="{% url 'online_claim_form' session_id=session_id %}" class="premium-cta-btn" style="padding: 10px 24px; font-size: 12px; height: 48px;">
-          <span>FILE ALL CLAIMS ONLINE &rarr;</span>
+      {% endif %}
+      <div class="valuation-subtitle">
+        Secured across <strong>{{ classified_assets|length }} institution{{ classified_assets|length|pluralize }}</strong> &bull; Official <strong>RBI Annexure Packets (Annex I-A to I-H)</strong> Ready
+      </div>
+    </div>
+
+    <!-- ACTIONABLE RECOVERY ROADMAP -->
+    <section class="roadmap-card">
+      <div class="roadmap-header">
+        <div>
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wp-trust-blue); margin-bottom: 4px;">STATUTORY RECOVERY ROADMAP</div>
+          <h2 class="roadmap-title">What You Must Do Next To Claim These Assets</h2>
+        </div>
+        <a href="{% url 'online_claim_form' session_id=session_id %}" class="wp-btn wp-btn-primary" style="min-height: 44px;">
+          <span>File All Claims Online (Zero Upfront Fee)</span>
+          <i class="ph ph-arrow-right"></i>
         </a>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;">
-        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px;">
-          <div style="font-family: var(--font-serif); font-size: 26px; color: var(--gold); margin-bottom: 10px;">Step 01</div>
-          <h3 style="font-size: 15px; color: #fff; margin-bottom: 8px; font-weight: 500;">Download & Print Packet</h3>
-          <p style="font-size: 13px; color: var(--white-muted); line-height: 1.6; margin: 0;">
-            Download your pre-filled dossier containing <strong>Bank Form 14</strong> and official UDGAM reference code.
-          </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-step">
+          <span class="step-num-badge">STEP 01</span>
+          <h4>Download Dossier</h4>
+          <p>Get pre-filled packets containing <strong>RBI Annexures</strong>, <strong>Bank Form 14</strong>, and verified codes.</p>
         </div>
 
-        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px;">
-          <div style="font-family: var(--font-serif); font-size: 26px; color: var(--gold); margin-bottom: 10px;">Step 02</div>
-          <h3 style="font-size: 15px; color: #fff; margin-bottom: 8px; font-weight: 500;">Attach Statutory KYC</h3>
-          <p style="font-size: 13px; color: var(--white-muted); line-height: 1.6; margin: 0;">
-            Attach certified Death Certificate extract, your Aadhaar/PAN, Cancelled Cheque, and Legal Heir Affidavit.
-          </p>
+        <div class="roadmap-step">
+          <span class="step-num-badge">STEP 02</span>
+          <h4>Attach KYC</h4>
+          <p>Attach certified <strong>Death Certificate</strong>, claimant <strong>Aadhaar/PAN</strong> and cancelled cheque.</p>
         </div>
 
-        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px;">
-          <div style="font-family: var(--font-serif); font-size: 26px; color: var(--gold); margin-bottom: 10px;">Step 03</div>
-          <h3 style="font-size: 15px; color: #fff; margin-bottom: 8px; font-weight: 500;">Submit to Branch Desk</h3>
-          <p style="font-size: 13px; color: var(--white-muted); line-height: 1.6; margin: 0;">
-            Submit the physical dossier to the bank's Branch Manager quoting your verified Account Aggregator references.
-          </p>
+        <div class="roadmap-step">
+          <span class="step-num-badge">STEP 03</span>
+          <h4>Submit to Branch</h4>
+          <p>Submit dossier to the designated branch manager with statutory <strong>WealthPass Tracking ID</strong>.</p>
         </div>
 
-        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px;">
-          <div style="font-family: var(--font-serif); font-size: 26px; color: var(--gold); margin-bottom: 10px;">Step 04</div>
-          <h3 style="font-size: 15px; color: #fff; margin-bottom: 8px; font-weight: 500;">Direct Settlement</h3>
-          <p style="font-size: 13px; color: var(--white-muted); line-height: 1.6; margin: 0;">
-            Under RBI guidelines, the bank settles the funds via direct RTGS/NEFT to your active account within 15–30 days.
-          </p>
+        <div class="roadmap-step">
+          <span class="step-num-badge">STEP 04</span>
+          <h4>Direct Settlement</h4>
+          <p>Under <strong>RBI Master Directions 2025</strong>, the bank settles funds via <strong>NEFT/RTGS</strong> within <strong>15–30 days</strong>.</p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ASSET CARDS -->
-  <div class="container" style="padding-top: 40px;">
-    {% for asset in classified_assets %}
-    <div class="asset-card scroll-reveal" style="transition-delay: 0.2s;">
-      <!-- LEFT -->
-      <div>
-        <div class="label" style="color: var(--gold); margin-bottom: 16px;">
-          {% if asset.color == 'green' %}CLEAR NOMINEE TITLE
-          {% elif asset.color == 'amber' %}LEGAL HEIR PRIORITY
-          {% else %}REQUIRES REVIEW{% endif %}
-        </div>
-        <h2 class="animate-words" style="font-family: var(--font-serif); font-weight: 400; font-size: 44px; color: var(--white); margin-bottom: 8px;">{{ asset.institution }}</h2>
-        <div class="gold-rule"></div>
-        <p class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); line-height: 1.8; max-width: 520px; margin-bottom: 40px;">
-          {{ asset.message }}
-        </p>
+    <!-- DISCOVERED ASSET CARDS -->
+    <div class="asset-list">
+      {% for asset in classified_assets %}
+      <article class="asset-card">
+        <!-- LEFT: Details -->
+        <div>
+          <span class="status-tag {% if asset.color == 'green' %}tag-green{% elif asset.color == 'amber' %}tag-amber{% else %}tag-default{% endif %}">
+            <i class="ph ph-shield-check"></i>
+            {% if asset.color == 'green' %}Clear Nominee Title
+            {% elif asset.color == 'amber' %}Legal Heir Priority
+            {% else %}Requires Review{% endif %}
+          </span>
 
-        <!-- DOCUMENTS -->
-        <div class="label" style="margin-bottom: 16px; color: var(--white-faint);">REQUIRED DOCUMENTATION</div>
-        <div class="doc-list">
-          {% for doc in asset.documents_needed %}
-          <div class="doc-item">&mdash; {{ doc }}</div>
-          {% endfor %}
-        </div>
+          <h2 class="asset-inst-name">{{ asset.institution }}</h2>
+          <p class="asset-message">{{ asset.message }}</p>
 
-        <!-- NEXT STEPS -->
-        <div class="label" style="margin-top: 48px; margin-bottom: 16px; color: var(--white-faint);">PROTOCOL FOR RECOVERY</div>
-        <div class="next-steps">
-          {% for step in asset.next_steps %}
-          <div class="next-step">
-            <div class="step-num-small">0{{ forloop.counter }}</div>
-            <div style="font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted);">{{ step }}</div>
+          <div class="meta-sub-header">Required Documentation</div>
+          <div class="doc-list">
+            {% for doc in asset.documents_needed %}
+            <div class="doc-item">
+              <i class="ph ph-check-circle"></i>
+              <span>{{ doc }}</span>
+            </div>
+            {% endfor %}
           </div>
-          {% endfor %}
-        </div>
 
-        <div style="margin-top: 40px; font-family: var(--font-sans); font-weight: 400; font-size: 12px; letter-spacing: 0.1em; color: var(--white-faint); text-transform: uppercase;">
-          Estimated Timeline: <span style="color: var(--white);">{{ asset.time_estimate }}</span>
-        </div>
-        {% if asset.loan_amount %}
-        <div style="font-family: var(--font-sans); font-weight: 400; font-size: 12px; letter-spacing: 0.1em; color: var(--gold); margin-top: 12px; text-transform: uppercase;">
-          &#10003; ₹{{ asset.loan_amount }} Liquidity advance accessible
-        </div>
-        {% endif %}
-      </div>
+          <div class="meta-sub-header">Recovery Protocol</div>
+          <div class="protocol-steps">
+            {% for step in asset.next_steps %}
+            <div class="protocol-step-item">
+              <span class="protocol-num">0{{ forloop.counter }}</span>
+              <span>{{ step }}</span>
+            </div>
+            {% endfor %}
+          </div>
 
-      <!-- RIGHT -->
-      <div class="asset-right">
-        <div class="badge {% if asset.color == 'green' %}badge-verified{% elif asset.color == 'amber' %}badge-warning{% else %}badge-danger{% endif %}" style="letter-spacing: 0.2em; padding: 10px 24px;">
-          {% if asset.color == 'green' %}VERIFIED STATUS{% elif asset.color == 'amber' %}ACTION REQUIRED{% else %}UNDER REVIEW{% endif %}
-        </div>
-        <div class="asset-amount">
-          {% if asset.amount > 0 and not asset.is_amount_undisclosed %}
-            ₹{{ asset.amount }}
-          {% else %}
-            <span style="font-size: 28px; color: var(--gold-light); display: block; line-height: 1.3;">Valuation Pending Branch Verification</span>
+          <div style="font-size: 12px; color: var(--wp-text-muted); margin-top: 20px;">
+            Estimated Settlement Timeline: <strong style="color: var(--wp-ink-navy);">{{ asset.time_estimate }}</strong>
+          </div>
+          {% if asset.loan_amount %}
+          <div style="font-size: 13px; color: var(--wp-success); font-weight: 600; margin-top: 8px;">
+            ✓ ₹{{ asset.loan_amount }} Liquidity advance eligible
+          </div>
           {% endif %}
         </div>
-        <div class="action-btns">
-          <a href="{% url 'claim_copilot_workspace' session_id=session_id %}?asset_id={{ asset.id }}" class="premium-cta-btn" style="width: 260px;">
-            <span>PREPARE MY CLAIM</span>
-            <div class="arrow-circle">
-              <svg class="arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
+
+        <!-- RIGHT: Valuation & Actions -->
+        <div class="asset-right-col">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wp-text-muted);">
+              Asset Valuation
             </div>
-          </a>
-          <a href="{% url 'online_claim_form' session_id=session_id %}" class="btn-secondary" style="width: 260px; text-align:center; display:flex; justify-content:center; align-items:center;">DIRECT DIGITAL FILING</a>
-          <a href="{% url 'print_forms' session_id=session_id %}" target="_blank" class="btn-secondary" style="width: 260px; text-align:center; display:flex; justify-content:center; align-items:center;">DOWNLOAD FORM 14</a>
+            <div class="asset-amount-val">
+              {% if asset.amount > 0 and not asset.is_amount_undisclosed %}
+                ₹{{ asset.amount }}
+              {% else %}
+                <span style="font-size: 20px; color: var(--wp-text-muted); display: block; line-height: 1.3;">Pending Branch Clearance</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="asset-actions">
+            <a href="{% url 'claim_copilot_workspace' session_id=session_id %}?asset_id={{ asset.id }}" class="wp-btn wp-btn-primary" style="width: 100%;">
+              <span>Prepare My Claim</span>
+              <i class="ph ph-arrow-right"></i>
+            </a>
+            <a href="{% url 'online_claim_form' session_id=session_id %}" class="wp-btn wp-btn-secondary" style="width: 100%;">
+              Direct Digital Filing
+            </a>
+            <a href="{% url 'print_forms' session_id=session_id %}" target="_blank" class="wp-btn wp-btn-ghost" style="width: 100%;">
+              Download Claim Packet
+            </a>
+          </div>
         </div>
-      </div>
+      </article>
+      {% endfor %}
     </div>
-    {% endfor %}
 
     {% if not classified_assets %}
-    <!-- STATUTORY REGISTRIES DISCOVERY DOSSIER -->
-    <div style="padding: 40px 0 80px; border-bottom: 1px solid var(--border-soft);">
-      <div class="label" style="color: var(--gold); margin-bottom: 16px; letter-spacing: 0.2em;">STATUTORY DISCOVERY CHANNELS</div>
-      <h2 style="font-family: var(--font-serif); font-size: 36px; color: var(--white); margin-bottom: 16px;">Active Statutory Registry Status</h2>
-      <p style="font-family: var(--font-sans); color: var(--white-muted); font-size: 14px; max-width: 680px; line-height: 1.7; margin-bottom: 40px;">
-        Statutory channels require individual claimant OTP or citizen authentication to prevent unauthorized disclosure of private banking data. WealthPass guides you through each statutory gateway.
+    <!-- STATUTORY CHANNELS DOSSIER -->
+    <div class="roadmap-card" style="margin-top: 40px;">
+      <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wp-trust-blue); margin-bottom: 8px;">STATUTORY REGISTRIES</div>
+      <h2 style="font-size: 24px; font-weight: 700; color: var(--wp-ink-navy); margin: 0 0 12px;">Active Statutory Registry Status</h2>
+      <p style="font-size: 14px; color: var(--wp-text-muted); max-width: 680px; line-height: 1.6; margin: 0 0 28px;">
+        Statutory gateways require individual claimant authentication to protect privacy. WealthPass assists you across each portal.
       </p>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 32px;">
         {% for job in source_jobs %}
-        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-soft); padding: 24px; border-radius: 12px;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-            <span style="font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.1em; color: var(--gold); text-transform: uppercase;">{{ job.asset_category }}</span>
-            <span style="font-size: 10px; padding: 3px 8px; border-radius: 4px; background: rgba(255,255,255,0.08); color: var(--white); font-weight: 500;">{{ job.status }}</span>
+        <div style="background: var(--wp-mist); border: 1px solid var(--wp-border); padding: 20px; border-radius: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+            <span style="font-size: 11px; font-weight: 700; color: var(--wp-trust-blue); text-transform: uppercase;">{{ job.asset_category }}</span>
+            <span style="font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--wp-surface-white); color: var(--wp-ink-navy); font-weight: 600;">{{ job.status }}</span>
           </div>
-          <h3 style="font-family: var(--font-serif); font-size: 22px; color: var(--white); margin: 0 0 8px 0;">{{ job.source_id }}</h3>
+          <h3 style="font-size: 18px; font-weight: 700; color: var(--wp-ink-navy); margin: 0 0 6px;">{{ job.source_id }}</h3>
           {% if job.external_reference_number %}
-          <div style="font-size: 12px; font-family: monospace; color: var(--gold-light); margin-bottom: 10px;">Ref: {{ job.external_reference_number }}</div>
+          <div style="font-size: 12px; font-family: monospace; color: var(--wp-text-muted); margin-bottom: 8px;">Ref: {{ job.external_reference_number }}</div>
           {% endif %}
           {% if job.external_portal_url %}
-          <a href="{{ job.external_portal_url }}" target="_blank" rel="noopener noreferrer" style="font-size: 12px; color: var(--gold); text-decoration: underline;">Open Official Portal &rarr;</a>
+          <a href="{{ job.external_portal_url }}" target="_blank" rel="noopener noreferrer" style="font-size: 12px; color: var(--wp-trust-blue); font-weight: 600; text-decoration: none;">Open Official Portal &rarr;</a>
           {% endif %}
         </div>
         {% endfor %}
       </div>
 
-      <div style="text-align: center; padding: 20px 0;">
-        <a href="{% url 'print_forms' session_id=session_id %}" target="_blank" class="premium-cta-btn" style="display: inline-flex; padding: 8px 8px 8px 36px;">
-          <span>DOWNLOAD PRE-FILLED CLAIM DOSSIER</span>
-          <div class="arrow-circle" style="width: 44px; height: 44px; margin-left: 20px;">
-            <svg class="arrow-svg" style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
-          </div>
+      <div style="text-align: center;">
+        <a href="{% url 'print_forms' session_id=session_id %}" target="_blank" class="wp-btn wp-btn-primary">
+          <span>Download Pre-Filled Claim Dossier</span>
+          <i class="ph ph-file-pdf"></i>
         </a>
       </div>
     </div>
@@ -324,36 +539,34 @@
 
     {% if total_loan > 0 %}
     <!-- BRIDGE LOAN BANNER -->
-    <div class="loan-banner scroll-reveal">
+    <aside class="bridge-banner">
       <div>
-        <div class="label" style="color: var(--gold); margin-bottom: 24px; letter-spacing: 0.2em;">INSTANT LIQUIDITY ADVANCE</div>
-        <div class="loan-amount-big">₹{{ total_loan }}</div>
-        <p style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); margin-top: 24px; letter-spacing: 0.05em;">
-          Immediate capital provision while legal processing finalizes.
+        <div class="bridge-title">ESTATE SETTLEMENT LIQUIDITY ADVANCE</div>
+        <div class="bridge-amount">₹{{ total_loan }}</div>
+        <p class="bridge-desc">
+          Instant liquidity to cover estate succession fees, legal documentation, and family needs while bank settlement completes.
         </p>
       </div>
-      <a href="{% url 'loan' session_id=session_id %}" class="premium-cta-btn" style="padding: 6px 6px 6px 40px; min-height: 60px; font-size: 14px;">
-        <span>AUTHORIZE ADVANCE &mdash; 60S</span>
-        <div class="arrow-circle" style="width: 48px; height: 48px; margin-left: 20px;">
-          <svg class="arrow-svg" style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-          </svg>
-        </div>
+      <a href="{% url 'loan' session_id=session_id %}" class="wp-btn wp-btn-primary" style="background: var(--wp-warm-accent); color: var(--wp-ink-navy); font-weight: 700; border-color: var(--wp-warm-accent); min-height: 52px; padding: 0 32px;">
+        <span>Authorize Advance in 60s</span>
+        <i class="ph ph-arrow-right"></i>
       </a>
-    </div>
+    </aside>
     {% endif %}
   </div>
 </div>
 
 <script>
-// Count-up animation for total
+// Animated counter for total assets
 document.addEventListener('DOMContentLoaded', () => {
-  // Fix for JavaScript SyntaxError when dealing with formatted numbers or None values
+  const el = document.getElementById('total-counter');
+  if (!el) return;
+
   const rawTotal = "{{ total_assets|default:'0' }}".replace(/,/g, '');
   const total = parseFloat(rawTotal) || 0;
-  
-  const el = document.getElementById('total-counter');
-  const duration = 3000; // Slower, more elegant animation
+  if (total <= 0) return;
+
+  const duration = 2400;
   const start = performance.now();
 
   const observer = new IntersectionObserver((entries) => {
@@ -362,21 +575,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const animate = (now) => {
           const elapsed = now - start;
           const progress = Math.min(elapsed / duration, 1);
-          // Quicker start, slower finish easing
-          const eased = 1 - Math.pow(1 - progress, 4);
+          const eased = 1 - Math.pow(1 - progress, 3);
           const current = Math.floor(eased * total);
           el.textContent = '₹' + current.toLocaleString('en-IN');
           if(progress < 1) {
             requestAnimationFrame(animate);
           } else {
-            el.textContent = '₹' + total.toLocaleString('en-IN'); // ensure precision
+            el.textContent = '₹' + total.toLocaleString('en-IN');
           }
         };
         requestAnimationFrame(animate);
         observer.disconnect();
       }
     });
-  }, { threshold: 0.3 });
+  }, { threshold: 0.2 });
 
   observer.observe(el);
 });

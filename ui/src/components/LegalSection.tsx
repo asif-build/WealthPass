@@ -9,11 +9,11 @@ export const LegalSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const heading1 = [
-    { text: "Grounded in the trust rails India already knows.", className: "text-[#E1E0CC] font-normal" }
+    { text: "Grounded strictly in India's official regulatory frameworks.", className: "text-white font-medium" }
   ];
 
   const heading2 = [
-    { text: "The design is elevated, but the message stays familiar.", className: "text-[#b0ad9b] font-normal" }
+    { text: "RBI Master Directions 2025, IRDAI guidelines, and IEPF claim protocols.", className: "text-[#DEDBC8] font-medium" }
   ];
 
   const containerVariants = {
@@ -42,29 +42,29 @@ export const LegalSection = () => {
       tag: "RBI",
       institution: "Reserve Bank of India",
       logo: "/static/assets/institutions/rbi.svg",
-      title: "Consent-first access",
-      description: "Discovery pathways aligned with regulated banking ecosystems."
+      title: "RBI Master Directions 2025",
+      description: "Direct claim pathways aligned with Annex I-A through I-H standard banking settlement procedures."
     },
     {
       tag: "IRDAI",
-      institution: "Insurance Regulatory and Development Authority of India",
+      institution: "Insurance Regulatory & Development Authority",
       logo: "/static/assets/institutions/irdai.svg",
-      title: "Insurance-ready workflow",
-      description: "Structured around established insurance discovery and claim processes."
+      title: "Policy & Death Claim Portals",
+      description: "Structured recovery workflows across LIC and private life insurance policy settlements."
     },
     {
       tag: "IEPF",
-      institution: "Investor Education and Protection Fund Authority",
+      institution: "Investor Education & Protection Fund Authority",
       logo: "/static/assets/institutions/iepf.svg",
-      title: "Claim path precision",
-      description: "Structured around established unclaimed-asset recovery mechanisms."
+      title: "IEPF-5 Verification Dossiers",
+      description: "Statutory documentation for recovering unpaid dividends, shares, and matured debentures."
     },
     {
       tag: "UIDAI",
       institution: "Unique Identification Authority of India",
       logo: "/static/assets/institutions/uidai.svg",
-      title: "Identity confidence",
-      description: "Identity verification designed around authorized identity infrastructure."
+      title: "Aadhaar e-KYC Verification",
+      description: "Bank-grade identity clearance without storing full biometric data or plaintext credentials."
     }
   ];
 

@@ -13,6 +13,8 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
   const [testResult, setTestResult] = useState<any>(null);
   const [testLoading, setTestLoading] = useState<boolean>(false);
 
+  const [fullData, setFullData] = useState<any>(null);
+
   useEffect(() => {
     fetchBenchmark();
   }, []);
@@ -22,8 +24,11 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
     fetch("/api/documents/energy-benchmark/")
       .then(res => res.json())
       .then(data => {
-        if (data.success && data.benchmark) {
-          setBenchmark(data.benchmark);
+        if (data.success) {
+          setFullData(data);
+          if (data.benchmark) {
+            setBenchmark(data.benchmark);
+          }
         }
         setLoading(false);
       })
@@ -239,6 +244,89 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Real Dynamic Asset Distribution & Pie Chart */}
+        {fullData?.discovered_assets && (
+          <div className="rounded-2xl bg-[#121212] border border-white/10 p-6 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-2">
+              <div>
+                <h2 className="text-lg font-semibold text-white">Live Discovered Assets Distribution</h2>
+                <p className="text-xs text-white/50 mt-0.5">Real-time statutory asset matches and valuation by institution.</p>
+              </div>
+              <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 w-fit">
+                Portfolio: ₹{(fullData.discovered_assets.total_value / 100000).toFixed(2)} Lakhs
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+              {/* Donut Chart */}
+              <div className="md:col-span-5 flex flex-col items-center justify-center">
+                <div className="relative w-48 h-48">
+                  <svg viewBox="0 0 200 200" className="w-full h-full transform -rotate-90">
+                    {(() => {
+                      const items: Array<{ institution: string; count: number }> = fullData.discovered_assets.by_institution || [];
+                      const total = fullData.discovered_assets.total_count || 1;
+                      const colors = ["#34d399", "#DEDBC8", "#38bdf8", "#a78bfa", "#fbbf24"];
+                      let curAngle = 0;
+                      return items.map((it, idx) => {
+                        const frac = it.count / total;
+                        const angle = frac * 360;
+                        const start = curAngle;
+                        curAngle += angle;
+                        const sRad = ((start - 90) * Math.PI) / 180;
+                        const eRad = ((start + angle - 90) * Math.PI) / 180;
+                        const rO = 78;
+                        const rI = 48;
+                        const x1 = 100 + rO * Math.cos(sRad);
+                        const y1 = 100 + rO * Math.sin(sRad);
+                        const x2 = 100 + rO * Math.cos(eRad);
+                        const y2 = 100 + rO * Math.sin(eRad);
+                        const x3 = 100 + rI * Math.cos(eRad);
+                        const y3 = 100 + rI * Math.sin(eRad);
+                        const x4 = 100 + rI * Math.cos(sRad);
+                        const y4 = 100 + rI * Math.sin(sRad);
+                        const largeArc = angle > 180 ? 1 : 0;
+                        const path = angle >= 359.9
+                          ? `M 100 ${100 - rO} A ${rO} ${rO} 0 1 1 99.99 ${100 - rO} M 100 ${100 - rI} A ${rI} ${rI} 0 1 0 99.99 ${100 - rI} Z`
+                          : `M ${x1} ${y1} A ${rO} ${rO} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${rI} ${rI} 0 ${largeArc} 0 ${x4} ${y4} Z`;
+                        return <path key={idx} d={path} fill={colors[idx % colors.length]} />;
+                      });
+                    })()}
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <span className="text-2xl font-bold font-mono text-white leading-none">
+                      {fullData.discovered_assets.total_count}
+                    </span>
+                    <span className="text-[9px] uppercase tracking-wider text-white/50 font-mono mt-1">
+                      Matched
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Breakdown Legend */}
+              <div className="md:col-span-7 space-y-2.5">
+                {(fullData.discovered_assets.by_institution || []).map((it: any, idx: number) => {
+                  const colors = ["#34d399", "#DEDBC8", "#38bdf8", "#a78bfa", "#fbbf24"];
+                  const total = fullData.discovered_assets.total_count || 1;
+                  const pct = ((it.count / total) * 100).toFixed(1);
+                  return (
+                    <div key={idx} className="p-3 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between text-xs font-mono">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: colors[idx % colors.length] }} />
+                        <span className="text-white font-sans">{it.institution}</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-emerald-400 font-bold">{it.count} accounts</span>
+                        <span className="text-white/40 text-[10px] ml-1.5">({pct}%)</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}

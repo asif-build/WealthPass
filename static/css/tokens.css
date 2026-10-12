@@ -143,9 +143,15 @@
 }
 
 /* --- Base Resets & Global Container --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 html, body {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  max-width: 100vw;
   font-family: var(--font-family-base);
   color: var(--wp-text-primary);
   background-color: var(--wp-surface-white);

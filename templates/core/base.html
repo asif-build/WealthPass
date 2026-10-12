@@ -11,100 +11,18 @@
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
 
-  <!-- WealthPass Design System Tokens -->
-  <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+  <!-- WealthPass Design System Tokens & Navigation -->
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}?v=5">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}?v=5">
   {% block extra_css %}{% endblock %}
   
   <style>
-    /* Tokenized Base Shell Overrides */
+    /* Base Shell & Footer */
     body {
       background-color: var(--wp-surface-white);
       color: var(--wp-text-primary);
       font-family: var(--font-family-base);
-    }
-
-    .navbar {
-      position: fixed;
-      top: 0; left: 0; width: 100%;
-      height: 72px;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px) saturate(1.4);
-      border-bottom: 1px solid var(--wp-border);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      transition: all var(--transition-fast);
-    }
-    .nav-container {
-      width: 100%;
-      max-width: var(--container-max-width);
-      margin: 0 auto;
-      padding: 0 var(--space-4);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
-    .nav-logo-text {
-      font-family: var(--font-family-base);
-      font-weight: 700;
-      font-size: 20px;
-      letter-spacing: -0.03em;
-      color: var(--wp-ink-navy);
-    }
-    .nav-links {
-      display: flex;
-      gap: var(--space-5);
-    }
-    .nav-link {
-      font-family: var(--font-family-base);
-      font-weight: 500;
-      font-size: 14px;
-      color: var(--wp-text-muted);
-      padding: 24px 0;
-      position: relative;
-      text-decoration: none;
-      transition: color var(--transition-fast);
-    }
-    .nav-link:hover { color: var(--wp-trust-blue); }
-    .nav-link.active { color: var(--wp-trust-blue); font-weight: 600; }
-    .nav-link.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--wp-trust-blue);
-      border-radius: var(--radius-pill);
-    }
-    .nav-cta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 44px;
-      padding: 0 var(--space-3);
-      border: 1.5px solid var(--wp-trust-blue);
-      border-radius: var(--radius-pill);
-      background: var(--wp-trust-blue);
-      color: var(--wp-surface-white);
-      font-family: var(--font-family-base);
-      font-weight: 600;
-      font-size: 14px;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all var(--transition-fast);
-      box-shadow: 0 4px 12px rgba(27, 95, 209, 0.2);
-    }
-    .nav-cta:hover {
-      background: var(--wp-trust-blue-hover);
-      border-color: var(--wp-trust-blue-hover);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(27, 95, 209, 0.3);
     }
 
     .footer {
@@ -181,44 +99,283 @@
   <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
   <div class="grain-overlay"></div>
   
-  <div class="mobile-overlay" id="mobileOverlay"></div>
-  <div class="mobile-menu" id="mobileMenu">
-    <button class="hamburger" id="closeMenu" style="display:block; margin-bottom: 40px;" aria-label="Close Menu">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    </button>
-    <div style="display:flex; flex-direction:column; gap:24px;">
-      <a href="/" style="font-family:var(--font-family-base); font-size:18px; color:var(--wp-ink-navy); text-decoration:none;">Home</a>
-      <a href="/search/" style="font-family:var(--font-family-base); font-size:18px; color:var(--wp-trust-blue); font-weight:600; text-decoration:none;">Find Assets &rarr;</a>
-      <a href="/guide/banks/" style="font-family:var(--font-family-base); font-size:18px; color:var(--wp-ink-navy); text-decoration:none;">Bank Directory</a>
-      <a href="/guide/fill-form/" style="font-family:var(--font-family-base); font-size:18px; color:var(--wp-ink-navy); text-decoration:none;">Fill Claim Online</a>
+  <div class="mobile-overlay" id="mobileOverlay" aria-hidden="true"></div>
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation Menu">
+    <div class="mobile-header">
+      <a href="{% url 'landing' %}" class="nav-logo" aria-label="WealthPass Home">
+        <div class="nav-logo-mark" aria-hidden="true" style="width:32px; height:32px; border-radius:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+            <path d="M12 7v6"></path>
+            <circle cx="12" cy="16" r="1.2" fill="currentColor"></circle>
+          </svg>
+        </div>
+        <span class="nav-logo-text" style="font-size: 18px;">WealthPass</span>
+      </a>
+      <button class="hamburger" id="closeMenu" aria-label="Close Navigation Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <div class="mobile-nav-section">
+      <div class="mobile-nav-label">Find Assets</div>
+      <div class="mobile-nav-list">
+        <a href="{% url 'search' %}" class="mobile-nav-link highlight">
+          <i class="ph ph-magnifying-glass"></i>
+          <span>Search Deceased Assets</span>
+        </a>
+        <a href="/how-it-works/" class="mobile-nav-link">
+          <i class="ph ph-flow-arrow"></i>
+          <span>How Recovery Works</span>
+        </a>
+        <a href="/discover-assets/" class="mobile-nav-link">
+          <i class="ph ph-buildings"></i>
+          <span>Supported Institutions</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="mobile-nav-section">
+      <div class="mobile-nav-label">Claim Guides</div>
+      <div class="mobile-nav-list">
+        <a href="/guide/banks/" class="mobile-nav-link">
+          <i class="ph ph-bank"></i>
+          <span>Bank Claims Directory</span>
+        </a>
+        <a href="/guide/fill-form/" class="mobile-nav-link">
+          <i class="ph ph-file-text"></i>
+          <span>Fill Claim Forms Online</span>
+        </a>
+        <a href="/guide/banks/#scenarios" class="mobile-nav-link">
+          <i class="ph ph-users-three"></i>
+          <span>Nominee vs Legal Heir Guide</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="mobile-nav-section">
+      <div class="mobile-nav-label">Tools &amp; Benchmark</div>
+      <div class="mobile-nav-list">
+        <a href="/guide/banks/#buddy" class="mobile-nav-link">
+          <i class="ph ph-chat-circle-dots"></i>
+          <span>Wealth Buddy AI Assistant</span>
+        </a>
+        <a href="/energy/" class="mobile-nav-link">
+          <i class="ph ph-leaf"></i>
+          <span>Speed &amp; Energy Benchmark</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="mobile-actions">
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'search' %}" class="wp-btn wp-btn-primary" style="width: 100%;">Find Assets</a>
+        <a href="/api/auth/logout/" class="wp-btn wp-btn-secondary" style="width: 100%;">Sign Out</a>
+      {% else %}
+        <a href="{% url 'search' %}" class="wp-btn wp-btn-primary" style="width: 100%;">Find Assets</a>
+        <a href="/#login" class="wp-btn wp-btn-secondary" style="width: 100%;">Sign In</a>
+      {% endif %}
     </div>
   </div>
 
-  <nav class="navbar" id="mainNavbar">
+  <nav class="navbar" id="mainNavbar" role="navigation" aria-label="Main Navigation">
     <div class="nav-container">
       <a href="{% url 'landing' %}" class="nav-logo" aria-label="WealthPass Home">
-        <svg width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <rect x="3" y="4" width="30" height="28" rx="7" fill="var(--wp-trust-blue-light)" stroke="var(--wp-border)" stroke-width="1.5"/>
-          <path d="M10 13H26" stroke="var(--wp-trust-blue)" stroke-width="2" stroke-linecap="round"/>
-          <path d="M10 18H21" stroke="var(--wp-trust-blue)" stroke-width="2" stroke-linecap="round"/>
-          <path d="M10 23H17" stroke="var(--wp-trust-blue)" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="25" cy="22" r="2.5" fill="var(--wp-trust-blue)"/>
-        </svg>
+        <div class="nav-logo-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+            <path d="M12 7v6"></path>
+            <circle cx="12" cy="16" r="1.2" fill="currentColor"></circle>
+            <path d="M7 8h2"></path>
+            <path d="M15 8h2"></path>
+          </svg>
+        </div>
         <span class="nav-logo-text">WealthPass</span>
       </a>
 
-      <div class="nav-links">
-        <a href="{% url 'landing' %}" class="nav-link active">Home</a>
-        <a href="{% url 'search' %}" class="nav-link">Search Assets</a>
-        <a href="/guide/banks/" class="nav-link">Bank Directory</a>
-        <a href="/guide/fill-form/" class="nav-link">Fill Claim Forms</a>
-      </div>
-      
-      <a href="{% url 'search' %}" class="nav-cta">FIND ASSETS</a>
+      <!-- Desktop Mega-Menu Navigation -->
+      <ul class="nav-menu" role="menubar">
+        <!-- 1. Find Assets -->
+        <li class="nav-item" role="none">
+          <button class="nav-trigger" role="menuitem" aria-haspopup="true" aria-expanded="false" id="trigger-find-assets">
+            <span>Find Assets</span>
+            <i class="ph ph-caret-down chevron" aria-hidden="true"></i>
+          </button>
+          <div class="mega-menu" role="menu" aria-labelledby="trigger-find-assets">
+            <div class="mega-grid">
+              <div class="mega-featured">
+                <div>
+                  <span class="mega-featured-tag">Regulated Discovery</span>
+                  <h4 class="mega-featured-title">Multi-Source Asset Search</h4>
+                  <p class="mega-featured-desc">Query bank deposits, PF balances, insurance policies, and mutual funds across 5 regulators in one search.</p>
+                </div>
+                <a href="{% url 'search' %}" class="mega-featured-btn" role="menuitem">
+                  Start Search <i class="ph ph-arrow-right" aria-hidden="true"></i>
+                </a>
+              </div>
+              <div class="mega-links">
+                <a href="{% url 'search' %}" class="mega-link-item" role="menuitem">
+                  <div class="mega-link-icon"><i class="ph ph-magnifying-glass"></i></div>
+                  <div class="mega-link-content">
+                    <span class="mega-link-title">Search Deceased Assets</span>
+                    <span class="mega-link-desc">Bank accounts, insurance, EPF, and shares</span>
+                  </div>
+                </a>
+                <a href="/how-it-works/" class="mega-link-item" role="menuitem">
+                  <div class="mega-link-icon"><i class="ph ph-flow-arrow"></i></div>
+                  <div class="mega-link-content">
+                    <span class="mega-link-title">How Recovery Works</span>
+                    <span class="mega-link-desc">Transparent 4-step succession and claim guide</span>
+                  </div>
+                </a>
+                <a href="/discover-assets/" class="mega-link-item" role="menuitem">
+                  <div class="mega-link-icon"><i class="ph ph-buildings"></i></div>
+                  <div class="mega-link-content">
+                    <span class="mega-link-title">Supported Institutions</span>
+                    <span class="mega-link-desc">Verified coverage across RBI, SEBI, IRDAI, EPFO</span>
+                  </div>
+                </a>
+                <a href="/how-it-works/#bridge" class="mega-link-item" role="menuitem">
+                  <div class="mega-link-icon"><i class="ph ph-coins"></i></div>
+                  <div class="mega-link-content">
+                    <span class="mega-link-title">Estate Bridge Settlement</span>
+                    <span class="mega-link-desc">0% upfront assistance for legal heir costs</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
 
-      <button class="hamburger" id="openMenu" aria-label="Open Menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-      </button>
+        <!-- 2. Claim Guides -->
+        <li class="nav-item" role="none">
+          <button class="nav-trigger" role="menuitem" aria-haspopup="true" aria-expanded="false" id="trigger-guides">
+            <span>Claim Guides</span>
+            <i class="ph ph-caret-down chevron" aria-hidden="true"></i>
+          </button>
+          <div class="mega-menu" role="menu" aria-labelledby="trigger-guides">
+            <div class="mega-grid">
+              <div class="mega-featured">
+                <div>
+                  <span class="mega-featured-tag">RBI Aligned</span>
+                  <h4 class="mega-featured-title">Official Bank Portals</h4>
+                  <p class="mega-featured-desc">Public deceased-customer claim portals across major Indian banks with standard Annex I-A to I-H forms.</p>
+                </div>
+                <a href="/guide/banks/" class="mega-featured-btn" role="menuitem">
+                  View Directory <i class="ph ph-arrow-right" aria-hidden="true"></i>
+                </a>
+              </div>
+              <div class="mega-links">
+                <a href="/guide/banks/" class="mega-link-item" role="menuitem">
+                  <div class="mega-link-icon"><i class="ph ph-bank"></i></div>
+                  <div class="mega-link-content">
+                    <span class="mega-link-title">Bank Claims Directory</span>
+                    <span class="mega-link-desc">SBI, HDFC, ICICI, PNB &amp; major banks</span>
+                  </div>
+                </a>
+                <a href="/guide/fill-form/" class="mega-link-item" role="menuitem">
+                  <div class="mega-link-icon"><i class="ph ph-file-text"></i></div>
+                  <div class="mega-link-content">
+                    <span class="mega-link-title">Fill Claim Forms Online</span>
+                    <span class="mega-link-desc">Annex I-A to I-H claim preparation tool</span>
+                  </div>
+                </a>
+                <a href="/guide/banks/#scenarios" class="mega-link-item" role="menuitem">
+                  <div class="mega-link-icon"><i class="ph ph-users-three"></i></div>
+                  <div class="mega-link-content">
+                    <span class="mega-link-title">Nominee vs Legal Heir Guide</span>
+                    <span class="mega-link-desc">Survivorship clauses and documentation rules</span>
+                  </div>
+                </a>
+                <a href="/guide/banks/#checklist" class="mega-link-item" role="menuitem">
+                  <div class="mega-link-icon"><i class="ph ph-check-square-offset"></i></div>
+                  <div class="mega-link-content">
+                    <span class="mega-link-title">Document Checklist</span>
+                    <span class="mega-link-desc">Death certificates, KYC, indemnities &amp; sureties</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <!-- 3. Tools & AI -->
+        <li class="nav-item" role="none">
+          <button class="nav-trigger" role="menuitem" aria-haspopup="true" aria-expanded="false" id="trigger-tools">
+            <span>Tools &amp; AI</span>
+            <i class="ph ph-caret-down chevron" aria-hidden="true"></i>
+          </button>
+          <div class="mega-menu" role="menu" aria-labelledby="trigger-tools">
+            <div class="mega-grid">
+              <div class="mega-featured">
+                <div>
+                  <span class="mega-featured-tag">Grounded AI</span>
+                  <h4 class="mega-featured-title">Wealth Buddy Assistant</h4>
+                  <p class="mega-featured-desc">Bilingual voice-assisted guide for succession queries with verified RBI citations. No legal advice.</p>
+                </div>
+                <a href="/guide/banks/#buddy" class="mega-featured-btn" role="menuitem">
+                  Ask Wealth Buddy <i class="ph ph-arrow-right" aria-hidden="true"></i>
+                </a>
+              </div>
+              <div class="mega-links">
+                <a href="/guide/banks/#buddy" class="mega-link-item" role="menuitem">
+                  <div class="mega-link-icon"><i class="ph ph-chat-circle-dots"></i></div>
+                  <div class="mega-link-content">
+                    <span class="mega-link-title">Wealth Buddy (Voice &amp; Text)</span>
+                    <span class="mega-link-desc">Real-time answers citing bank guidelines</span>
+                  </div>
+                </a>
+                <a href="/guide/fill-form/" class="mega-link-item" role="menuitem">
+                  <div class="mega-link-icon"><i class="ph ph-printer"></i></div>
+                  <div class="mega-link-content">
+                    <span class="mega-link-title">Online Claim Generator</span>
+                    <span class="mega-link-desc">Interactive field-by-field packet preparation</span>
+                  </div>
+                </a>
+                <a href="/energy/" class="mega-link-item" role="menuitem">
+                  <div class="mega-link-icon"><i class="ph ph-leaf"></i></div>
+                  <div class="mega-link-content">
+                    <span class="mega-link-title">Green Compute Benchmark</span>
+                    <span class="mega-link-desc">Measured energy &amp; carbon efficiency</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <!-- Direct Link -->
+        <li class="nav-item" role="none">
+          <a href="/energy/" class="nav-simple-link" role="menuitem">Benchmark</a>
+        </li>
+      </ul>
+
+      <!-- Nav Actions (Right) -->
+      <div class="nav-actions">
+        <span class="nav-trust-badge" title="RBI Standardized Deceased Claim Forms">
+          <i class="ph ph-shield-check" aria-hidden="true"></i>
+          <span>RBI Standardized</span>
+        </span>
+
+        <a href="/notifications/" class="nav-icon-link" aria-label="Notifications" id="navNotificationBtn" title="Notifications">
+          <i class="ph ph-bell" aria-hidden="true"></i>
+        </a>
+
+        {% if request.user.is_authenticated %}
+          <div class="nav-user-chip" title="{{ request.user.email|default:request.user.username }}">
+            <i class="ph ph-user-circle" style="font-size: 16px;" aria-hidden="true"></i>
+            <span>{{ request.user.email|default:request.user.username|truncatechars:15 }}</span>
+          </div>
+          <a href="/api/auth/logout/" class="wp-btn wp-btn-ghost nav-auth-btn">Sign Out</a>
+        {% else %}
+          <a href="/#login" class="wp-btn wp-btn-ghost nav-auth-btn">Sign In</a>
+          <a href="{% url 'search' %}" class="wp-btn wp-btn-primary nav-auth-cta">Find Assets</a>
+        {% endif %}
+
+        <button class="hamburger" id="openMenu" aria-label="Open Navigation Menu" aria-controls="mobileMenu" aria-expanded="false">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -324,39 +481,93 @@
   </div>
 
   <script>
-    // Scroll Progress
+    // Scroll Progress & Sticky Navbar Shrink
+    const mainNavbar = document.getElementById('mainNavbar');
+    const progressBar = document.getElementById('progressBar');
+
     window.addEventListener('scroll', () => {
       const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
       const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrolled = (winScroll / height) * 100;
-      const progressBar = document.getElementById('progressBar');
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
       if (progressBar) {
         progressBar.style.width = scrolled + '%';
       }
+      if (mainNavbar) {
+        if (winScroll > 10) {
+          mainNavbar.classList.add('scrolled');
+        } else {
+          mainNavbar.classList.remove('scrolled');
+        }
+      }
     });
 
-    // Mobile Menu
+    // Mobile Menu with Focus Trap and Scroll Lock
     const openMenu = document.getElementById('openMenu');
     const closeMenu = document.getElementById('closeMenu');
     const mobileMenu = document.getElementById('mobileMenu');
     const overlay = document.getElementById('mobileOverlay');
 
-    if (openMenu && mobileMenu && overlay) {
-      openMenu.addEventListener('click', () => {
-        mobileMenu.classList.add('open');
-        overlay.classList.add('open');
-      });
+    function openMobileDrawer() {
+      if (!mobileMenu || !overlay) return;
+      mobileMenu.classList.add('open');
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      if (openMenu) openMenu.setAttribute('aria-expanded', 'true');
+      if (closeMenu) closeMenu.focus();
     }
-    if (closeMenu && mobileMenu && overlay) {
-      closeMenu.addEventListener('click', () => {
-        mobileMenu.classList.remove('open');
-        overlay.classList.remove('open');
-      });
-      overlay.addEventListener('click', () => {
-        mobileMenu.classList.remove('open');
-        overlay.classList.remove('open');
-      });
+
+    function closeMobileDrawer() {
+      if (!mobileMenu || !overlay) return;
+      mobileMenu.classList.remove('open');
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      if (openMenu) {
+        openMenu.setAttribute('aria-expanded', 'false');
+        openMenu.focus();
+      }
     }
+
+    if (openMenu) openMenu.addEventListener('click', openMobileDrawer);
+    if (closeMenu) closeMenu.addEventListener('click', closeMobileDrawer);
+    if (overlay) overlay.addEventListener('click', closeMobileDrawer);
+
+    // Keyboard handlers (Esc key, Focus Trap)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (mobileMenu && mobileMenu.classList.contains('open')) {
+          closeMobileDrawer();
+        }
+        // Blur any focused mega-menu item
+        document.querySelectorAll('.nav-trigger[aria-expanded="true"]').forEach(btn => {
+          btn.setAttribute('aria-expanded', 'false');
+          btn.blur();
+        });
+      }
+
+      // Trap focus in mobile drawer when open
+      if (mobileMenu && mobileMenu.classList.contains('open') && e.key === 'Tab') {
+        const focusable = mobileMenu.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    });
+
+    // Desktop Mega Menu Keyboard Activation
+    document.querySelectorAll('.nav-trigger').forEach(trigger => {
+      trigger.addEventListener('click', (e) => {
+        const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+        document.querySelectorAll('.nav-trigger').forEach(t => t.setAttribute('aria-expanded', 'false'));
+        trigger.setAttribute('aria-expanded', !isExpanded ? 'true' : 'false');
+      });
+    });
 
     // Cookie Banner
     const cookieBanner = document.getElementById('cookieBanner');

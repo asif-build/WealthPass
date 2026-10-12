@@ -12,11 +12,11 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) 
   const isGridInView = useInView(gridRef, { once: true, margin: "-100px" });
 
   const heading1 = [
-    { text: "Simple discovery for your family's lost wealth.", className: "text-[#E1E0CC] font-normal" }
+    { text: "Statutory asset discovery for your family's inheritance.", className: "text-white font-medium" }
   ];
 
   const heading2 = [
-    { text: "Safe, secure, and straightforward.", className: "text-[#b0ad9b] font-normal" }
+    { text: "RBI-grounded, 256-bit encrypted, and completely transparent.", className: "text-[#DEDBC8] font-medium" }
   ];
 
   const containerVariants = {
@@ -42,22 +42,22 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) 
 
   // Checklist items for the cards
   const card2Items = [
-    "Official bank & government searches",
-    "Instant PAN verification",
-    "All assets tracked in one place",
-    "Bank-grade data privacy"
+    "Official RBI UDGAM & statutory database matches",
+    "Instant NSDL / UIDAI identity verification",
+    "Consolidated portfolio (SBI, LIC, IEPF, PPF)",
+    "256-Bit bank-grade encryption & zero data retention"
   ];
 
   const card3Items = [
-    "Clear guidance for heirs and nominees",
-    "Pre-filled claim paperwork",
-    "Step-by-step legal help & templates"
+    "RBI Annex I-A to I-H standard documentation",
+    "Pre-filled Bank Form 14 & affidavit dossiers",
+    "Grounded legal copilot with step-by-step guidance"
   ];
 
   const card4Items = [
-    "No upfront fee",
-    "Financial support while claims process",
-    "Clear and transparent terms"
+    "Zero Upfront Fee — success-based pricing only",
+    "0% Bridge Advance while bank claims process",
+    "Direct NEFT / RTGS settlement to verified legal heir"
   ];
 
   return (

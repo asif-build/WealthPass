@@ -31,6 +31,7 @@ import { NotificationProvider, useNotifications } from "./components/notificatio
 import { DynamicIslandNotification } from "./components/notifications/DynamicIslandNotification";
 import { NotificationCenter } from "./components/notifications/NotificationCenter";
 import { EnergyDashboardPage } from "./components/energy/EnergyDashboardPage";
+import { GreenAIEnergySection } from "./components/energy/GreenAIEnergySection";
 
 const VALID_PATHS = [
   "/how-it-works/verify-match",
@@ -778,9 +779,9 @@ function App() {
                   variants={fadeUpVariants}
                   initial="hidden"
                   animate="visible"
-                  className="text-[#E1E0CC] text-xs sm:text-sm md:text-base leading-[1.3] tracking-wide max-w-sm drop-shadow-sm font-normal"
+                  className="text-white text-xs sm:text-sm md:text-base leading-[1.4] tracking-wide max-w-sm drop-shadow-sm font-normal"
                 >
-                  WealthPass is a secure platform that helps Indian families discover unclaimed assets, navigate the legal recovery path, and obtain bridge-loan support when it matters most.
+                  <strong className="text-primary font-semibold">WealthPass</strong> is an RBI-grounded platform helping Indian families discover <strong className="text-white font-semibold">₹1 Lakh Crore</strong> in unclaimed assets, navigate statutory recovery, and obtain <strong className="text-white font-semibold">0% bridge advance</strong> liquidity.
                 </motion.p>
 
                 <motion.a
@@ -793,7 +794,7 @@ function App() {
                     e.preventDefault();
                     handleNavigate(currentUser ? "/dashboard" : "/register");
                   }}
-                  className="group flex items-center gap-2 hover:gap-3 p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-black font-medium transition-all duration-300 text-sm sm:text-base hover:bg-white cursor-pointer"
+                  className="group flex items-center gap-2 hover:gap-3 p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-black font-semibold transition-all duration-300 text-sm sm:text-base hover:bg-white cursor-pointer shadow-lg shadow-primary/20"
                 >
                   <span>Get Started</span>
                   <div className="bg-black rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -811,6 +812,9 @@ function App() {
 
       {/* Features Section (Interactive 4-Card Section) */}
       <FeaturesSection onNavigate={handleNavigate} />
+
+      {/* Real-time Dynamic Green AI Energy & Asset Discovery Section */}
+      <GreenAIEnergySection onNavigateEnergy={() => handleNavigate("/energy")} />
 
       {/* Legal Section */}
       <LegalSection />

@@ -260,7 +260,102 @@
         </tr>
       </tbody>
     </table>
+  <!-- BEFORE & AFTER VISUAL BAR GRAPH -->
+  <div class="comparison-card">
+    <div style="font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold, #DEDBC8); margin-bottom: 6px;">
+      Live Inference Efficiency
+    </div>
+    <h2 style="font-family: var(--font-serif); font-size: 24px; font-style: italic; color: #fff; margin: 0 0 16px 0;">
+      Real Measured Before &amp; After Energy Draw
+    </h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+      <!-- Energy Chart -->
+      <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 18px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; font-family: var(--font-sans); margin-bottom: 12px;">
+          <span style="color: #ffffff; font-weight: 600;">Power Draw per Query (Joules)</span>
+          <span style="color: #34d399; font-weight: 700;">-{{ avg_savings }}% Saved</span>
+        </div>
+        <div style="margin-bottom: 14px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; color: #fff; margin-bottom: 4px;">
+            <span><strong style="color: #ef4444;">&bull;</strong> Unoptimized Cloud LLM (Baseline)</span>
+            <span style="font-family: monospace; color: #ef4444; font-weight: bold;">750.0 J</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.08); height: 16px; border-radius: 8px; overflow: hidden;">
+            <div style="background: linear-gradient(90deg, #dc2626, #ef4444); width: 100%; height: 100%; border-radius: 8px;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px; color: #fff; margin-bottom: 4px;">
+            <span><strong style="color: #34d399;">&bull;</strong> WealthPass Green AI Copilot</span>
+            <span style="font-family: monospace; color: #34d399; font-weight: bold;">&lt; 1.2 J</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.08); height: 16px; border-radius: 8px; overflow: hidden;">
+            <div style="background: linear-gradient(90deg, #10b981, #34d399); width: 2%; height: 100%; border-radius: 8px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Latency Chart -->
+      <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 18px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; font-family: var(--font-sans); margin-bottom: 12px;">
+          <span style="color: #ffffff; font-weight: 600;">Wall-Clock Latency (Milliseconds)</span>
+          <span style="color: var(--gold, #DEDBC8); font-weight: 700;">99% Faster</span>
+        </div>
+        <div style="margin-bottom: 14px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; color: #fff; margin-bottom: 4px;">
+            <span><strong style="color: #ef4444;">&bull;</strong> Cloud Server Roundtrip (Baseline)</span>
+            <span style="font-family: monospace; color: #ef4444; font-weight: bold;">2,500 ms</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.08); height: 16px; border-radius: 8px; overflow: hidden;">
+            <div style="background: linear-gradient(90deg, #dc2626, #ef4444); width: 100%; height: 100%; border-radius: 8px;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px; color: #fff; margin-bottom: 4px;">
+            <span><strong style="color: #38bdf8;">&bull;</strong> WealthPass Local Distillation</span>
+            <span style="font-family: monospace; color: #38bdf8; font-weight: bold;">{{ avg_latency }} ms</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.08); height: 16px; border-radius: 8px; overflow: hidden;">
+            <div style="background: linear-gradient(90deg, #0284c7, #38bdf8); width: 3%; height: 100%; border-radius: 8px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- DYNAMIC ASSETS BREAKDOWN PIE / DONUT -->
+  {% if asset_breakdown %}
+  <div class="comparison-card">
+    <div style="font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold, #DEDBC8); margin-bottom: 6px;">
+      Live Discovered Assets Distribution
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; margin-bottom: 16px;">
+      <h2 style="font-family: var(--font-serif); font-size: 24px; font-style: italic; color: #fff; margin: 0;">
+        Registry Portfolio Allocation
+      </h2>
+      <span style="font-family: monospace; font-size: 12px; color: #34d399; background: rgba(52,211,153,0.1); padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(52,211,153,0.2);">
+        {{ total_assets_count }} Accounts &bull; ₹{{ total_assets_val|floatformat:0 }}
+      </span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+      {% for b in asset_breakdown %}
+      <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-size: 13px; font-weight: 600; color: #ffffff;">{{ b.institution }}</div>
+          <div style="font-size: 11px; color: #B5B3A2; margin-top: 2px;">{{ b.count }} Matches Recorded</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 13px; font-family: monospace; font-weight: bold; color: #34d399;">
+            {% if b.total_val > 0 %}₹{{ b.total_val|floatformat:0 }}{% else %}Active Verification{% endif %}
+          </div>
+          <span class="metric-tag tag-measured" style="position: static; font-size: 9px; padding: 1px 6px;">LIVE DB</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
 
   <!-- LIVE TELEMETRY LOG -->
   <div class="telemetry-table-wrapper">

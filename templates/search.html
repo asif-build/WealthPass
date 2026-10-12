@@ -1,174 +1,513 @@
 {% extends 'core/base.html' %}
+{% block title %}Search Unclaimed Deceased Assets - WealthPass{% endblock %}
+
 {% block extra_css %}
 <style>
-.search-page { min-height: 100vh; display: flex; padding-top: 76px; background: var(--black); }
-.search-left { flex: 1; padding: 120px 80px; position: relative; }
-.search-right { flex: 1.2; padding: 120px 80px; background: var(--black-soft); border-left: 1px solid var(--border); }
-@media (max-width: 1024px) {
-  .search-page { flex-direction: column; }
-  .search-left, .search-right { padding: 80px 24px; }
-  .search-right { border-left: none; border-top: 1px solid var(--border); }
-}
+  .search-page {
+    min-height: calc(100vh - 72px);
+    background-color: var(--wp-mist);
+    padding: 48px 0 96px;
+  }
 
-.sticky-statement { position: sticky; top: 120px; }
-.trust-list { margin-top: 60px; display: flex; flex-direction: column; gap: 16px; }
-.trust-item { font-family: var(--font-sans); font-weight: 300; font-size: 15px; color: var(--white-muted); line-height: 2.2; }
+  .search-container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-4);
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 48px;
+    align-items: start;
+  }
 
-.form-container { max-width: 520px; margin: 0 auto; padding: 40px; }
-.form-section-title { font-family: var(--font-sans); font-weight: 500; font-size: 10px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 24px; text-transform: uppercase; }
-.form-rule { height: 1px; background: var(--gold); opacity: 0.3; margin: 24px 0 40px; }
+  /* Left Panel */
+  .search-info {
+    position: sticky;
+    top: 104px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
 
-.drag-zone {
-  border: 1px dashed rgba(222, 219, 200, 0.2);
-  background: var(--black-lifted);
-  border-radius: 16px;
-  padding: 40px 24px;
-  text-align: center;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
-  margin-bottom: 40px;
-}
-.drag-zone:hover {
-  border-color: rgba(222, 219, 200, 0.4);
-  background: #222222;
-}
-.file-added { border-color: var(--verified) !important; background: rgba(74,124,89,0.05) !important; }
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--wp-trust-blue);
+    background: var(--wp-trust-blue-light);
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    width: fit-content;
+  }
 
-.error-state {
-  display: none;
-  border-left: 2px solid var(--danger);
-  padding: 16px 20px;
-  background: rgba(122,48,48,0.08);
-  font-family: var(--font-sans); font-weight: 300; font-size: 14px; color: var(--danger);
-  margin-top: 24px;
-}
+  .search-heading {
+    font-size: 44px;
+    line-height: 52px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--wp-ink-navy);
+    margin: 0;
+  }
 
-/* Premium Loader Overlay */
-#loader-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(10, 10, 26, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-}
+  .search-heading span {
+    color: var(--wp-trust-blue);
+  }
 
-#loader-overlay.active {
-  opacity: 1;
-  pointer-events: all;
-}
+  .search-desc {
+    font-size: 16px;
+    line-height: 26px;
+    color: var(--wp-text-muted);
+    margin: 0;
+  }
 
-.spinner {
-  width: 60px; height: 60px;
-  border: 2px solid rgba(201, 168, 76, 0.2);
-  border-top-color: var(--gold);
-  border-radius: 50%;
-  animation: s-spin 1s linear infinite;
-  margin-bottom: 30px;
-}
+  /* Coverage & Trust Cards */
+  .coverage-box {
+    background: var(--wp-surface-white);
+    border: 1px solid var(--wp-border);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
 
-@keyframes s-spin { 100% { transform: rotate(360deg); } }
+  .coverage-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--wp-text-muted);
+  }
 
-.loader-text {
-  font-family: var(--font-serif);
-  font-size: 28px;
-  color: var(--white);
-  height: 40px;
-  overflow: hidden;
-  position: relative;
-}
+  .coverage-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
 
-.loader-phrase {
-  position: absolute;
-  top: 0; left: 50%;
-  transform: translateX(-50%);
-  width: max-content;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-.loader-phrase.active { opacity: 1; }
+  .cov-chip {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--wp-ink-navy);
+    background: var(--wp-mist);
+    border: 1px solid var(--wp-border);
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+  }
+
+  .trust-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--wp-text-primary);
+    font-weight: 500;
+  }
+
+  .trust-item i {
+    color: var(--wp-success);
+    font-size: 18px;
+  }
+
+  /* Right Panel - Form Card */
+  .search-form-card {
+    background: var(--wp-surface-white);
+    border: 1px solid var(--wp-border);
+    border-radius: var(--radius-card);
+    padding: 40px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .form-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--wp-text-muted);
+    margin-bottom: 20px;
+    cursor: default;
+  }
+
+  .form-section-divider {
+    height: 1px;
+    background: var(--wp-border);
+    margin: 32px 0;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .input-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--wp-ink-navy);
+  }
+
+  .form-input {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    font-family: var(--font-family-base);
+    font-size: 15px;
+    color: var(--wp-ink-navy);
+    background: var(--wp-surface-white);
+    border: 1.5px solid var(--wp-border);
+    border-radius: var(--radius-input);
+    transition: all var(--transition-fast);
+    box-sizing: border-box;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--wp-trust-blue);
+    box-shadow: 0 0 0 3px rgba(27, 95, 209, 0.15);
+  }
+
+  /* Drag Zone */
+  .drag-zone {
+    border: 2px dashed var(--wp-border);
+    background: var(--wp-mist);
+    border-radius: 16px;
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-bottom: 24px;
+  }
+
+  .drag-zone:hover {
+    border-color: var(--wp-trust-blue);
+    background: var(--wp-trust-blue-light);
+  }
+
+  .file-added {
+    border-color: var(--wp-success) !important;
+    background: var(--wp-success-light) !important;
+  }
+
+  /* Custom Select */
+  .custom-select-wrapper {
+    position: relative;
+    user-select: none;
+  }
+
+  .custom-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px;
+    padding: 12px 16px;
+    background: var(--wp-surface-white);
+    border: 1.5px solid var(--wp-border);
+    border-radius: var(--radius-input);
+    font-size: 15px;
+    color: var(--wp-ink-navy);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .custom-select-trigger:focus,
+  .custom-select-trigger.active {
+    outline: none;
+    border-color: var(--wp-trust-blue);
+    box-shadow: 0 0 0 3px rgba(27, 95, 209, 0.15);
+  }
+
+  .custom-select-trigger .placeholder {
+    color: var(--wp-text-muted);
+  }
+
+  .custom-select-trigger .arrow-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--wp-text-muted);
+    transition: transform var(--transition-fast);
+  }
+
+  .custom-select-trigger.active .arrow-icon {
+    transform: rotate(180deg);
+  }
+
+  .custom-select-options {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: var(--wp-surface-white);
+    border: 1px solid var(--wp-border);
+    border-radius: var(--radius-input);
+    box-shadow: var(--shadow-dropdown);
+    z-index: 100;
+    max-height: 240px;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: all var(--transition-fast);
+  }
+
+  .custom-select-options.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .custom-select-option {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--wp-ink-navy);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+  }
+
+  .custom-select-option:hover {
+    background: var(--wp-mist);
+    color: var(--wp-trust-blue);
+  }
+
+  .custom-select-option.selected {
+    background: var(--wp-trust-blue-light);
+    color: var(--wp-trust-blue);
+    font-weight: 600;
+  }
+
+  /* Custom Checkbox */
+  .custom-checkbox-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 32px 0 36px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .custom-checkbox-input {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    accent-color: var(--wp-trust-blue);
+    cursor: pointer;
+  }
+
+  .custom-checkbox-text {
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--wp-text-muted);
+  }
+
+  /* Submit CTA */
+  .btn-submit-search {
+    width: 100%;
+    min-height: 52px;
+    background: var(--wp-trust-blue);
+    color: var(--wp-surface-white);
+    border: none;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-family-base);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all var(--transition-fast);
+    box-shadow: 0 4px 14px rgba(27, 95, 209, 0.25);
+  }
+
+  .btn-submit-search:hover {
+    background: var(--wp-trust-blue-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(27, 95, 209, 0.35);
+  }
+
+  .error-state {
+    display: none;
+    border-left: 3px solid var(--wp-danger);
+    padding: 12px 16px;
+    background: var(--wp-danger-light);
+    font-size: 13px;
+    color: var(--wp-danger);
+    margin-top: 20px;
+    border-radius: 4px;
+  }
+
+  /* Loader Overlay */
+  #loader-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(13, 27, 61, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  #loader-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .spinner {
+    width: 54px;
+    height: 54px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top-color: var(--wp-trust-blue);
+    border-radius: 50%;
+    animation: s-spin 0.9s linear infinite;
+    margin-bottom: 24px;
+  }
+
+  @keyframes s-spin { 100% { transform: rotate(360deg); } }
+
+  .loader-text {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--wp-surface-white);
+    height: 36px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    width: 320px;
+  }
+
+  .loader-phrase {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .loader-phrase.active { opacity: 1; }
+
+  @media (max-width: 992px) {
+    .search-container {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .search-info {
+      position: static;
+    }
+    .search-form-card {
+      padding: 24px;
+    }
+    .search-heading {
+      font-size: 32px;
+      line-height: 40px;
+    }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="search-page">
-  <div class="search-left">
-    <div class="sticky-statement">
-      <div class="label" style="color: var(--white-faint); margin-bottom: 40px;">STEP 01</div>
-      <h2 class="animate-words" style="font-family: var(--font-sans); font-weight: 300; font-size: 52px; color: var(--white); line-height: 1.1; letter-spacing: -0.02em;">Find what belongs<br><span style="font-family: var(--font-serif); font-style: italic; color: var(--gold);">to your family</span></h2>
-      <div class="gold-rule"></div>
-      <p class="animate-letters" style="font-family: var(--font-sans); font-weight: 300; font-size: 16px; color: var(--white-muted); line-height: 1.85; max-width: 400px; margin-top: 24px;">
-        Enter the deceased's details below. We cross-reference five government databases and return results in under nine seconds.
+  <div class="search-container">
+    <!-- Left Column: Guidance & Trust -->
+    <div class="search-info">
+      <div class="step-badge">STEP 01 OF 03 • ASSET SEARCH</div>
+      <h1 class="search-heading">Find what belongs <span>to your family</span></h1>
+      <p class="search-desc">
+        Enter the deceased's legal particulars below. WealthPass securely cross-references <strong>5 statutory registries</strong> and identifies recoverable accounts under <strong>RBI Master Directions 2025</strong> in under <strong>9 seconds</strong>.
       </p>
-      
+
+      <div class="coverage-box">
+        <div class="coverage-label">REGULATORY COVERAGE INCLUDED</div>
+        <div class="coverage-chips">
+          <span class="cov-chip"><strong>RBI</strong> (Commercial Banks &amp; UDGAM)</span>
+          <span class="cov-chip"><strong>SEBI</strong> (Equities &amp; MF)</span>
+          <span class="cov-chip"><strong>IRDAI</strong> (Life &amp; General Insurers)</span>
+          <span class="cov-chip"><strong>EPFO</strong> (Provident Fund)</span>
+          <span class="cov-chip"><strong>IEPF</strong> (Shares &amp; Unpaid Dividends)</span>
+        </div>
+      </div>
+
       <div class="trust-list">
-        <div class="trust-item">— End-to-end encrypted</div>
-        <div class="trust-item">— Session only. Never stored.</div>
-        <div class="trust-item">— Consent-based access only.</div>
-        <div class="trust-item">— No data sold. No exceptions.</div>
+        <div class="trust-item">
+          <i class="ph ph-check-circle"></i>
+          <span><strong>256-Bit Bank-Grade Encryption</strong> in transit &amp; at rest</span>
+        </div>
+        <div class="trust-item">
+          <i class="ph ph-check-circle"></i>
+          <span><strong>Zero Plaintext Storage</strong> — verified strictly via memory buffers</span>
+        </div>
+        <div class="trust-item">
+          <i class="ph ph-check-circle"></i>
+          <span><strong>Zero Upfront Fee</strong> — statutory legal protection guaranteed</span>
+        </div>
       </div>
     </div>
-  </div>
-  
-  <div class="search-right">
-    <div class="form-container premium-form-card scroll-reveal">
+
+    <!-- Right Column: Clean Fintech Form Card -->
+    <div class="search-form-card">
       <form action="{% url 'search' %}" method="POST" enctype="multipart/form-data" id="search-form">
         {% csrf_token %}
-        
+
         <div class="form-section-title" id="hackathon-trigger" style="user-select: none;">ABOUT THE DECEASED</div>
-        <div class="form-rule"></div>
-        
+
         <div class="input-group">
-          <label class="input-label">FULL NAME</label>
-          <input type="text" name="deceased_name" class="form-input" required>
+          <label class="input-label">FULL LEGAL NAME</label>
+          <input type="text" name="deceased_name" class="form-input" placeholder="e.g. Ramesh Sharma" required>
         </div>
-        
+
         <div class="input-group">
           <label class="input-label">PAN NUMBER</label>
-          <input type="text" name="pan_number" class="form-input" style="text-transform: uppercase;" required>
-          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 12px; color: var(--white-faint); margin-top: 8px; display:flex; justify-content:space-between; align-items:center;">
-            <span>10-character PAN — e.g. ABCDE1234F</span>
-            <span style="display:flex; align-items:center; gap:4px; color:var(--verified); font-weight:500;"><i class="ph ph-lock-key"></i> Your data is encrypted and never shared</span>
+          <input type="text" name="pan_number" class="form-input" placeholder="ABCDE1234F" style="text-transform: uppercase;" required>
+          <div style="font-size: 12px; color: var(--wp-text-muted); display:flex; justify-content:space-between; align-items:center; margin-top: 4px;">
+            <span>10-character PAN format</span>
+            <span style="display:flex; align-items:center; gap:4px; color:var(--wp-success); font-weight:500;">
+              <i class="ph ph-shield-check"></i> Encrypted verification
+            </span>
           </div>
         </div>
-        
+
         <div class="input-group">
           <label class="input-label">DEATH CERTIFICATE NUMBER</label>
-          <input type="text" name="death_certificate_no" class="form-input" required>
+          <input type="text" name="death_certificate_no" class="form-input" placeholder="e.g. DL-2026-0988" required>
         </div>
-        
-        <label class="input-label" style="margin-bottom: 12px;">UPLOAD DEATH CERTIFICATE</label>
+
+        <label class="input-label" style="display:block; margin-bottom: 8px;">UPLOAD DEATH CERTIFICATE</label>
         <div class="drag-zone" id="drag-zone" onclick="document.getElementById('file-upload').click()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="stroke: var(--gold); stroke-width: 1.5; margin-bottom: 16px;">
-            <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15M17 8L12 3M12 3L7 8M12 3V15" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <div style="font-family: var(--font-sans); font-weight: 400; font-size: 16px; color: var(--white); margin-bottom: 8px;" id="file-title">Drop certificate here</div>
-          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 13px; color: var(--white-faint);" id="file-sub">JPG, PNG or PDF — max 10MB</div>
+          <i class="ph ph-cloud-arrow-up" style="font-size: 32px; color: var(--wp-trust-blue); margin-bottom: 8px; display:inline-block;"></i>
+          <div style="font-size: 15px; font-weight: 600; color: var(--wp-ink-navy); margin-bottom: 4px;" id="file-title">Click or drop certificate here</div>
+          <div style="font-size: 13px; color: var(--wp-text-muted);" id="file-sub">PDF, JPG or PNG (up to 10MB)</div>
         </div>
         <input type="file" name="death_certificate_file" id="file-upload" style="display: none;" accept=".pdf,.png,.jpg,.jpeg">
-        
-        <div style="margin-bottom: 48px;"></div>
-        
-        <div class="form-section-title">YOUR DETAILS</div>
-        <div class="form-rule"></div>
-        
+
+        <div class="form-section-divider"></div>
+
+        <div class="form-section-title">YOUR PARTICULARS (CLAIMANT)</div>
+
         <div class="input-group">
           <label class="input-label">YOUR FULL NAME</label>
-          <input type="text" name="claimant_name" class="form-input" required>
+          <input type="text" name="claimant_name" class="form-input" placeholder="e.g. Rajiv Sharma" required>
         </div>
-        
+
         <div class="input-group">
           <label class="input-label">AADHAAR (LAST 4 DIGITS)</label>
-          <input type="text" name="aadhaar_last4" class="form-input" maxlength="4" required>
+          <input type="text" name="aadhaar_last4" class="form-input" placeholder="8832" maxlength="4" required>
         </div>
-        
+
         <div class="input-group">
           <label class="input-label">RELATION TO DECEASED</label>
           
@@ -184,7 +523,7 @@
             <option value="Sister">Sister</option>
           </select>
 
-          <!-- Custom Premium Dropdown -->
+          <!-- Custom Select Trigger -->
           <div class="custom-select-wrapper" id="custom-relation-dropdown">
             <div class="custom-select-trigger" tabindex="0">
               <span class="placeholder">Select relationship...</span>
@@ -203,43 +542,38 @@
             </div>
           </div>
         </div>
-        
+
         <div class="input-group">
           <label class="input-label">MOBILE NUMBER</label>
-          <input type="text" name="mobile" class="form-input" required>
-          <div style="font-family: var(--font-sans); font-weight: 300; font-size: 12px; color: var(--white-faint); margin-top: 8px;">For OTP identity verification</div>
+          <input type="text" name="mobile" class="form-input" placeholder="e.g. 9810000000" required>
+          <div style="font-size: 12px; color: var(--wp-text-muted); margin-top: 4px;">Used for identity verification code</div>
         </div>
-        
-        <label class="custom-checkbox-wrapper" style="margin-bottom: 40px; margin-top: 48px;">
+
+        <label class="custom-checkbox-wrapper">
           <input type="checkbox" id="affidavit" class="custom-checkbox-input" required>
-          <div class="custom-checkbox-box"></div>
           <div class="custom-checkbox-text">
-            I declare all submitted information is genuine. I understand that false declaration is punishable under IPC Section 420 and 468.
+            I solemnly declare that all particulars submitted are genuine. I understand false declaration in asset claims is punishable under IPC Sections 420 and 468.
           </div>
         </label>
-        
-        <button type="submit" class="premium-cta-btn btn-full" id="submit-btn">
-          <span>SCAN ALL DATABASES</span>
-          <div class="arrow-circle">
-            <svg class="arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
-          </div>
+
+        <button type="submit" class="btn-submit-search" id="submit-btn">
+          <span>SCAN ALL REGISTRIES</span>
+          <i class="ph ph-arrow-right" style="font-size: 18px;"></i>
         </button>
-        
+
         <div class="error-state" id="form-error"></div>
       </form>
     </div>
   </div>
 </div>
 
-<!-- Loader -->
+<!-- Loader Overlay -->
 <div id="loader-overlay">
   <div class="spinner"></div>
   <div class="loader-text">
-    <div class="loader-phrase active" id="phrase-1">Scanning Certificate...</div>
+    <div class="loader-phrase active" id="phrase-1">Scanning Registries...</div>
     <div class="loader-phrase" id="phrase-2">Verifying Identity...</div>
-    <div class="loader-phrase" id="phrase-3">Matching Records...</div>
+    <div class="loader-phrase" id="phrase-3">Matching Holdings...</div>
   </div>
 </div>
 
@@ -254,14 +588,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const submitBtn = document.getElementById('submit-btn');
 
   // File upload logic
-  fileInput.addEventListener('change', (e) => {
-    if(e.target.files.length > 0) {
-      dragZone.classList.add('file-added');
-      fileTitle.textContent = "✓ " + e.target.files[0].name;
-      fileTitle.style.color = "var(--verified)";
-      fileSub.textContent = "Document secured";
-    }
-  });
+  if (fileInput && dragZone) {
+    fileInput.addEventListener('change', (e) => {
+      if(e.target.files.length > 0) {
+        dragZone.classList.add('file-added');
+        fileTitle.textContent = "✓ " + e.target.files[0].name;
+        fileTitle.style.color = "var(--wp-success)";
+        fileSub.textContent = "Document secured for verification";
+      }
+    });
+  }
 
   // Custom Select Controller
   const customSelect = document.getElementById('custom-relation-dropdown');
@@ -273,45 +609,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const optionsContainer = customSelect.querySelector('.custom-select-options');
     const options = customSelect.querySelectorAll('.custom-select-option');
 
-    // Toggle dropdown open state
     trigger.addEventListener('click', (e) => {
       e.stopPropagation();
       trigger.classList.toggle('active');
       optionsContainer.classList.toggle('open');
     });
 
-    // Close dropdown on click outside
     document.addEventListener('click', () => {
       trigger.classList.remove('active');
       optionsContainer.classList.remove('open');
     });
 
-    // Handle option selection
     options.forEach(opt => {
       opt.addEventListener('click', (e) => {
         e.stopPropagation();
         const value = opt.dataset.value;
         const text = opt.textContent;
 
-        // Update active class on options
         options.forEach(o => o.classList.remove('selected'));
         opt.classList.add('selected');
 
-        // Update trigger text
         triggerText.textContent = text;
         triggerText.classList.remove('placeholder');
 
-        // Set value in native select and dispatch change event
         nativeSelect.value = value;
         nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
 
-        // Close dropdown
         trigger.classList.remove('active');
         optionsContainer.classList.remove('open');
       });
     });
 
-    // Sync custom UI if native select changes (e.g. during Autofill / Demo Mode)
     nativeSelect.addEventListener('change', () => {
       const val = nativeSelect.value;
       options.forEach(opt => {
@@ -324,7 +652,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Keyboard navigation accessibility
     trigger.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -333,43 +660,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-
-
-  // Form submission basic validation (PAN)
-  form.addEventListener('submit', (e) => {
-    const pan = form.querySelector('[name="pan_number"]').value.toUpperCase();
-    const errorDiv = document.getElementById('form-error');
-    if(!pan.match(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)) {
+  // Form submission validation (PAN)
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      const pan = form.querySelector('[name="pan_number"]').value.toUpperCase();
+      const errorDiv = document.getElementById('form-error');
+      if(!pan.match(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)) {
+        e.preventDefault();
+        errorDiv.style.display = 'block';
+        errorDiv.textContent = 'Invalid PAN format. Please use format ABCDE1234F.';
+        setTimeout(() => { errorDiv.style.display = 'none'; }, 4000);
+        return;
+      }
+      
       e.preventDefault();
-      errorDiv.style.display = 'block';
-      errorDiv.textContent = 'Invalid PAN format. Please use format ABCDE1234F.';
-      setTimeout(() => { errorDiv.style.display = 'none'; }, 4000);
-      return;
-    }
-    
-    // Show Loader and animate phrases
-    e.preventDefault(); // Delay submit
-    document.getElementById('loader-overlay').classList.add('active');
-    
-    setTimeout(() => {
-      document.getElementById('phrase-1').classList.remove('active');
-      document.getElementById('phrase-2').classList.add('active');
-    }, 1500);
-    
-    setTimeout(() => {
-      document.getElementById('phrase-2').classList.remove('active');
-      document.getElementById('phrase-3').classList.add('active');
-    }, 3000);
-    
-    setTimeout(() => {
-      form.submit();
-    }, 4500);
-  });
+      document.getElementById('loader-overlay').classList.add('active');
+      
+      setTimeout(() => {
+        document.getElementById('phrase-1').classList.remove('active');
+        document.getElementById('phrase-2').classList.add('active');
+      }, 1500);
+      
+      setTimeout(() => {
+        document.getElementById('phrase-2').classList.remove('active');
+        document.getElementById('phrase-3').classList.add('active');
+      }, 3000);
+      
+      setTimeout(() => {
+        form.submit();
+      }, 4500);
+    });
+  }
 
-  // Hackathon mock fill
+  // Hackathon demo autofill
   let triggerCount = 0;
   const trigger = document.getElementById('hackathon-trigger');
-  if(trigger) {
+  if(trigger && form) {
     trigger.addEventListener('click', () => {
       triggerCount++;
       if(triggerCount === 3) {
@@ -378,13 +704,13 @@ document.addEventListener('DOMContentLoaded', () => {
         form.querySelector('[name="death_certificate_no"]').value = "DL-2026-0988";
         form.querySelector('[name="claimant_name"]').value = "Rajiv Sharma";
         form.querySelector('[name="aadhaar_last4"]').value = "8832";
-        form.querySelector('[name="relation"]').value = "Son";
+        nativeSelect.value = "Son";
+        nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
         form.querySelector('[name="mobile"]').value = "9810000000";
-        checkbox.checked = true;
-        submitBtn.disabled = false;
+        if (checkbox) checkbox.checked = true;
+        if (submitBtn) submitBtn.disabled = false;
         
-        // Add visual cue
-        trigger.style.color = "var(--success)";
+        trigger.style.color = "var(--wp-success)";
         trigger.textContent += " (DEMO MODE)";
       }
     });
