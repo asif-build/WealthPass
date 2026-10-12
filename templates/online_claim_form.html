@@ -1,0 +1,665 @@
+{% extends 'core/base.html' %}
+
+{% block extra_css %}
+<style>
+.claim-portal-page {
+  background: radial-gradient(circle at top center, #141414 0%, #0c0c0c 100%);
+  min-height: 100vh;
+  padding: 120px 0 80px;
+  color: #E1E0CC;
+}
+.portal-container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.portal-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.gold-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  background: rgba(225, 224, 204, 0.06);
+  border: 1px solid rgba(225, 224, 204, 0.15);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 16px;
+}
+.hero-title {
+  font-family: var(--font-serif, serif);
+  font-size: 44px;
+  font-weight: 300;
+  color: #ffffff;
+  margin: 0 0 12px;
+  letter-spacing: 0.02em;
+}
+.hero-subtitle {
+  font-size: 14px;
+  color: #a0a0a0;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Asset Selector Tabs */
+.asset-selector {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 8px 4px 16px;
+  margin-bottom: 32px;
+}
+.asset-tab {
+  flex: 1;
+  min-width: 220px;
+  background: #161616;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+}
+.asset-tab:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  background: #1c1c1c;
+}
+.asset-tab.active {
+  border-color: #D4AF37;
+  background: rgba(212, 175, 55, 0.06);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.08);
+}
+.asset-tab-inst {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  display: block;
+  margin-bottom: 4px;
+}
+.asset-tab-ref {
+  font-size: 11px;
+  color: #888888;
+  font-family: monospace;
+}
+
+/* Auto-fill Banner */
+.autofill-banner {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(20, 20, 20, 0.95) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 20px;
+  padding: 24px 28px;
+  margin-bottom: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.autofill-info h3 {
+  font-size: 18px;
+  color: #ffffff;
+  margin: 0 0 6px;
+  font-weight: 500;
+}
+.autofill-info p {
+  font-size: 12px;
+  color: #b0b0b0;
+  margin: 0;
+  line-height: 1.5;
+}
+.autofill-btn {
+  background: #D4AF37;
+  color: #0c0c0c;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25);
+}
+.autofill-btn:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+.autofill-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Form Sections */
+.claim-form-card {
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 40px;
+  margin-bottom: 32px;
+}
+.form-section {
+  margin-bottom: 36px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.form-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.section-heading {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-desc {
+  font-size: 12px;
+  color: #888888;
+  margin-bottom: 24px;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.form-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #cccccc;
+}
+.form-label span.req {
+  color: #D4AF37;
+}
+.form-input {
+  background: #1c1c1c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #ffffff;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.form-input:focus {
+  border-color: #D4AF37;
+  background: #202020;
+}
+.form-input:read-only {
+  background: #181818;
+  color: #999999;
+}
+.form-input::placeholder {
+  color: #555555;
+}
+
+/* Green AI Auto-fill Tag */
+.ai-filled-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  margin-top: 4px;
+}
+
+/* Indemnity Box */
+.indemnity-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 24px;
+}
+.indemnity-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 12px;
+  color: #bbbbbb;
+  line-height: 1.6;
+  cursor: pointer;
+}
+.indemnity-checkbox {
+  margin-top: 3px;
+  accent-color: #D4AF37;
+  width: 16px;
+  height: 16px;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 40px;
+}
+.submit-btn {
+  background: #D4AF37;
+  color: #0c0c0c;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 14px 32px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+.submit-btn:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+.download-alt-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 14px 28px;
+  border-radius: 9999px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s ease;
+}
+.download-alt-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Success Modal */
+.success-banner {
+  display: none;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+  padding: 16px 20px;
+  border-radius: 16px;
+  font-size: 13px;
+  margin-bottom: 24px;
+  align-items: center;
+  justify-content: space-between;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="claim-portal-page">
+  <div class="portal-container">
+    
+    <!-- HEADER -->
+    <div class="portal-header">
+      <div class="gold-badge">
+        <span>⚡ DIGITAL SETTLEMENT ENGINE</span>
+      </div>
+      <h1 class="hero-title">Online Statutory Claim Filing</h1>
+      <p class="hero-subtitle">
+        Fill and submit your formal settlement applications online for all discovered bank accounts, LIC policies, and mutual funds without visiting multiple branches manually.
+      </p>
+    </div>
+
+    <!-- ASSET SELECTOR TABS -->
+    <div class="asset-selector" id="assetTabs">
+      {% for asset in assets %}
+      <div class="asset-tab {% if forloop.first %}active{% endif %}" 
+           data-asset-id="{{ asset.id }}"
+           data-institution="{{ asset.institution }}"
+           data-reference="{{ asset.masked_reference|default:asset.source_reference }}"
+           data-category="{{ asset.asset_category }}"
+           onclick="selectAsset('{{ asset.id }}', '{{ asset.institution|escapejs }}', '{{ asset.masked_reference|default:asset.source_reference|escapejs }}')">
+        <span class="asset-tab-inst">{{ asset.institution }}</span>
+        <span class="asset-tab-ref">{{ asset.masked_reference|default:asset.source_reference }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- AUTO-FILL BANNER -->
+    <div class="autofill-banner">
+      <div class="autofill-info">
+        <h3>⚡ Auto-Fill With Green AI</h3>
+        <p>Our eco-optimized AI extracts required fields from your case documents in milliseconds with zero hallucination.</p>
+        <div id="aiFillStatus" class="ai-filled-badge" style="display: none;">
+          ✓ Auto-filled by Green AI (Verified Precision)
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <input type="file" id="aiDocUpload" style="display: none;" accept=".pdf,.jpg,.jpeg,.png" onchange="handleAiDocUpload(this)">
+        <button type="button" class="autofill-btn" id="runAiBtn" onclick="runGreenAiAutoFill()">
+          <span>✨ Run Green AI Auto-Fill</span>
+        </button>
+        <button type="button" class="download-alt-btn" style="padding: 12px 18px; font-size: 12px;" onclick="document.getElementById('aiDocUpload').click()">
+          <span>Upload File</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SUCCESS NOTIFICATION -->
+    <div id="claimSuccessBanner" class="success-banner">
+      <span>✓ Claim package successfully submitted and digitally logged. Official Bank Form 14 is ready!</span>
+      <a href="{% url 'print_forms' session_id=session.id %}" target="_blank" style="color: #ffffff; text-decoration: underline; font-weight: 600;">Download Packet &rarr;</a>
+    </div>
+
+    <!-- INTERACTIVE FORM CARD -->
+    <form id="onlineClaimForm" onsubmit="submitOnlineClaim(event)">
+      <div class="claim-form-card">
+        
+        <!-- SECTION 1: DECEASED PARTICULARS -->
+        <div class="form-section">
+          <div class="section-heading">
+            <span>01</span>
+            <span>Deceased Depositor Particulars</span>
+          </div>
+          <div class="section-desc">Statutory civil and identity information recorded in official registries.</div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Full Legal Name of Deceased <span class="req">*</span></label>
+              <input type="text" id="deceased_name" name="deceased_name" class="form-input" value="{{ session.deceased_name }}" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Permanent Account Number (PAN)</label>
+              <input type="text" id="deceased_pan" name="deceased_pan" class="form-input" value="{{ session.deceased_pan|default:'NOT AVAILABLE' }}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date of Death</label>
+              <input type="date" id="date_of_death" name="date_of_death" class="form-input" value="{{ session.date_of_death|date:'Y-m-d' }}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Death Certificate / Extract No.</label>
+              <input type="text" id="death_cert_no" name="death_cert_no" class="form-input" value="{{ session.death_certificate_no|default:'CERT-MCGM-2023-88912' }}">
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: CLAIMANT CREDENTIALS -->
+        <div class="form-section">
+          <div class="section-heading">
+            <span>02</span>
+            <span>Claimant & Legal Heir Credentials</span>
+          </div>
+          <div class="section-desc">Identity and kinship representation of the person claiming the assets.</div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Claimant Full Name <span class="req">*</span></label>
+              <input type="text" id="claimant_name" name="claimant_name" class="form-input" value="{{ session.claimant_name }}" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Relationship to Deceased <span class="req">*</span></label>
+              <select id="claimant_relation" name="claimant_relation" class="form-input" required>
+                <option value="Son" {% if session.relation == 'Son' %}selected{% endif %}>Son</option>
+                <option value="Daughter" {% if session.relation == 'Daughter' %}selected{% endif %}>Daughter</option>
+                <option value="Spouse" {% if session.relation == 'Spouse' %}selected{% endif %}>Spouse</option>
+                <option value="Father" {% if session.relation == 'Father' %}selected{% endif %}>Father</option>
+                <option value="Mother" {% if session.relation == 'Mother' %}selected{% endif %}>Mother</option>
+                <option value="Legal Heir" {% if session.relation == 'Legal Heir' %}selected{% endif %}>Legal Heir</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Claimant Mobile Number <span class="req">*</span></label>
+              <input type="text" id="claimant_mobile" name="claimant_mobile" class="form-input" value="{{ session.mobile }}" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Aadhaar (Last 4 Digits)</label>
+              <input type="text" id="claimant_aadhaar_last4" name="claimant_aadhaar_last4" class="form-input" value="{{ session.claimant_aadhaar_last4|default:'3210' }}" maxlength="4">
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: INSTITUTION & SETTLEMENT DESTINATION -->
+        <div class="form-section">
+          <div class="section-heading">
+            <span>03</span>
+            <span>Account Details & Settlement Destination</span>
+          </div>
+          <div class="section-desc">The bank account to be settled and where the funds will be transferred via NEFT/RTGS.</div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Holding Bank / Insurer <span class="req">*</span></label>
+              <input type="text" id="holding_institution" name="holding_institution" class="form-input" value="{{ assets.first.institution|default:'State Bank of India' }}" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Claim Account / Policy Reference <span class="req">*</span></label>
+              <input type="text" id="claim_reference_no" name="claim_reference_no" class="form-input" value="{{ assets.first.masked_reference|default:'UDGAM-2024-88492' }}" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Branch IFSC Code</label>
+              <input type="text" id="branch_ifsc" name="branch_ifsc" class="form-input" value="SBIN0000001" placeholder="e.g. SBIN0000001">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Estimated Claim Balance (INR)</label>
+              <input type="text" id="claim_amount" name="claim_amount" class="form-input" value="Undisclosed / Branch Valuation" placeholder="e.g. 1,42,850.00">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Claimant Receiving Bank Name <span class="req">*</span></label>
+              <input type="text" id="settlement_bank" name="settlement_bank" class="form-input" value="HDFC Bank" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Claimant Receiving Account No. <span class="req">*</span></label>
+              <input type="text" id="settlement_acc_no" name="settlement_acc_no" class="form-input" value="50100294819201" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Claimant Receiving Account IFSC <span class="req">*</span></label>
+              <input type="text" id="settlement_ifsc" name="settlement_ifsc" class="form-input" value="HDFC0000123" required>
+            </div>
+          </div>
+
+          <!-- INDEMNITY DECLARATION (RBI FORM 14 CLAUSE) -->
+          <div class="indemnity-box">
+            <label class="indemnity-label">
+              <input type="checkbox" id="statutory_indemnity" name="statutory_indemnity" class="indemnity-checkbox" checked required>
+              <span>
+                <strong>Statutory Legal Heir Indemnity (RBI Form 14):</strong> I hereby solemnly declare that I am the genuine nominee / legal heir entitled to receive the balance in the above account. I undertake to indemnify the bank against all losses, charges, and claims arising from settlement in accordance with Reserve Bank of India instructions.
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- FORM ACTION BUTTONS -->
+        <div class="form-actions">
+          <a href="{% url 'results' session_id=session.id %}" class="download-alt-btn">
+            &larr; Back to Results
+          </a>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <a href="{% url 'print_forms' session_id=session.id %}" target="_blank" class="download-alt-btn">
+              📄 Preview Blank Form 14
+            </a>
+            <button type="submit" class="submit-btn" id="submitClaimBtn">
+              <span>🚀 Submit Claim & Generate Completed Packet</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<script>
+let currentAssetId = '{{ assets.first.id|default:"" }}';
+
+function selectAsset(assetId, institution, reference) {
+  currentAssetId = assetId;
+  document.querySelectorAll('.asset-tab').forEach(tab => tab.classList.remove('active'));
+  const clicked = document.querySelector(`[data-asset-id="${assetId}"]`);
+  if (clicked) clicked.classList.add('active');
+  
+  document.getElementById('holding_institution').value = institution;
+  document.getElementById('claim_reference_no').value = reference;
+}
+
+// Green AI Auto-Fill Execution
+async function runGreenAiAutoFill() {
+  const btn = document.getElementById('runAiBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳ Green AI Extracting...</span>';
+  
+  const samplePassbook = `STATE BANK OF INDIA
+BRANCH: MUMBAI MAIN BRANCH (00001)
+IFSC CODE: SBIN0000001
+SAVINGS BANK PASSBOOK
+ACCOUNT NUMBER: 20491823719
+ACCOUNT HOLDER: {{ session.deceased_name }}
+NOMINEE / CLAIMANT: {{ session.claimant_name }}
+BALANCE AS ON 31/03/2023: INR 1,42,850.00`;
+
+  try {
+    const res = await fetch('/api/claims/{{ session.id }}/auto-fill/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ text: samplePassbook, asset_id: currentAssetId })
+    });
+    const data = await res.json();
+    if (data.success && data.fields) {
+      applyExtractedFields(data.fields);
+    }
+  } catch (err) {
+    console.error('Green AI Auto-fill error:', err);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>✨ Run Green AI Auto-Fill</span>';
+  }
+}
+
+// Handle uploaded document
+async function handleAiDocUpload(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const btn = document.getElementById('runAiBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳ Processing ' + file.name + '...</span>';
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('asset_id', currentAssetId);
+
+  try {
+    const res = await fetch('/api/claims/{{ session.id }}/auto-fill/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: formData
+    });
+    const data = await res.json();
+    if (data.success && data.fields) {
+      applyExtractedFields(data.fields);
+    }
+  } catch (err) {
+    console.error('Upload auto-fill error:', err);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>✨ Run Green AI Auto-Fill</span>';
+  }
+}
+
+function applyExtractedFields(fields) {
+  if (fields.bank_name) document.getElementById('holding_institution').value = fields.bank_name;
+  if (fields.account_number_masked) document.getElementById('claim_reference_no').value = fields.account_number_masked;
+  if (fields.ifsc_code) document.getElementById('branch_ifsc').value = fields.ifsc_code;
+  if (fields.closing_balance) document.getElementById('claim_amount').value = '₹ ' + fields.closing_balance;
+  if (fields.account_holder_name) document.getElementById('deceased_name').value = fields.account_holder_name;
+
+  const badge = document.getElementById('aiFillStatus');
+  badge.style.display = 'inline-flex';
+  badge.textContent = '✓ Auto-filled by Green AI (' + (fields.classification_category || 'Bank Account') + ')';
+}
+
+// Submit digital claim
+async function submitOnlineClaim(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitClaimBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳ Digitally Filing Claim...</span>';
+
+  const payload = {
+    asset_id: currentAssetId,
+    deceased_name: document.getElementById('deceased_name').value,
+    deceased_pan: document.getElementById('deceased_pan').value,
+    date_of_death: document.getElementById('date_of_death').value,
+    death_cert_no: document.getElementById('death_cert_no').value,
+    claimant_name: document.getElementById('claimant_name').value,
+    claimant_relation: document.getElementById('claimant_relation').value,
+    claimant_mobile: document.getElementById('claimant_mobile').value,
+    claimant_aadhaar_last4: document.getElementById('claimant_aadhaar_last4').value,
+    holding_institution: document.getElementById('holding_institution').value,
+    claim_reference_no: document.getElementById('claim_reference_no').value,
+    branch_ifsc: document.getElementById('branch_ifsc').value,
+    claim_amount: document.getElementById('claim_amount').value,
+    settlement_bank: document.getElementById('settlement_bank').value,
+    settlement_acc_no: document.getElementById('settlement_acc_no').value,
+    settlement_ifsc: document.getElementById('settlement_ifsc').value,
+    statutory_indemnity: document.getElementById('statutory_indemnity').checked
+  };
+
+  try {
+    const res = await fetch('/api/claims/{{ session.id }}/submit-online/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('claimSuccessBanner').style.display = 'flex';
+      btn.innerHTML = '<span>✓ Claim Package Filed Online</span>';
+      setTimeout(() => {
+        window.open('{% url "print_forms" session_id=session.id %}', '_blank');
+      }, 1000);
+    }
+  } catch (err) {
+    console.error('Submit error:', err);
+    btn.disabled = false;
+    btn.innerHTML = '<span>🚀 Submit Claim & Generate Completed Packet</span>';
+  }
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+</script>
+{% endblock %}

@@ -167,8 +167,8 @@
           <span style="color: var(--gold); font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 8px;">Actionable Recovery Guide</span>
           <h2 style="font-family: var(--font-serif); font-size: 36px; color: #fff; margin: 0;">What You Must Do Next To Claim These Assets</h2>
         </div>
-        <a href="{% url 'print_forms' session_id=session_id %}" target="_blank" class="premium-cta-btn" style="padding: 10px 24px; font-size: 12px; height: 48px;">
-          <span>DOWNLOAD CLAIM PACKET</span>
+        <a href="{% url 'online_claim_form' session_id=session_id %}" class="premium-cta-btn" style="padding: 10px 24px; font-size: 12px; height: 48px;">
+          <span>FILE ALL CLAIMS ONLINE &rarr;</span>
         </a>
       </div>
 
@@ -267,15 +267,15 @@
           {% endif %}
         </div>
         <div class="action-btns">
-          <a href="{% url 'print_forms' session_id=session_id %}" target="_blank" class="premium-cta-btn" style="width: 240px;">
-            <span>CLAIM PACKET</span>
+          <a href="{% url 'online_claim_form' session_id=session_id %}" class="premium-cta-btn" style="width: 240px;">
+            <span>FILE CLAIM ONLINE</span>
             <div class="arrow-circle">
               <svg class="arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
               </svg>
             </div>
           </a>
-          <a href="{% url 'print_forms' session_id=session_id %}" target="_blank" class="btn-secondary" style="width: 240px; text-align:center; display:flex; justify-content:center; align-items:center;">SECURE FORM 14</a>
+          <a href="{% url 'print_forms' session_id=session_id %}" target="_blank" class="btn-secondary" style="width: 240px; text-align:center; display:flex; justify-content:center; align-items:center;">DOWNLOAD FORM 14</a>
         </div>
       </div>
     </div>
