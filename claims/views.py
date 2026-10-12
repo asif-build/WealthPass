@@ -2371,8 +2371,7 @@ def api_document_classify_and_extract(request):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'Method not allowed. Use POST.'}, status=405)
 
-    if not request.user.is_authenticated:
-        return JsonResponse({'success': False, 'error': 'Authentication required.'}, status=401)
+    user = request.user if request.user.is_authenticated else None
 
     import json
     from .ocr import extract_text
@@ -2408,18 +2407,20 @@ def api_document_classify_and_extract(request):
             return JsonResponse({'success': False, 'error': f'OCR processing failed: {str(e)}'}, status=500)
 
         # Save private ClaimDocument record
-        try:
-            claim_doc = ClaimDocument.objects.create(
-                user=request.user,
-                document_type="FINANCIAL_EVIDENCE",
-                file=uploaded_file,
-                original_filename=uploaded_file.name,
-                file_size=uploaded_file.size,
-                mime_type=uploaded_file.content_type,
-                ocr_text=ocr_text[:5000]
-            )
-        except Exception:
-            pass
+        # Save private ClaimDocument record if authenticated
+        if user:
+            try:
+                claim_doc = ClaimDocument.objects.create(
+                    user=user,
+                    document_type="FINANCIAL_EVIDENCE",
+                    file=uploaded_file,
+                    original_filename=uploaded_file.name,
+                    file_size=uploaded_file.size,
+                    mime_type=uploaded_file.content_type,
+                    ocr_text=ocr_text[:5000]
+                )
+            except Exception:
+                pass
     else:
         # Accept text input in request body
         try:
@@ -2448,7 +2449,7 @@ def api_document_classify_and_extract(request):
     # Persist DocumentIntelligenceRun record in DB
     try:
         run_record = DocumentIntelligenceRun.objects.create(
-            user=request.user,
+            user=user,
             claim_document=claim_doc,
             file_sha256=file_sha,
             document_category=result.document_category.value,
