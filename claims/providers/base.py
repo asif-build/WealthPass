@@ -6,7 +6,9 @@ from datetime import datetime
 
 class IntegrationStatus(str, Enum):
     LIVE = "LIVE"
+    SANDBOX = "SANDBOX"
     OFFICIAL_EXTERNAL_PROCESS = "OFFICIAL_EXTERNAL_PROCESS"
+    ACCESS_PENDING = "ACCESS_PENDING"
     NOT_CONFIGURED = "NOT_CONFIGURED"
     FAILED = "FAILED"
     PLANNED = "PLANNED"
@@ -40,7 +42,7 @@ class BaseProvider(ABC):
     @property
     @abstractmethod
     def integration_status(self) -> IntegrationStatus:
-        """Current integration state: LIVE, OFFICIAL_EXTERNAL_PROCESS, NOT_CONFIGURED, etc."""
+        """Current integration state: LIVE, SANDBOX, OFFICIAL_EXTERNAL_PROCESS, ACCESS_PENDING, NOT_CONFIGURED, FAILED."""
         pass
 
     @abstractmethod
@@ -114,7 +116,7 @@ class BaseAssetDiscoveryProvider(BaseProvider):
     @property
     @abstractmethod
     def category(self) -> str:
-        """Asset class (e.g., 'BANK_DEPOSITS', 'INSURANCE', 'MUTUAL_FUNDS', 'CORPORATE_ASSETS')."""
+        """Asset class (e.g., 'BANK_DEPOSITS', 'INSURANCE', 'MUTUAL_FUNDS', 'CORPORATE_ASSETS', 'PENSION_EPFO', 'OTHER_INVESTMENTS')."""
         pass
 
     @property
@@ -122,6 +124,25 @@ class BaseAssetDiscoveryProvider(BaseProvider):
     def official_portal_url(self) -> str:
         """Direct link to the official authority/regulator portal."""
         pass
+
+    def supported_search_capabilities(self) -> List[str]:
+        """List of supported lookup dimensions: ['DECEASED_PAN', 'NAME_DOB', 'MOBILE_CONSENT', 'FOLIO_NO', 'UAN']."""
+        return ["DECEASED_NAME"]
+
+    def required_input_fields(self) -> List[str]:
+        """Identifiers required before a search can be conducted."""
+        return ["deceased_name"]
+
+    def required_consent_purposes(self) -> List[str]:
+        """Statutory consent purposes required under DPDP Act / regulations."""
+        return [f"ASSET_DISCOVERY_{self.category}"]
+
+    def eligibility_requirements(self) -> Dict[str, Any]:
+        """Access criteria and claimant eligibility guidelines."""
+        return {
+            "authorized_claimants": ["Legal Heirs", "Registered Nominees", "Succession Certificate Holders"],
+            "statutory_authorization": "Subject to verified KYC and institutional review."
+        }
 
     @abstractmethod
     def get_discovery_guide(self) -> Dict[str, Any]:
@@ -139,3 +160,15 @@ class BaseAssetDiscoveryProvider(BaseProvider):
         NEVER fabricates fake balances, mock accounts, or simulated matches.
         """
         pass
+
+    def get_metadata(self) -> Dict[str, Any]:
+        """Returns enriched metadata including category and capabilities."""
+        meta = super().get_metadata()
+        meta.update({
+            "category": self.category,
+            "official_portal_url": self.official_portal_url,
+            "capabilities": self.supported_search_capabilities(),
+            "required_fields": self.required_input_fields(),
+            "consent_purposes": self.required_consent_purposes(),
+        })
+        return meta

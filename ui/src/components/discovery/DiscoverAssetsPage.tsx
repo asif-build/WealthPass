@@ -31,17 +31,39 @@ export function DiscoverAssetsPage({
   onNavigateHome
 }: DiscoverAssetsPageProps) {
   const [sources, setSources] = useState<SourceScanItem[]>([
-    { id: "RBI_UDGAM", name: "RBI UDGAM", category: "BANK DEPOSITS", status: "OFFICIAL_EXTERNAL_PROCESS", label: "Central Portal" },
-    { id: "IRDAI_BIMA_BHAROSA", name: "IRDAI Bima Bharosa / Insurers", category: "INSURANCE", status: "OFFICIAL_EXTERNAL_PROCESS", label: "IRDAI Pathway" },
-    { id: "SEBI_MITRA", name: "SEBI MITRA", category: "MUTUAL FUNDS", status: "OFFICIAL_EXTERNAL_PROCESS", label: "RTA Tracing" },
-    { id: "IEPF", name: "IEPF Authority", category: "CORPORATE ASSETS", status: "OFFICIAL_EXTERNAL_PROCESS", label: "MCA21 Registry" }
+    { id: "RBI_UDGAM", name: "RBI UDGAM", category: "BANK DEPOSITS", status: "OFFICIAL_EXTERNAL_PROCESS", label: "Central Bank Portal" },
+    { id: "IRDAI_BIMA_BHAROSA", name: "IRDAI Bima Bharosa", category: "INSURANCE", status: "OFFICIAL_EXTERNAL_PROCESS", label: "IRDAI Statutory Registry" },
+    { id: "SEBI_MITRA", name: "SEBI MITRA & MF Central", category: "MUTUAL FUNDS", status: "OFFICIAL_EXTERNAL_PROCESS", label: "RTA Tracing (SEBI 2025)" },
+    { id: "IEPF", name: "IEPF Authority (MCA21)", category: "SHARES & DIVIDENDS", status: "OFFICIAL_EXTERNAL_PROCESS", label: "IEPF-5 MCA Portal" },
+    { id: "EPFO_SERVICES", name: "EPFO Services", category: "EPF & PENSION", status: "OFFICIAL_EXTERNAL_PROCESS", label: "EPFO Member Registry" },
+    { id: "OTHER_INVESTMENTS", name: "Post Office Small Savings & NPS", category: "OTHER INVESTMENTS", status: "OFFICIAL_EXTERNAL_PROCESS", label: "POSB & CRA Portal" }
   ]);
 
   const [assets, setAssets] = useState<DiscoveredAssetItem[]>([]);
+  const [caseId, setCaseId] = useState<string | null>(null);
   const [scanStatus, setScanStatus] = useState<"working" | "done" | "error">("working");
   const [scanError, setScanError] = useState<string | null>(null);
   const [activeAssetDetails, setActiveAssetDetails] = useState<DiscoveredAssetItem | null>(null);
   const [showWhatWeKnow, setShowWhatWeKnow] = useState(false);
+
+  // External Reference Recording Modal State
+  const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
+  const [recordSourceId, setRecordSourceId] = useState("RBI_UDGAM");
+  const [recordRefNo, setRecordRefNo] = useState("");
+  const [recordInstitution, setRecordInstitution] = useState("");
+  const [recordCategory, setRecordCategory] = useState("BANK_DEPOSITS");
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordSuccess, setRecordSuccess] = useState<string | null>(null);
+  const [recordError, setRecordError] = useState<string | null>(null);
+
+  // Partner Bridge Financing State
+  const [isBridgeModalOpen, setIsBridgeModalOpen] = useState(false);
+  const [bridgeConsent1, setBridgeConsent1] = useState(false);
+  const [bridgeConsent2, setBridgeConsent2] = useState(false);
+  const [isApplyingBridge, setIsApplyingBridge] = useState(false);
+  const [bridgeSuccess, setBridgeSuccess] = useState<string | null>(null);
+  const [bridgeError, setBridgeError] = useState<string | null>(null);
+
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const runDiscoveryScan = useCallback(async () => {
@@ -55,11 +77,19 @@ export function DiscoverAssetsPage({
         relationship: relationshipData.relationship
       });
 
-      if (res && res.results) {
-        setAssets(res.results);
-        setScanStatus("done");
-        setSources(prev => prev.map(s => ({ ...s, status: "completed", label: "Completed" })));
-      } else {
+      if (res) {
+        if (res.case_id) setCaseId(res.case_id);
+        if (res.results) setAssets(res.results);
+
+        if (res.sources_scanned && res.sources_scanned.length > 0) {
+          setSources(res.sources_scanned.map(s => ({
+            id: s.id,
+            name: s.name,
+            category: s.category,
+            status: s.status === 'COMPLETED' ? 'completed' : s.status === 'IN_PROGRESS' ? 'scanning' : (s.integration_status as any || 'OFFICIAL_EXTERNAL_PROCESS'),
+            label: s.integration_status === 'LIVE' ? 'LIVE GATEWAY' : s.integration_status === 'SANDBOX' ? 'SANDBOX' : 'OFFICIAL EXTERNAL PROCESS'
+          })));
+        }
         setScanStatus("done");
       }
     } catch (err: any) {
@@ -67,6 +97,79 @@ export function DiscoverAssetsPage({
       setScanError(err?.message || "Failed to reach statutory discovery endpoints. Please try again.");
     }
   }, [relationshipData]);
+
+  const handleRecordExternalReference = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!recordRefNo.trim()) {
+      setRecordError("Please enter the official reference number or search token.");
+      return;
+    }
+    if (!caseId) {
+      setRecordError("Active discovery case required. Please submit case intake first.");
+      return;
+    }
+
+    setIsRecording(true);
+    setRecordError(null);
+    setRecordSuccess(null);
+
+    try {
+      await assetDiscoveryEngine.recordExternalReference({
+        caseId: caseId,
+        sourceId: recordSourceId,
+        externalReferenceNumber: recordRefNo.trim(),
+        institutionName: recordInstitution.trim() || undefined,
+        assetCategory: recordCategory
+      });
+
+      setRecordSuccess(`Official search reference ${recordRefNo.trim()} recorded successfully.`);
+      setTimeout(() => {
+        setIsRecordModalOpen(false);
+        setRecordRefNo("");
+        setRecordInstitution("");
+        setRecordSuccess(null);
+        runDiscoveryScan();
+      }, 1500);
+    } catch (err: any) {
+      setRecordError(err?.message || "Failed to record search reference.");
+    } finally {
+      setIsRecording(false);
+    }
+  };
+
+  const handleApplyBridgeLiquidity = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bridgeConsent1 || !bridgeConsent2) {
+      setBridgeError("Please accept the statutory partner consent disclosures.");
+      return;
+    }
+    if (!caseId) {
+      setBridgeError("An active discovery case with identified assets is required.");
+      return;
+    }
+
+    setIsApplyingBridge(true);
+    setBridgeError(null);
+    setBridgeSuccess(null);
+
+    try {
+      const res = await assetDiscoveryEngine.applyBridgeLiquidity({
+        caseId: caseId,
+        consentPartnership: bridgeConsent1,
+        consentUnderwriting: bridgeConsent2
+      });
+
+      setBridgeSuccess(res.message || "Financing application submitted to regulated lending partner.");
+      setTimeout(() => {
+        setIsBridgeModalOpen(false);
+        setBridgeSuccess(null);
+      }, 2500);
+    } catch (err: any) {
+      setBridgeError(err?.message || "Application submission failed. Please try again.");
+    } finally {
+      setIsApplyingBridge(false);
+    }
+  };
 
   useEffect(() => {
     runDiscoveryScan();
@@ -174,7 +277,7 @@ export function DiscoverAssetsPage({
         {/* Discovered Potential Assets Cards (Part 15) */}
         {/* Discovered Potential Assets Cards */}
         <div>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div>
               <h2 className="text-xl font-light text-[#E1E0CC]">
                 Potential Asset Matches <span className="text-sm font-mono text-white/50">({assets.length} identified)</span>
@@ -183,24 +286,40 @@ export function DiscoverAssetsPage({
                 Matches are indicative signals; actual recovery requires statutory documentation and institution approval.
               </p>
             </div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-[#DEDBC8]">
-              Estimated Pool: {assets.length > 0 ? `₹${assets.reduce((sum, a) => sum + (a.numericValue || 0), 0).toLocaleString('en-IN')}` : "Pending Institutional Query"}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setIsRecordModalOpen(true)}
+                className="px-3.5 py-1.5 rounded-full border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 text-xs font-mono transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>+ Record Portal Reference</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsBridgeModalOpen(true)}
+                className="px-3.5 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 text-xs font-mono transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Partner Financing</span>
+              </button>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-[#DEDBC8]">
+                Pool: {assets.length > 0 ? `₹${assets.reduce((sum, a) => sum + (a.numericValue || 0), 0).toLocaleString('en-IN')}` : "Pending Verification"}
+              </div>
             </div>
           </div>
 
           {assets.length === 0 ? (
-            <div className="p-8 rounded-2xl bg-[#0e0e0e] border border-white/10 space-y-6 text-center max-w-2xl mx-auto">
+            <div className="p-8 rounded-2xl bg-[#0e0e0e] border border-white/10 space-y-6 text-center max-w-3xl mx-auto">
               <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto text-amber-300">
                 <Landmark className="w-6 h-6" />
               </div>
               <div className="space-y-2">
                 <h3 className="text-lg font-medium text-white">Statutory External Recovery Channels</h3>
                 <p className="text-xs text-white/60 leading-relaxed">
-                  Bulk scraping or automated unauthorized querying of citizen financial data is strictly prohibited by RBI and regulatory mandates. To trace unclaimed deposits or insurance policies, access the official statutory portals below:
+                  Bulk scraping or unauthorized automated querying of citizen financial data is prohibited by RBI, IRDAI and SEBI regulations. WealthPass provides guided statutory pathways. Search official registries below and record your reference number:
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-left">
                 <a
                   href="https://udgam.rbi.org.in/"
                   target="_blank"
@@ -208,7 +327,7 @@ export function DiscoverAssetsPage({
                   className="p-3.5 rounded-xl border border-white/10 bg-black/60 hover:border-white/30 transition-all block group"
                 >
                   <div className="text-xs font-medium text-white group-hover:text-amber-300 flex items-center justify-between">
-                    <span>RBI UDGAM Portal</span>
+                    <span>RBI UDGAM</span>
                     <span className="text-[10px] text-white/40">↗</span>
                   </div>
                   <p className="text-[11px] text-white/50 mt-1">Search unclaimed bank deposits across 30+ commercial banks.</p>
@@ -234,7 +353,7 @@ export function DiscoverAssetsPage({
                   className="p-3.5 rounded-xl border border-white/10 bg-black/60 hover:border-white/30 transition-all block group"
                 >
                   <div className="text-xs font-medium text-white group-hover:text-amber-300 flex items-center justify-between">
-                    <span>SEBI / MF Central</span>
+                    <span>SEBI MITRA & MF Central</span>
                     <span className="text-[10px] text-white/40">↗</span>
                   </div>
                   <p className="text-[11px] text-white/50 mt-1">Trace dormant or inactive mutual fund folios via investor PAN.</p>
@@ -252,9 +371,42 @@ export function DiscoverAssetsPage({
                   </div>
                   <p className="text-[11px] text-white/50 mt-1">Recover unclaimed dividends and equity shares via Form IEPF-5.</p>
                 </a>
+
+                <a
+                  href="https://www.epfindia.gov.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3.5 rounded-xl border border-white/10 bg-black/60 hover:border-white/30 transition-all block group"
+                >
+                  <div className="text-xs font-medium text-white group-hover:text-amber-300 flex items-center justify-between">
+                    <span>EPFO Member Portal</span>
+                    <span className="text-[10px] text-white/40">↗</span>
+                  </div>
+                  <p className="text-[11px] text-white/50 mt-1">Trace inoperative EPF balances, EPS pensions, and EDLI life assurance.</p>
+                </a>
+
+                <a
+                  href="https://www.indiapost.gov.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3.5 rounded-xl border border-white/10 bg-black/60 hover:border-white/30 transition-all block group"
+                >
+                  <div className="text-xs font-medium text-white group-hover:text-amber-300 flex items-center justify-between">
+                    <span>Post Office & NPS</span>
+                    <span className="text-[10px] text-white/40">↗</span>
+                  </div>
+                  <p className="text-[11px] text-white/50 mt-1">Recover Post Office Small Savings (PPF, NSC) & PFRDA CRA NPS accounts.</p>
+                </a>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => setIsRecordModalOpen(true)}
+                  className="px-4 py-2 rounded-xl bg-primary text-black font-semibold text-xs hover:bg-white transition-all cursor-pointer shadow-md"
+                >
+                  + Record Reference from Official Search
+                </button>
                 <button
                   type="button"
                   onClick={onNavigateSources}
@@ -532,6 +684,215 @@ export function DiscoverAssetsPage({
                   Understood
                 </button>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* RECORD EXTERNAL SEARCH REFERENCE MODAL */}
+      <AnimatePresence>
+        {isRecordModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-[#0e0e0e] border border-white/15 rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative"
+            >
+              <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
+                <div>
+                  <h3 className="text-lg font-medium text-[#E1E0CC]">RECORD OFFICIAL PORTAL REFERENCE</h3>
+                  <p className="text-xs text-white/50 mt-0.5">Attach your statutory search acknowledgment to this case dossier</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsRecordModalOpen(false)}
+                  className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:text-white cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {recordError && (
+                <div className="mb-4 p-3 rounded-xl bg-red-950/40 border border-red-500/30 text-xs text-red-300">
+                  {recordError}
+                </div>
+              )}
+              {recordSuccess && (
+                <div className="mb-4 p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-300">
+                  {recordSuccess}
+                </div>
+              )}
+
+              <form onSubmit={handleRecordExternalReference} className="space-y-4 text-xs">
+                <div>
+                  <label className="text-white/70 block mb-1 font-medium">Statutory Portal / Source *</label>
+                  <select
+                    value={recordSourceId}
+                    onChange={(e) => {
+                      setRecordSourceId(e.target.value);
+                      if (e.target.value === "RBI_UDGAM") setRecordCategory("BANK_DEPOSITS");
+                      else if (e.target.value === "IRDAI_BIMA_BHAROSA") setRecordCategory("INSURANCE");
+                      else if (e.target.value === "SEBI_MITRA") setRecordCategory("MUTUAL_FUNDS");
+                      else if (e.target.value === "IEPF") setRecordCategory("SHARES_DIVIDENDS");
+                      else if (e.target.value === "EPFO_SERVICES") setRecordCategory("PENSION_EPFO");
+                      else if (e.target.value === "OTHER_INVESTMENTS") setRecordCategory("OTHER_INVESTMENTS");
+                    }}
+                    className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-3 py-2.5 text-sm text-[#E1E0CC] focus:outline-none focus:border-primary/60"
+                  >
+                    <option value="RBI_UDGAM">RBI UDGAM (Unclaimed Bank Deposits)</option>
+                    <option value="IRDAI_BIMA_BHAROSA">IRDAI Bima Bharosa (Unclaimed Insurance Policies)</option>
+                    <option value="SEBI_MITRA">SEBI MITRA &amp; MF Central (Inactive Mutual Funds)</option>
+                    <option value="IEPF">IEPF Authority (Shares &amp; Unpaid Dividends - Form IEPF-5)</option>
+                    <option value="EPFO_SERVICES">EPFO Services (Provident Fund &amp; EDLI)</option>
+                    <option value="OTHER_INVESTMENTS">Post Office Small Savings &amp; NPS PRAN</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-white/70 block mb-1 font-medium">Official Reference Number / SRN / Token *</label>
+                  <input
+                    type="text"
+                    required
+                    value={recordRefNo}
+                    onChange={(e) => setRecordRefNo(e.target.value)}
+                    placeholder="e.g. UDGAM/2024/78219 or BB-882109 or IEPF SRN"
+                    className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-3 py-2.5 text-sm font-mono text-[#E1E0CC] focus:outline-none focus:border-primary/60"
+                  />
+                  <span className="text-[10px] text-white/40 mt-1 block">
+                    Issued directly on the official government or regulator portal after query completion.
+                  </span>
+                </div>
+
+                <div>
+                  <label className="text-white/70 block mb-1 font-medium">Holding Institution / Bank / Insurer Name (Optional)</label>
+                  <input
+                    type="text"
+                    value={recordInstitution}
+                    onChange={(e) => setRecordInstitution(e.target.value)}
+                    placeholder="e.g. State Bank of India, LIC of India, HDFC AMC"
+                    className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-3 py-2.5 text-sm text-[#E1E0CC] focus:outline-none focus:border-primary/60"
+                  />
+                </div>
+
+                <div className="p-3 rounded-xl bg-white/[0.02] border border-white/10 text-[11px] text-white/50 leading-relaxed">
+                  <strong>Truthful Audit Commitment: </strong>
+                  WealthPass does not fabricate asset balances. Submitting an external reference establishes an official potential match with unverified valuation pending institution branch verification.
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setIsRecordModalOpen(false)}
+                    className="px-4 py-2 rounded-xl border border-white/10 text-white/60 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isRecording}
+                    className="px-5 py-2.5 rounded-xl bg-primary text-black font-semibold uppercase tracking-wider text-xs hover:bg-white disabled:opacity-50 transition-all cursor-pointer"
+                  >
+                    {isRecording ? "Saving..." : "Save Reference"}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* REGULATED PARTNER FINANCING MODAL */}
+      <AnimatePresence>
+        {isBridgeModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-[#0e0e0e] border border-white/15 rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative"
+            >
+              <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
+                <div>
+                  <h3 className="text-lg font-medium text-white">EMERGENCY BRIDGE LIQUIDITY ASSISTANCE</h3>
+                  <p className="text-xs text-white/50 mt-0.5">Financing pathway provided exclusively through regulated partner entities</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsBridgeModalOpen(false)}
+                  className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:text-white cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {bridgeError && (
+                <div className="mb-4 p-3 rounded-xl bg-red-950/40 border border-red-500/30 text-xs text-red-300">
+                  {bridgeError}
+                </div>
+              )}
+              {bridgeSuccess && (
+                <div className="mb-4 p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-300">
+                  {bridgeSuccess}
+                </div>
+              )}
+
+              <form onSubmit={handleApplyBridgeLiquidity} className="space-y-4 text-xs">
+                <div className="p-4 rounded-xl bg-purple-950/20 border border-purple-500/30 text-purple-200/90 leading-relaxed space-y-2">
+                  <div className="font-semibold text-purple-300 uppercase tracking-wider text-[11px]">
+                    Statutory Regulatory Disclosure
+                  </div>
+                  <p>
+                    WealthPass is a technology discovery platform and is NOT a bank, Non-Banking Financial Company (NBFC), or money lender.
+                  </p>
+                  <p>
+                    Any emergency liquidity advance against verified deceased estate claims is underwritten, disbursed, and serviced independently by RBI-regulated NBFC/banking lending partners subject to their statutory credit policies.
+                  </p>
+                </div>
+
+                <div className="space-y-3 pt-2">
+                  <label className="flex items-start gap-2.5 cursor-pointer text-white/70">
+                    <input
+                      type="checkbox"
+                      checked={bridgeConsent1}
+                      onChange={(e) => setBridgeConsent1(e.target.checked)}
+                      className="accent-primary rounded mt-0.5 cursor-pointer"
+                    />
+                    <span>
+                      I authorize WealthPass to securely share my verified case dossier with regulated lending partner Northern Arc Capital / Partner NBFC for eligibility assessment.
+                    </span>
+                  </label>
+
+                  <label className="flex items-start gap-2.5 cursor-pointer text-white/70">
+                    <input
+                      type="checkbox"
+                      checked={bridgeConsent2}
+                      onChange={(e) => setBridgeConsent2(e.target.checked)}
+                      className="accent-primary rounded mt-0.5 cursor-pointer"
+                    />
+                    <span>
+                      I understand that approval is not guaranteed, and advances are contingent on institution verification of legal heirship.
+                    </span>
+                  </label>
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setIsBridgeModalOpen(false)}
+                    className="px-4 py-2 rounded-xl border border-white/10 text-white/60 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isApplyingBridge || !bridgeConsent1 || !bridgeConsent2}
+                    className="px-5 py-2.5 rounded-xl bg-primary text-black font-semibold uppercase tracking-wider text-xs hover:bg-white disabled:opacity-50 transition-all cursor-pointer"
+                  >
+                    {isApplyingBridge ? "Submitting..." : "Submit Partner Application"}
+                  </button>
+                </div>
+              </form>
             </motion.div>
           </div>
         )}

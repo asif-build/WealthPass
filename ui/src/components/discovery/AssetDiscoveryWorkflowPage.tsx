@@ -78,10 +78,18 @@ const ASSET_CATEGORIES = [
   {
     id: "PF_PENSION",
     title: "Provident Fund / Inoperative EPF",
-    subtitle: "Inoperative EPF accounts where contributions ceased.",
-    source: "EPFO Member Portal",
+    subtitle: "Inoperative EPF accounts, EPS 1995 survivor pensions, and EDLI insurance.",
+    source: "EPFO Member Portal & Statutory Trusts",
     status: "OFFICIAL_EXTERNAL_PROCESS",
-    badge: "Central Registry"
+    badge: "EPFO / Central"
+  },
+  {
+    id: "OTHER_INVESTMENTS",
+    title: "Small Savings, Post Office & NPS",
+    subtitle: "National Savings Certificates (NSC), PPF, Post Office savings, and PRAN NPS units.",
+    source: "Department of Posts & PFRDA CRA",
+    status: "OFFICIAL_EXTERNAL_PROCESS",
+    badge: "Govt Small Savings"
   }
 ];
 
@@ -116,7 +124,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
 
   // Step 4: Asset Categories State
   const [selectedCategories, setSelectedCategories] = useState<string[]>([
-    "BANK_DEPOSITS", "INSURANCE", "MUTUAL_FUNDS", "SHARES_DIVIDENDS"
+    "BANK_DEPOSITS", "INSURANCE", "MUTUAL_FUNDS", "SHARES_DIVIDENDS", "PF_PENSION", "OTHER_INVESTMENTS"
   ]);
 
   // Step 5: Review & Consent

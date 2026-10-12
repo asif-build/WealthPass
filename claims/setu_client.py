@@ -156,6 +156,9 @@ def create_consent(mobile_number):
         ],
 
         "purpose": {
+            "category": {
+                "type": "Wealth Management"
+            },
             "code": "103",
             "text": "Wealth and asset discovery",
             "refUri": "https://api.rebit.org.in/aa/purpose/103.xml"
@@ -182,13 +185,7 @@ def create_consent(mobile_number):
         ),
 
         "context": [],
-
-        "additionalParams": {
-            "tags": [
-                "WealthPass",
-                "Asset_Discovery"
-            ]
-        }
+        "additionalParams": {}
     }
 
     print("====================================")

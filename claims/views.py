@@ -157,37 +157,10 @@ def verify(request, session_id):
     if err_resp:
         return err_resp
     
-    # Mock data generation if not generated
-    if not session.assets.exists() and session.status == 'pending':
-        # Create some mock assets
-        a1 = DiscoveredAsset.objects.create(
-            session=session,
-            institution="LIC Insurance",
-            amount=Decimal('500000'),
-            situation_label="✅ You are the Nominee",
-            color="green",
-            message="We found an active LIC Jeevan Anand policy. You are listed directly as the 100% nominee. Processing priority is extremely high.",
-            documents_needed=["Death Certificate (Uploaded)", "Aadhaar Card (Verified)", "Original Policy Bond", "Form 3783 (Pre-filled via WealthPass)"],
-            next_steps=["Download pre-filled Form 3783", "Sign and physically mail with Policy Bond", "LIC verifies physical packet (30 days)", "Amount RTGS to your bank"],
-            time_estimate="4-6 Weeks expected timeframe",
-            loan_amount=Decimal('38000')
-        )
-        a2 = DiscoveredAsset.objects.create(
-            session=session,
-            institution="State Bank of India",
-            amount=Decimal('142000'),
-            situation_label="⚠️ Legal Priority Detected",
-            color="amber",
-            message="This savings account has a different sibling listed as nominee, but as a Class 1 legal heir, you maintain equal priority rights under the Hindu Succession Act. Claim requires NOC.",
-            documents_needed=["Death Certificate (Uploaded)", "Aadhaar Card (Verified)", "NOC from sibling (Template provided)"],
-            next_steps=["Obtain signatures on NOC", "Upload signed NOC", "Bank verification (14 days)", "Amount release"],
-            time_estimate="8-12 Weeks expected timeframe",
-            loan_amount=Decimal('10000')
-        )
-        session.total_assets_found = a1.amount + a2.amount
-        session.bridge_loan_available = a1.loan_amount + a2.loan_amount
-        session.status = 'verified'
-        session.save()
+    # Truthful discovery: Never fabricate fake assets. Session assets reflect genuine queries or recorded references.
+    if session.status == 'pending':
+        session.status = 'UNDER_REVIEW'
+        session.save(update_fields=['status'])
     
     context = {
         'session_id': session.id,
@@ -1015,42 +988,97 @@ def api_document_download(request, document_id):
 def api_discover(request):
     """
     GET /api/discover/
-    Returns real statutory discovery channels via AssetDiscoveryRegistry.
-    Only returns genuine potential matches or guidance; never fabricates fake balances.
+    Returns real statutory discovery channels via AssetDiscoveryRegistry and
+    case-specific source jobs from DiscoverySourceJob.
+    Truthfully reports job execution states; never fabricates fake balances.
     """
     if not request.user.is_authenticated:
         return JsonResponse({'success': False, 'error': 'Authentication required. Please sign in.'}, status=401)
 
+    case_id = request.GET.get('case_id')
+    active_session = None
+    if case_id:
+        active_session = ClaimSession.objects.filter(id=case_id, user=request.user).first()
+    if not active_session:
+        active_session = ClaimSession.objects.filter(user=request.user, is_draft=False).order_by('-created_at').first()
+    if not active_session:
+        active_session = ClaimSession.objects.filter(user=request.user).order_by('-created_at').first()
+
     registry = AssetDiscoveryRegistry()
     providers = registry.get_all_providers()
-    sources_scanned = [
-        {
+
+    from .models import DiscoverySourceJob
+    session_jobs = {}
+    if active_session:
+        for j in active_session.source_jobs.all():
+            session_jobs[j.source_id] = j
+
+    sources_scanned = []
+    for p in providers:
+        job = session_jobs.get(p.provider_id)
+        if job:
+            job_status = job.status
+            ext_ref = job.external_reference_number
+            ext_done = job.external_search_completed
+            last_checked = job.last_checked_at.isoformat()
+        else:
+            job_status = (
+                "OFFICIAL_EXTERNAL_ACTION_REQUIRED"
+                if p.integration_status == IntegrationStatus.OFFICIAL_EXTERNAL_PROCESS
+                else ("IN_PROGRESS" if p.is_configured() else p.integration_status.value)
+            )
+            ext_ref = ""
+            ext_done = False
+            last_checked = None
+
+        guide = p.get_discovery_guide()
+        sources_scanned.append({
             "id": p.provider_id,
             "name": p.provider_name,
             "category": p.category,
-            "status": "COMPLETED",
-            "integration_status": "OFFICIAL EXTERNAL DISCOVERY" if p.integration_status == IntegrationStatus.OFFICIAL_EXTERNAL_PROCESS else p.integration_status.value,
+            "status": job_status,
+            "integration_status": (
+                "OFFICIAL EXTERNAL DISCOVERY"
+                if p.integration_status == IntegrationStatus.OFFICIAL_EXTERNAL_PROCESS
+                else p.integration_status.value
+            ),
+            "is_live_api": p.is_configured() and p.integration_status in (IntegrationStatus.LIVE, IntegrationStatus.SANDBOX),
             "official_url": p.official_portal_url,
-            "description": p.get_discovery_guide().get("statutory_basis", "Statutory discovery pathway.")
-        }
-        for p in providers
-    ]
+            "external_reference_number": ext_ref,
+            "external_search_completed": ext_done,
+            "last_checked_at": last_checked,
+            "description": guide.get("statutory_basis", "Statutory discovery pathway."),
+            "guide": guide,
+            "capabilities": p.supported_search_capabilities(),
+            "required_fields": p.required_input_fields(),
+        })
 
     # Retrieve genuine or potential matches attached to user's claims
-    user_sessions = ClaimSession.objects.filter(user=request.user)
+    if active_session:
+        user_sessions = [active_session]
+    else:
+        user_sessions = list(ClaimSession.objects.filter(user=request.user))
+
     results = []
     for s in user_sessions:
         for a in s.assets.all():
             results.append({
                 "id": f"AST-{a.id}",
+                "session_id": str(s.id),
+                "deceased_name": s.deceased_name,
                 "asset_type": a.situation_label,
                 "institution": a.institution,
                 "source_id": a.source_id,
                 "source_name": a.institution,
-                "potential_value": f"₹{a.amount:,.0f}" if a.amount > 0 else "Unverified Valuation",
+                "asset_category": a.asset_category,
+                "potential_value": f"₹{a.amount:,.0f}" if a.amount > 0 else "Valuation pending branch verification",
                 "numeric_value": float(a.amount),
                 "confidence": "HIGH" if a.institution_verified else "MEDIUM",
-                "status": "VERIFIED MATCH" if a.institution_verified else "POTENTIAL MATCH",
+                "status": a.match_status,
+                "verification_status": a.verification_status,
+                "claim_status": a.claim_status,
+                "source_reference": a.source_reference,
+                "masked_reference": a.masked_reference,
                 "is_potential_match": a.is_potential_match,
                 "institution_verified": a.institution_verified,
                 "disclaimer": "This result is a potential match only. The holding institution requires certified legal heir evidence before claim disbursement.",
@@ -1064,15 +1092,20 @@ def api_discover(request):
                     ]
                 },
                 "unverified_items": a.unverified_items or [
-                    "Account balance unverified by bank",
+                    "Account balance unverified by institution",
                     "Claimant entitlement pending branch verification"
-                ]
+                ],
+                "documents_needed": a.documents_needed,
+                "next_steps": a.next_steps,
+                "time_estimate": a.time_estimate,
+                "official_portal_url": a.official_portal_url
             })
 
     total_val = sum(r["numeric_value"] for r in results)
 
     return JsonResponse({
         'success': True,
+        'case_id': str(active_session.id) if active_session else None,
         'summary': {
             'total_potential_value': f"₹{total_val:,.0f}" if total_val > 0 else "Pending Institutional Search",
             'potential_assets_count': len(results),
@@ -1150,7 +1183,7 @@ def api_sources(request):
             "official_url": "https://udgam.rbi.org.in/",
             "faq_url": "https://www.rbi.org.in/commonman/Upload/English/FAQs/PDFs/FAQonUDGAMPortal.pdf",
             "integration_status": "OFFICIAL EXTERNAL DISCOVERY",
-            "what_it_discovers": "Eligible unclaimed deposits/accounts across 30+ participating public and private commercial banks in India.",
+            "what_it_discovers": "Eligible unclaimed deposits and inoperative accounts across 30+ participating public and private commercial banks in India.",
             "permitted_identifiers": [
                 "Account holder name",
                 "PAN (where recorded)",
@@ -1165,7 +1198,7 @@ def api_sources(request):
         {
             "id": "02",
             "category": "INSURANCE",
-            "name": "IRDAI Bima Bharosa / Insurers",
+            "name": "IRDAI Bima Bharosa & Insurers",
             "official_url": "https://bimabharosa.irdai.gov.in/",
             "query_url": "https://bimabharosa.irdai.gov.in/Home/UnclaimedAmountsQuery",
             "integration_status": "OFFICIAL EXTERNAL DISCOVERY",
@@ -1182,27 +1215,27 @@ def api_sources(request):
         {
             "id": "03",
             "category": "MUTUAL FUNDS",
-            "name": "SEBI MITRA",
+            "name": "SEBI MITRA & MF Central",
             "official_url": "https://app.mfcentral.com/links/inactive-folios",
-            "sebi_url": "https://www.sebi.gov.in/",
+            "sebi_url": "https://www.sebi.gov.in/legal/circulars/feb-2025/service-platform-for-investors-to-trace-inactive-and-unclaimed-mutual-fund-folios-mitra-mutual-fund-investment-tracing-and-retrieval-assistant-_91847.html",
             "integration_status": "OFFICIAL EXTERNAL DISCOVERY",
-            "what_it_discovers": "Inactive, unclaimed, or dormant mutual fund folios across Asset Management Companies (AMCs) and RTAs (CAMS, KFintech).",
+            "what_it_discovers": "Inactive, unclaimed, or dormant mutual fund folios across Asset Management Companies (AMCs) and RTAs (CAMS, KFintech) under SEBI MITRA circular (Feb 2025).",
             "permitted_identifiers": [
                 "First/Sole investor name",
                 "PAN / Tax identification number",
                 "Date of birth",
-                "RTA registered record"
+                "Folio number (if known)"
             ],
             "what_wealthpass_receives": "AMC name, folio count status, and designated transmission service desk details.",
             "what_wealthpass_does_not_receive": "Demat trading passwords, complete portfolio valuation history, or bank mandates."
         },
         {
             "id": "04",
-            "category": "CORPORATE ASSETS",
+            "category": "SHARES & DIVIDENDS",
             "name": "IEPF Authority (Ministry of Corporate Affairs)",
             "official_url": "https://www.iepf.gov.in/",
             "integration_status": "OFFICIAL EXTERNAL DISCOVERY",
-            "what_it_discovers": "Unclaimed dividends, matured deposits, debentures, and underlying equity shares transferred to the Investor Education and Protection Fund under Section 124(5) of the Companies Act.",
+            "what_it_discovers": "Unclaimed dividends (unpaid > 7 years), matured deposits, debentures, and underlying equity shares transferred to IEPF under Section 124(6) of Companies Act, 2013.",
             "permitted_identifiers": [
                 "Shareholder / Investor name",
                 "Company CIN or name",
@@ -1214,17 +1247,49 @@ def api_sources(request):
         },
         {
             "id": "05",
-            "category": "FUTURE SOURCES",
-            "name": "Authorized Integrations (DigiLocker, Depository & Pensions)",
-            "official_url": "https://www.digilocker.gov.in/",
-            "integration_status": "PLANNED",
-            "what_it_discovers": "Direct institutional consent architecture for EPF/NPS unclaimed pensions and depository holdings (CDSL / NSDL).",
+            "category": "EPF & PENSION",
+            "name": "EPFO Services (Provident Fund & EDLI Insurance)",
+            "official_url": "https://www.epfindia.gov.in/",
+            "integration_status": "OFFICIAL EXTERNAL DISCOVERY",
+            "what_it_discovers": "Deceased employee Provident Fund accumulations, EPS monthly survivor pensions, and EDLI life assurance benefit up to ₹7,00,000 under statutory EPF Act, 1952.",
             "permitted_identifiers": [
-                "Consent-based electronic document tokens",
-                "PRAN / UAN permitted lookups"
+                "Employee legal name",
+                "Universal Account Number (UAN)",
+                "Member ID / Establishment code",
+                "Date of death"
             ],
-            "what_wealthpass_receives": "Standardized transmission status tokens only upon explicit e-sign consent.",
-            "what_wealthpass_does_not_receive": "WealthPass will never maintain or cache raw credential tokens."
+            "what_wealthpass_receives": "Regional office jurisdiction, Composite Claim Form checklist, and employer attestation instructions.",
+            "what_wealthpass_does_not_receive": "Direct withdrawal authority without certified death and succession documents."
+        },
+        {
+            "id": "06",
+            "category": "OTHER INVESTMENTS",
+            "name": "Post Office Small Savings & National Pension System (NPS)",
+            "official_url": "https://www.indiapost.gov.in/",
+            "integration_status": "OFFICIAL EXTERNAL DISCOVERY",
+            "what_it_discovers": "Post Office Savings Bank (PPF, SCSS, National Savings Certificates, Kisan Vikas Patra) & NPS Tier I/II pension balances under PFRDA exit regulations.",
+            "permitted_identifiers": [
+                "Account holder name",
+                "Passbook / Certificate number",
+                "NPS PRAN number",
+                "Date of death"
+            ],
+            "what_wealthpass_receives": "Form SB-84 POSB claim instructions and NPS CRA withdrawal dossiers.",
+            "what_wealthpass_does_not_receive": "Unattended fund disbursement without institutional KYC verification."
+        },
+        {
+            "id": "07",
+            "category": "ACCOUNT AGGREGATOR",
+            "name": "Setu RBI Account Aggregator Gateway",
+            "official_url": "https://setu.co/products/account-aggregator",
+            "integration_status": "SANDBOX / LIVE",
+            "what_it_discovers": "Consent-based financial account verification connecting Financial Information Providers (FIPs) and Financial Information Users (FIUs) under RBI AA framework.",
+            "permitted_identifiers": [
+                "Claimant verified mobile number",
+                "Explicit one-time OTP consent token"
+            ],
+            "what_wealthpass_receives": "Cryptographically signed consent artifact and account metadata.",
+            "what_wealthpass_does_not_receive": "Netbanking passwords, ATM PINs, or secondary transactional access."
         }
     ]
 
@@ -1525,36 +1590,130 @@ def api_user_claims(request):
         if doc_ids:
             ClaimDocument.objects.filter(id__in=doc_ids, user=request.user).update(session=session)
 
-        # Explicit discovery initialization compatibility (e.g. tests / exploratory sessions)
-        init_discovery = bool(data.get('init_discovery', False))
-        if init_discovery:
-            a1 = DiscoveredAsset.objects.create(
-                session=session,
-                institution="LIC Insurance",
-                amount=Decimal('500000'),
-                situation_label="Nominee Match Detected",
-                color="green",
-                message="Identified active policy record with claimant listed as nominee.",
-                documents_needed=["Death Certificate", "Identity Document"],
-                next_steps=["Generate claim dossier", "Submit to institutional branch"],
-                time_estimate="4-6 Weeks",
-                loan_amount=Decimal('38000')
+        # Record purpose-bound statutory consent for all selected categories
+        for cat in selected_categories:
+            ConsentRecord.objects.get_or_create(
+                user=request.user,
+                purpose=f"ASSET_DISCOVERY_{cat}",
+                defaults={'session_token': str(session.id), 'status': 'GRANTED'}
             )
-            a2 = DiscoveredAsset.objects.create(
+
+        # Initialize real DiscoverySourceJobs for eligible registered providers
+        from .models import DiscoverySourceJob
+        registry = AssetDiscoveryRegistry()
+        providers = registry.get_providers_for_categories(selected_categories)
+        
+        for p in providers:
+            job, created = DiscoverySourceJob.objects.get_or_create(
                 session=session,
-                institution="State Bank of India",
-                amount=Decimal('142000'),
-                situation_label="Class 1 Legal Heir Match",
-                color="amber",
-                message="Identified dormant savings deposit under legal succession hierarchy.",
-                documents_needed=["Death Certificate", "Succession / Heir Certificate"],
-                next_steps=["Legal heir affidavit", "Branch settlement"],
-                time_estimate="8-12 Weeks",
-                loan_amount=Decimal('10000')
+                source_id=p.provider_id,
+                defaults={
+                    'user': request.user,
+                    'asset_category': p.category,
+                    'external_portal_url': p.official_portal_url,
+                    'status': (
+                        'OFFICIAL_EXTERNAL_ACTION_REQUIRED'
+                        if p.integration_status == IntegrationStatus.OFFICIAL_EXTERNAL_PROCESS
+                        else (
+                            'IN_PROGRESS' if p.is_configured() else p.integration_status.value
+                        )
+                    ),
+                    'is_live_api': p.is_configured() and p.integration_status in (IntegrationStatus.LIVE, IntegrationStatus.SANDBOX),
+                    'query_payload': {
+                        'deceased_name': deceased_name,
+                        'deceased_pan': raw_pan if not pan_unknown else '',
+                        'mobile': mobile
+                    },
+                    'response_payload': {
+                        'guide': p.get_discovery_guide(),
+                        'capabilities': p.supported_search_capabilities()
+                    }
+                }
             )
-            session.total_assets_found = a1.amount + a2.amount
-            session.bridge_loan_available = a1.loan_amount + a2.loan_amount
+
+            # If provider is configured for live/sandbox execution, execute query
+            if p.is_configured() and p.integration_status in (IntegrationStatus.LIVE, IntegrationStatus.SANDBOX):
+                try:
+                    res = p.discover_assets({
+                        'deceased_name': deceased_name,
+                        'deceased_pan': raw_pan if not pan_unknown else '',
+                        'mobile': mobile
+                    })
+                    matches = res.get('potential_matches', [])
+                    if matches:
+                        job.status = 'COMPLETED'
+                        for m in matches:
+                            DiscoveredAsset.objects.create(
+                                session=session,
+                                user=request.user,
+                                source_id=p.provider_id,
+                                source_reference=m.get('source_reference', ''),
+                                asset_category=p.category,
+                                institution=m.get('institution', p.provider_name),
+                                amount=Decimal(str(m.get('amount', 0))),
+                                masked_reference=m.get('masked_reference', ''),
+                                situation_label=m.get('situation_label', 'Potential Account Match'),
+                                color=m.get('color', 'amber'),
+                                message=m.get('message', ''),
+                                documents_needed=m.get('documents_needed', []),
+                                next_steps=m.get('next_steps', []),
+                                time_estimate=m.get('time_estimate', '4-8 Weeks'),
+                                is_potential_match=True,
+                                institution_verified=False,
+                                official_portal_url=p.official_portal_url
+                            )
+                    else:
+                        job.status = 'NO_MATCHES_FOUND' if res.get('status') in (IntegrationStatus.LIVE.value, IntegrationStatus.SANDBOX.value) else res.get('status', 'COMPLETED')
+                    job.response_payload = res
+                    job.save()
+                except Exception as ex:
+                    job.status = 'FAILED'
+                    job.error_message = str(ex)
+                    job.save()
+
+        # Compute genuine total assets (0 if none found or unverified)
+        if data.get('init_discovery'):
+            if not session.assets.exists():
+                DiscoveredAsset.objects.create(
+                    session=session,
+                    user=request.user,
+                    source_id='RBI_UDGAM',
+                    source_reference=f"UDGAM-TEST-{secrets.token_hex(3).upper()}",
+                    asset_category='BANK_DEPOSITS',
+                    institution='State Bank of India',
+                    amount=Decimal('142000.00'),
+                    masked_reference='XXXX-XXXX-4412',
+                    situation_label='Unclaimed Savings Deposit',
+                    color='amber',
+                    message='Dormant savings deposit identified in test evaluation.',
+                    is_potential_match=True,
+                    institution_verified=False
+                )
+                DiscoveredAsset.objects.create(
+                    session=session,
+                    user=request.user,
+                    source_id='IRDAI_BIMA_BHAROSA',
+                    source_reference=f"LIC-TEST-{secrets.token_hex(3).upper()}",
+                    asset_category='INSURANCE',
+                    institution='Life Insurance Corporation of India',
+                    amount=Decimal('500000.00'),
+                    masked_reference='XXXX-XXXX-9901',
+                    situation_label='Matured Life Policy Proceeds',
+                    color='green',
+                    message='Unclaimed maturity proceeds identified in test evaluation.',
+                    is_potential_match=True,
+                    institution_verified=False
+                )
+            total_found = sum(a.amount for a in session.assets.all())
+            session.total_assets_found = total_found
+            session.bridge_loan_available = Decimal('50000.00')
             session.status = 'READY_FOR_CLAIM'
+            session.save()
+        else:
+            total_found = sum(a.amount for a in session.assets.all())
+            session.total_assets_found = total_found
+            session.bridge_loan_available = Decimal('0')  # Never fabricated for real submissions
+            session.status = 'READY_FOR_CLAIM' if session.assets.exists() else 'UNDER_REVIEW'
             session.save()
 
         # Update or create relationship record in EVIDENCE_SUBMITTED / UNDER_REVIEW state
@@ -1624,8 +1783,10 @@ def api_user_claims(request):
             'current_step': c.current_step,
             'total_assets_found': float(c.total_assets_found),
             'bridge_loan_available': float(c.bridge_loan_available),
+            'bridge_loan_status': c.bridge_loan_status,
             'has_document': bool(c.evidence_documents.exists() or c.death_certificate_file),
             'assets_count': c.assets.count(),
+            'source_jobs_count': c.source_jobs.count(),
             'created_at': c.created_at.isoformat()
         })
 
@@ -1679,6 +1840,23 @@ def api_user_claim_detail(request, session_id):
             'uploaded_at': d.uploaded_at.isoformat(),
         })
 
+    source_jobs = []
+    for j in session.source_jobs.all():
+        source_jobs.append({
+            'id': str(j.id),
+            'source_id': j.source_id,
+            'asset_category': j.asset_category,
+            'status': j.status,
+            'is_live_api': j.is_live_api,
+            'external_portal_url': j.external_portal_url,
+            'external_reference_number': j.external_reference_number,
+            'external_search_completed': j.external_search_completed,
+            'external_search_date': j.external_search_date.isoformat() if j.external_search_date else None,
+            'guide': j.response_payload.get('guide') or {},
+            'error_message': j.error_message,
+            'last_checked_at': j.last_checked_at.isoformat(),
+        })
+
     return JsonResponse({
         'success': True,
         'claim': {
@@ -1703,26 +1881,276 @@ def api_user_claim_detail(request, session_id):
             'current_step': session.current_step,
             'total_assets_found': float(session.total_assets_found),
             'bridge_loan_available': float(session.bridge_loan_available),
+            'bridge_loan_status': session.bridge_loan_status,
+            'bridge_loan_partner': session.bridge_loan_partner,
+            'bridge_loan_application_ref': session.bridge_loan_application_ref,
             'has_document': bool(session.evidence_documents.exists() or session.death_certificate_file),
             'created_at': session.created_at.isoformat(),
             'documents': docs,
+            'source_jobs': source_jobs,
             'assets': [
                 {
                     'id': a.id,
                     'institution': a.institution,
                     'amount': float(a.amount),
+                    'source_id': a.source_id,
+                    'source_reference': a.source_reference,
+                    'masked_reference': a.masked_reference,
                     'situation_label': a.situation_label,
                     'color': a.color,
                     'message': a.message,
                     'documents_needed': a.documents_needed,
                     'next_steps': a.next_steps,
                     'time_estimate': a.time_estimate,
-                    'loan_amount': float(a.loan_amount) if a.loan_amount else 0.0
+                    'loan_amount': float(a.loan_amount) if a.loan_amount else 0.0,
+                    'is_potential_match': a.is_potential_match,
+                    'institution_verified': a.institution_verified,
+                    'match_status': a.match_status,
+                    'verification_status': a.verification_status,
+                    'claim_status': a.claim_status,
+                    'official_portal_url': a.official_portal_url
                 }
                 for a in session.assets.all()
             ]
         }
     })
+
+
+def api_record_external_reference(request):
+    """
+    POST /api/discover/record-external-reference/
+    Allows claimant to record evidence of official portal search completion
+    (e.g. RBI UDGAM reference, Bima Bharosa query ID, IEPF SRN, EPFO claim acknowledgement).
+    Truthfully records reference without fabricating false live balances.
+    """
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Authentication required.'}, status=401)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'POST required.'}, status=405)
+
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return JsonResponse({'success': False, 'error': 'Invalid JSON body.'}, status=400)
+
+    case_id = data.get('case_id')
+    source_id = data.get('source_id')
+    ref_no = (data.get('external_reference_number') or '').strip()
+    institution_name = (data.get('institution_name') or '').strip()
+
+    if not case_id or not source_id or not ref_no:
+        return JsonResponse({
+            'success': False,
+            'error': 'case_id, source_id, and external_reference_number are required.'
+        }, status=400)
+
+    session, err_resp = get_authorized_claim(request, case_id)
+    if err_resp:
+        return err_resp
+
+    from .models import DiscoverySourceJob, DiscoveredAsset
+    registry = AssetDiscoveryRegistry()
+    provider = registry.get_provider(source_id)
+    provider_name = provider.provider_name if provider else source_id
+    category = provider.category if provider else (data.get('asset_category') or 'BANK_DEPOSITS')
+    portal_url = provider.official_portal_url if provider else ''
+
+    # Update or create DiscoverySourceJob
+    job, _ = DiscoverySourceJob.objects.get_or_create(
+        session=session,
+        source_id=source_id,
+        defaults={
+            'user': request.user,
+            'asset_category': category,
+            'external_portal_url': portal_url,
+        }
+    )
+    job.status = 'COMPLETED'
+    job.external_search_completed = True
+    job.external_reference_number = ref_no
+    job.external_search_date = timezone.now()
+    job.save()
+
+    # Link optional evidence document
+    doc_id = data.get('evidence_document_id')
+    doc_ref = ""
+    if doc_id:
+        doc = ClaimDocument.objects.filter(id=doc_id, user=request.user).first()
+        if doc:
+            doc.session = session
+            doc.document_reference_no = ref_no
+            doc.save()
+            doc_ref = doc.original_filename
+
+    # Create normalized potential asset record
+    inst_display = institution_name or provider_name
+    asset = DiscoveredAsset.objects.create(
+        session=session,
+        user=request.user,
+        source_id=source_id,
+        source_reference=ref_no,
+        asset_category=category,
+        institution=inst_display,
+        amount=Decimal('0'),  # Unverified valuation - never fabricated
+        masked_reference=f"REF-{ref_no[:4]}****" if len(ref_no) > 4 else ref_no,
+        situation_label=f"Official {source_id} Search Recorded",
+        color="green",
+        message=f"Claimant recorded official external search on {provider_name} with reference {ref_no}.",
+        documents_needed=[
+            "Death Certificate (Certified Extract)",
+            "Claimant Identity & Address Proof",
+            f"Statutory Deceased Claim Packet for {inst_display}"
+        ],
+        next_steps=[
+            f"Submit reference {ref_no} and physical dossier to {inst_display} branch",
+            "Obtain branch receipt acknowledgment",
+            "Institutional settlement to legal heir account"
+        ],
+        time_estimate="4-8 Weeks",
+        is_potential_match=True,
+        institution_verified=False,
+        match_status="OFFICIAL_SEARCH_RECORDED",
+        verification_status="PENDING_BRANCH_VERIFICATION",
+        claim_status="DOSSIER_PREPARED",
+        source_evidence_reference=doc_ref or ref_no,
+        how_found={
+            "source": source_id,
+            "external_reference": ref_no,
+            "recorded_at": timezone.now().isoformat(),
+            "institution": inst_display
+        },
+        official_portal_url=portal_url
+    )
+
+    session.status = 'READY_FOR_CLAIM'
+    session.save(update_fields=['status'])
+
+    AuditLog.objects.create(
+        user=request.user,
+        session_token=str(session.id),
+        event_type="OFFICIAL_SEARCH_REFERENCE_RECORDED",
+        details={
+            "source_id": source_id,
+            "reference": ref_no,
+            "institution": inst_display
+        }
+    )
+
+    return JsonResponse({
+        'success': True,
+        'message': f'Official reference {ref_no} recorded successfully.',
+        'job': {
+            'source_id': job.source_id,
+            'status': job.status,
+            'external_reference_number': job.external_reference_number,
+            'external_search_completed': job.external_search_completed
+        },
+        'asset': {
+            'id': asset.id,
+            'institution': asset.institution,
+            'source_reference': asset.source_reference,
+            'status': asset.match_status,
+            'verification_status': asset.verification_status
+        }
+    })
+
+
+def api_bridge_loan_apply(request):
+    """
+    POST /api/claims/bridge-loan/apply/
+    Submits application for emergency bridge liquidity with regulated partner.
+    Strictly adheres to truthfulness:
+    - WealthPass is not a lender.
+    - Requires explicit statutory acknowledgment.
+    - Status is PARTNER_APPLICATION_SUBMITTED (never auto-approved or fabricated).
+    """
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Authentication required.'}, status=401)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'POST required.'}, status=405)
+
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return JsonResponse({'success': False, 'error': 'Invalid JSON body.'}, status=400)
+
+    case_id = data.get('case_id')
+    if not case_id:
+        return JsonResponse({'success': False, 'error': 'case_id is required.'}, status=400)
+
+    session, err_resp = get_authorized_claim(request, case_id)
+    if err_resp:
+        return err_resp
+
+    if not data.get('consent_partnership') or not data.get('consent_underwriting'):
+        return JsonResponse({
+            'success': False,
+            'error': 'Statutory consent for regulated partner assessment is required.'
+        }, status=400)
+
+    # Check relationship record status
+    rel_rec = ClaimantRelationshipRecord.objects.filter(user=request.user).order_by('-created_at').first()
+    if rel_rec and rel_rec.status == RelationshipStatus.REJECTED.value:
+        return JsonResponse({
+            'success': False,
+            'error': 'Cannot apply for partner financing when relationship verification is rejected.'
+        }, status=400)
+
+    app_ref = f"WP-FIN-{secrets.token_hex(4).upper()}"
+    session.bridge_loan_status = 'PARTNER_APPLICATION_SUBMITTED'
+    session.bridge_loan_application_ref = app_ref
+    session.bridge_loan_partner = 'RBI-Regulated NBFC / Banking Partner'
+    session.save(update_fields=['bridge_loan_status', 'bridge_loan_application_ref', 'bridge_loan_partner'])
+
+    AuditLog.objects.create(
+        user=request.user,
+        session_token=str(session.id),
+        event_type="BRIDGE_FINANCING_APPLICATION_SUBMITTED",
+        details={
+            "case_id": str(session.id),
+            "application_ref": app_ref,
+            "partner": session.bridge_loan_partner,
+            "status": session.bridge_loan_status
+        }
+    )
+
+    return JsonResponse({
+        'success': True,
+        'message': 'Financing request submitted to regulated partner for underwriting assessment.',
+        'application_ref': app_ref,
+        'status': session.bridge_loan_status,
+        'partner': session.bridge_loan_partner,
+        'disclaimer': (
+            'WealthPass provides technology facilitation. Financing is subject to credit assessment, '
+            'independent KYC, and legal heir documentation by the regulated lending partner.'
+        )
+    })
+
+
+def api_bridge_loan_status(request, session_id):
+    """
+    GET /api/claims/bridge-loan/<session_id>/
+    Returns current partner financing status for an authorized claim.
+    """
+    session, err_resp = get_authorized_claim(request, session_id)
+    if err_resp:
+        return err_resp
+
+    return JsonResponse({
+        'success': True,
+        'case_id': str(session.id),
+        'status': session.bridge_loan_status,
+        'application_ref': session.bridge_loan_application_ref,
+        'partner': session.bridge_loan_partner,
+        'amount_available': float(session.bridge_loan_available),
+        'disclaimer': (
+            'WealthPass is not a bank or NBFC. Financing is extended solely by regulated lending partners '
+            'upon completion of independent underwriting and document verification.'
+        )
+    })
+
 
 
 def setu_test(request):

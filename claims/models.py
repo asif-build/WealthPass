@@ -53,6 +53,11 @@ class ClaimSession(models.Model):
     total_assets_found = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     bridge_loan_available = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 
+    # Bridge Liquidity Partner Workflow
+    bridge_loan_status = models.CharField(max_length=50, default='NOT_APPLIED')
+    bridge_loan_partner = models.CharField(max_length=100, blank=True, default='Regulated NBFC / Bank Partner')
+    bridge_loan_application_ref = models.CharField(max_length=100, blank=True, default='')
+
     # Setu AA tracking
     setu_consent_id = models.CharField(max_length=255, blank=True, null=True)
     setu_consent_status = models.CharField(max_length=50, default='NOT_STARTED')
@@ -64,26 +69,67 @@ class ClaimSession(models.Model):
         return f"Session {self.id} - {self.claimant_name} claiming for {self.deceased_name}"
 
 
+class DiscoverySourceJob(models.Model):
+    """
+    Tracks execution and status of a discovery search for a specific source
+    under a ClaimSession.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    session = models.ForeignKey(ClaimSession, related_name='source_jobs', on_delete=models.CASCADE, db_index=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='discovery_jobs', db_index=True)
+    source_id = models.CharField(max_length=50, db_index=True)
+    asset_category = models.CharField(max_length=50)
+    status = models.CharField(max_length=50, default='OFFICIAL_EXTERNAL_ACTION_REQUIRED')
+    # Statuses: NOT_STARTED, IN_PROGRESS, COMPLETED, NO_MATCHES_FOUND, OFFICIAL_EXTERNAL_ACTION_REQUIRED, ACCESS_PENDING, NOT_CONFIGURED, FAILED
+    is_live_api = models.BooleanField(default=False)
+    external_portal_url = models.CharField(max_length=255, blank=True, null=True)
+    external_reference_number = models.CharField(max_length=100, blank=True, default='')
+    external_search_completed = models.BooleanField(default=False)
+    external_search_date = models.DateTimeField(null=True, blank=True)
+    query_payload = models.JSONField(default=dict)
+    response_payload = models.JSONField(default=dict)
+    error_message = models.TextField(blank=True, default='')
+    last_checked_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('session', 'source_id')
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"{self.source_id} ({self.status}) - Case {self.session_id}"
+
+
 class DiscoveredAsset(models.Model):
     session = models.ForeignKey(ClaimSession, related_name='assets', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='discovered_assets', null=True, blank=True, db_index=True)
     source_id = models.CharField(max_length=50, default='RBI_UDGAM')
     source_reference = models.CharField(max_length=100, blank=True, null=True)
+    asset_category = models.CharField(max_length=50, default='BANK_DEPOSITS', db_index=True)
     institution = models.CharField(max_length=100)
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    masked_reference = models.CharField(max_length=100, blank=True, default='')
     situation_label = models.CharField(max_length=255)
-    color = models.CharField(max_length=50)  # green, amber, red
+    color = models.CharField(max_length=50, default='amber')  # green, amber, red
     message = models.TextField()
     documents_needed = models.JSONField(default=list)
     next_steps = models.JSONField(default=list)
-    time_estimate = models.CharField(max_length=100)
+    time_estimate = models.CharField(max_length=100, default='4-8 Weeks')
     loan_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     
     # Transparency & verification separation
     is_potential_match = models.BooleanField(default=True)
     institution_verified = models.BooleanField(default=False)
+    match_status = models.CharField(max_length=50, default='POTENTIAL_MATCH')
+    verification_status = models.CharField(max_length=50, default='UNVERIFIED_BY_INSTITUTION')
+    claim_status = models.CharField(max_length=50, default='NOT_INITIATED')
+    source_evidence_reference = models.CharField(max_length=255, blank=True, default='')
+    discovery_timestamp = models.DateTimeField(default=timezone.now)
     how_found = models.JSONField(default=dict)
     unverified_items = models.JSONField(default=list)
     official_portal_url = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def __str__(self):
         return f"{self.institution} - {self.amount} ({'Verified' if self.institution_verified else 'Potential Match'})"

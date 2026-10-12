@@ -244,24 +244,25 @@ class IrdaiBimaBharosaDiscoveryAdapter(BaseAssetDiscoveryProvider):
         }
 
 
-class SebiMfCentralDiscoveryAdapter(BaseAssetDiscoveryProvider):
+class SebiMitraDiscoveryAdapter(BaseAssetDiscoveryProvider):
     """
-    SEBI / MF Central & RTA Inactive Folio Discovery Adapter.
-    Unified portal built by CAMS and KFintech under SEBI mandate.
+    SEBI MITRA (Mutual Fund Investment Tracing and Retrieval Assistant) & MF Central Adapter.
+    Statutory Framework: SEBI Circular SEBI/HO/IMD/IMD-PoD-1/P/CIR/2025/12 dated February 2025.
+    Unified centralized service platform launched by SEBI via RTAs (CAMS and KFintech)
+    to trace inactive, dormant, and unclaimed mutual fund folios.
     
-    API Availability: MF Central provides authenticated investor logins and
-    registered intermediary enterprise APIs. Open developer APIs are not public.
+    API Availability: Intermediary/investor portal. B2B public API requires AMFI/SEBI intermediary registration.
     
     Status: OFFICIAL_EXTERNAL_PROCESS
     """
 
     @property
     def provider_id(self) -> str:
-        return "SEBI_MF_CENTRAL"
+        return "SEBI_MITRA"
 
     @property
     def provider_name(self) -> str:
-        return "SEBI / MF Central & RTA Folio Tracing"
+        return "SEBI MITRA & MF Central (Mutual Fund Inactive Folios)"
 
     @property
     def category(self) -> str:
@@ -277,8 +278,14 @@ class SebiMfCentralDiscoveryAdapter(BaseAssetDiscoveryProvider):
     def official_portal_url(self) -> str:
         return "https://app.mfcentral.com/links/inactive-folios"
 
+    def supported_search_capabilities(self) -> List[str]:
+        return ["DECEASED_PAN", "DECEASED_NAME", "FOLIO_NUMBER", "PEKRN"]
+
+    def required_input_fields(self) -> List[str]:
+        return ["deceased_name", "deceased_pan"]
+
     def is_configured(self) -> bool:
-        return bool(os.getenv("MFCENTRAL_API_KEY") and os.getenv("MFCENTRAL_API_SECRET"))
+        return bool(os.getenv("SEBI_MITRA_API_KEY") and os.getenv("SEBI_MITRA_API_SECRET"))
 
     def get_discovery_guide(self) -> Dict[str, Any]:
         return {
@@ -287,10 +294,10 @@ class SebiMfCentralDiscoveryAdapter(BaseAssetDiscoveryProvider):
             "category": "Mutual Fund Folios & Inactive Investments",
             "integration_status": self.integration_status.value,
             "official_url": self.official_portal_url,
-            "statutory_basis": "SEBI Master Circular for Mutual Funds (SEBI/HO/IMD/IMD-PoD-1/P/CIR/2023/74) on Folio Transmission",
+            "statutory_basis": "SEBI Circular SEBI/HO/IMD/IMD-PoD-1/P/CIR/2025/12 on MITRA Platform for Inactive & Unclaimed Folios",
             "participating_institutions": [
                 "CAMS (Computer Age Management Services)", "KFintech (KFin Technologies)",
-                "All 44 AMFI Asset Management Companies (SBI MF, HDFC MF, ICICI Pru MF, Nippon, etc.)"
+                "All 44 AMFI Asset Management Companies (SBI MF, HDFC MF, ICICI Pru MF, Nippon, Kotak, etc.)"
             ],
             "required_identifiers": [
                 {"field": "deceased_pan", "label": "Investor PAN (Mandatory for mutual funds)", "mandatory": True},
@@ -300,27 +307,27 @@ class SebiMfCentralDiscoveryAdapter(BaseAssetDiscoveryProvider):
             "official_external_steps": [
                 {
                     "step": 1,
-                    "title": "Check Inactive Folios",
-                    "instruction": "Access MF Central at https://app.mfcentral.com/links/inactive-folios",
-                    "note": "Enter the investor's PAN to trace unclaimed dividends or redemption amounts."
+                    "title": "Access SEBI MITRA / MF Central",
+                    "instruction": "Open the official platform at https://app.mfcentral.com/links/inactive-folios",
+                    "note": "Enter the investor's PAN to trace inactive or unclaimed folios across all AMCs."
                 },
                 {
                     "step": 2,
-                    "title": "Identify Registrar (RTA)",
-                    "instruction": "Identify whether the holdings are serviced by CAMS or KFintech.",
-                    "note": "Consolidated Account Statement (CAS) will list all active and dormant folios across all AMCs."
+                    "title": "Consolidated Account Statement (CAS)",
+                    "instruction": "Download the RTA Consolidated Account Statement via CAMS or KFintech.",
+                    "note": "CAS reflects total units, scheme names, folio numbers, and nomination records."
                 },
                 {
                     "step": 3,
                     "title": "Submit Transmission Request (Form T3/T2)",
                     "instruction": "Submit standardized AMFI Transmission Request Form along with Death Certificate and KYC of claimant.",
-                    "note": "If claimant is a registered nominee, transmission occurs without court succession certificate up to statutory threshold."
+                    "note": "If claimant is a registered nominee, transmission occurs without court succession certificate up to statutory threshold (₹5 Lakhs)."
                 },
                 {
                     "step": 4,
-                    "title": "Folio Re-registration",
+                    "title": "Folio Re-registration & Unit Credit",
                     "instruction": "Units are transferred directly into the claimant's existing mutual fund folio or demat account.",
-                    "note": "No stamp duty or tax is charged on transmission of units to legal heirs."
+                    "note": "No stamp duty or capital gains tax is charged on transmission to legal heirs."
                 }
             ],
             "statutory_documents_needed": [
@@ -343,7 +350,7 @@ class SebiMfCentralDiscoveryAdapter(BaseAssetDiscoveryProvider):
                 "status": IntegrationStatus.OFFICIAL_EXTERNAL_PROCESS.value,
                 "is_live_api": False,
                 "potential_matches": [],
-                "message": "Mutual fund folios are traced via PAN through MF Central and RTAs. Follow the official process below.",
+                "message": "Mutual fund folios are traced via PAN through SEBI MITRA & MF Central. Follow the official process below.",
                 "guide": self.get_discovery_guide(),
                 "query_echo": {
                     "pan_provided": bool(query_params.get("deceased_pan"))
@@ -355,6 +362,10 @@ class SebiMfCentralDiscoveryAdapter(BaseAssetDiscoveryProvider):
             "status": IntegrationStatus.LIVE.value,
             "potential_matches": []
         }
+
+
+# Backwards compatibility alias
+SebiMfCentralDiscoveryAdapter = SebiMitraDiscoveryAdapter
 
 
 class IepfDiscoveryAdapter(BaseAssetDiscoveryProvider):
@@ -378,7 +389,7 @@ class IepfDiscoveryAdapter(BaseAssetDiscoveryProvider):
 
     @property
     def category(self) -> str:
-        return "CORPORATE_ASSETS"
+        return "SHARES_DIVIDENDS"
 
     @property
     def integration_status(self) -> IntegrationStatus:
@@ -389,6 +400,12 @@ class IepfDiscoveryAdapter(BaseAssetDiscoveryProvider):
     @property
     def official_portal_url(self) -> str:
         return "https://www.iepf.gov.in/"
+
+    def supported_search_capabilities(self) -> List[str]:
+        return ["DECEASED_NAME", "COMPANY_NAME_OR_CIN", "FOLIO_NO", "DP_CLIENT_ID"]
+
+    def required_input_fields(self) -> List[str]:
+        return ["deceased_name"]
 
     def is_configured(self) -> bool:
         return bool(os.getenv("IEPF_API_KEY") and os.getenv("IEPF_API_SECRET"))
@@ -472,6 +489,246 @@ class IepfDiscoveryAdapter(BaseAssetDiscoveryProvider):
         }
 
 
+class EpfoDiscoveryAdapter(BaseAssetDiscoveryProvider):
+    """
+    Employees' Provident Fund Organisation (EPFO) Adapter.
+    Statutory Authority: Ministry of Labour and Employment, Government of India.
+    Governed by The Employees' Provident Funds and Miscellaneous Provisions Act, 1952.
+    
+    Covers:
+    - Member Provident Fund (PF) Balance
+    - Employees' Pension Scheme (EPS 1995) Monthly Widow/Orphan Pension
+    - Employees' Deposit Linked Insurance (EDLI 1976) Life Benefit up to ₹7,00,000
+    
+    API Availability: EPFO Unified Member Portal operates via UAN / Aadhaar OTP.
+    No open public developer API without direct EPFO enterprise integration.
+    
+    Status: OFFICIAL_EXTERNAL_PROCESS
+    """
+
+    @property
+    def provider_id(self) -> str:
+        return "EPFO_SERVICES"
+
+    @property
+    def provider_name(self) -> str:
+        return "EPFO Services (Provident Fund & EDLI Insurance)"
+
+    @property
+    def category(self) -> str:
+        return "PENSION_EPFO"
+
+    @property
+    def integration_status(self) -> IntegrationStatus:
+        if self.is_configured():
+            return IntegrationStatus.LIVE
+        return IntegrationStatus.OFFICIAL_EXTERNAL_PROCESS
+
+    @property
+    def official_portal_url(self) -> str:
+        return "https://www.epfindia.gov.in/"
+
+    def supported_search_capabilities(self) -> List[str]:
+        return ["DECEASED_UAN", "DECEASED_PAN", "DECEASED_NAME", "MEMBER_ID"]
+
+    def required_input_fields(self) -> List[str]:
+        return ["deceased_name"]
+
+    def is_configured(self) -> bool:
+        return bool(os.getenv("EPFO_API_KEY") and os.getenv("EPFO_API_SECRET"))
+
+    def get_discovery_guide(self) -> Dict[str, Any]:
+        return {
+            "source_id": self.provider_id,
+            "source_name": self.provider_name,
+            "category": "EPF Retirement Accumulations, Pension & EDLI Life Cover",
+            "integration_status": self.integration_status.value,
+            "official_url": self.official_portal_url,
+            "statutory_basis": "Employees' Provident Funds and Miscellaneous Provisions Act, 1952 (EPF Scheme 1952, EPS 1995, EDLI 1976)",
+            "participating_institutions": [
+                "EPFO Head Office, New Delhi", "138+ Regional EPFO Offices across India", "UMANG Government Portal"
+            ],
+            "required_identifiers": [
+                {"field": "deceased_name", "label": "Deceased Employee Legal Name", "mandatory": True},
+                {"field": "deceased_uan", "label": "Universal Account Number (UAN) / Member ID", "mandatory": False, "recommended": True},
+                {"field": "deceased_pan", "label": "Employee PAN", "mandatory": False},
+                {"field": "date_of_death", "label": "Date of Death", "mandatory": True}
+            ],
+            "official_external_steps": [
+                {
+                    "step": 1,
+                    "title": "Trace UAN / Member ID",
+                    "instruction": "Locate the deceased person's Universal Account Number (UAN) from salary slips, Form 16, or the EPFO portal / UMANG app.",
+                    "note": "If UAN is unknown, the last employer's establishment code and PF account number can be used."
+                },
+                {
+                    "step": 2,
+                    "title": "Prepare Composite Claim Form (Death Cases)",
+                    "instruction": "Fill the EPFO Composite Claim Form in Death cases combining Form 20 (PF withdrawal), Form 10D (Monthly Pension), and Form 5IF (EDLI).",
+                    "note": "EDLI provides life insurance benefit up to ₹7,00,000 paid to nominee or legal heirs if employee died while in active service."
+                },
+                {
+                    "step": 3,
+                    "title": "Employer Attestation & Submission",
+                    "instruction": "Submit the claim packet to the employer for forwarding to the jurisdictional EPFO Regional Office, or directly to EPFO if employer is closed.",
+                    "note": "Include certified death certificate, legal heir certificate / Form 2 nomination copy, and cancelled cheque."
+                },
+                {
+                    "step": 4,
+                    "title": "Disbursement via NEFT",
+                    "instruction": "EPFO processes claims within statutory 20 days and credits funds directly to the claimant's bank account.",
+                    "note": "Pension payment order (PPO) is issued for monthly survivor pension under EPS."
+                }
+            ],
+            "statutory_documents_needed": [
+                "Composite Claim Form in Death Cases (signed by all claimants)",
+                "Original / Attested Death Certificate of Member",
+                "Form 5IF for EDLI Life Benefit (with employer certificate of active service)",
+                "Legal Heir Certificate / Succession Certificate (if no valid Form 2 nomination)",
+                "Claimant KYC (Aadhaar & PAN) and Cancelled Cheque",
+                "Date of Birth Proof of Children (for monthly children pension under EPS)"
+            ]
+        }
+
+    def discover_assets(
+        self,
+        query_params: Dict[str, Any],
+        consent_record_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        if not self.is_configured():
+            return {
+                "source_id": self.provider_id,
+                "status": IntegrationStatus.OFFICIAL_EXTERNAL_PROCESS.value,
+                "is_live_api": False,
+                "potential_matches": [],
+                "message": "EPFO claims require filing the Composite Claim Form (Death) with the Regional Office. Follow the official process below.",
+                "guide": self.get_discovery_guide(),
+                "query_echo": {
+                    "name_searched": query_params.get("deceased_name")
+                }
+            }
+
+        return {
+            "source_id": self.provider_id,
+            "status": IntegrationStatus.LIVE.value,
+            "potential_matches": []
+        }
+
+
+class OtherInvestmentsDiscoveryAdapter(BaseAssetDiscoveryProvider):
+    """
+    Department of Posts (India Post Small Savings) & National Pension System (NPS) Adapter.
+    Statutory Framework:
+    - Government Savings Promotion Act, 1873 (PPF, SCSS, National Savings Certificates, Kisan Vikas Patra)
+    - PFRDA (Exits and Withdrawals under NPS) Regulations, 2015.
+    
+    Status: OFFICIAL_EXTERNAL_PROCESS
+    """
+
+    @property
+    def provider_id(self) -> str:
+        return "OTHER_INVESTMENTS"
+
+    @property
+    def provider_name(self) -> str:
+        return "Post Office Small Savings & National Pension System (NPS)"
+
+    @property
+    def category(self) -> str:
+        return "OTHER_INVESTMENTS"
+
+    @property
+    def integration_status(self) -> IntegrationStatus:
+        if self.is_configured():
+            return IntegrationStatus.LIVE
+        return IntegrationStatus.OFFICIAL_EXTERNAL_PROCESS
+
+    @property
+    def official_portal_url(self) -> str:
+        return "https://www.indiapost.gov.in/"
+
+    def supported_search_capabilities(self) -> List[str]:
+        return ["DECEASED_NAME", "POSB_ACCOUNT_NO", "NPS_PRAN", "DATE_OF_DEATH"]
+
+    def required_input_fields(self) -> List[str]:
+        return ["deceased_name"]
+
+    def is_configured(self) -> bool:
+        return bool(os.getenv("OTHER_INVESTMENTS_API_KEY") and os.getenv("OTHER_INVESTMENTS_API_SECRET"))
+
+    def get_discovery_guide(self) -> Dict[str, Any]:
+        return {
+            "source_id": self.provider_id,
+            "source_name": self.provider_name,
+            "category": "Small Savings (PPF, SCSS, NSC, KVP) & National Pension System (NPS)",
+            "integration_status": self.integration_status.value,
+            "official_url": self.official_portal_url,
+            "statutory_basis": "Government Savings Promotion Act, 1873 & PFRDA Exit Regulations 2015",
+            "participating_institutions": [
+                "India Post (150,000+ Post Offices)", "Protean eGov Technologies (NPS CRA)",
+                "KFintech (NPS CRA)", "PFRDA Registered Points of Presence (PoP)"
+            ],
+            "required_identifiers": [
+                {"field": "deceased_name", "label": "Account Holder Legal Name", "mandatory": True},
+                {"field": "posb_account_or_cert_no", "label": "Post Office Passbook / Certificate No.", "mandatory": False},
+                {"field": "pran_number", "label": "NPS Permanent Retirement Account Number (PRAN)", "mandatory": False},
+                {"field": "date_of_death", "label": "Date of Death", "mandatory": True}
+            ],
+            "official_external_steps": [
+                {
+                    "step": 1,
+                    "title": "Post Office Small Savings (PPF / SCSS / NSC)",
+                    "instruction": "Submit Form SB-84 (Claim Application for Deceased Depositor) at the home post office.",
+                    "note": "For accounts with nomination, payment is made within 7 days. Non-nominee claims up to ₹5 Lakhs can be settled on basis of indemnity bond without succession certificate."
+                },
+                {
+                    "step": 2,
+                    "title": "National Pension System (NPS Death Claim)",
+                    "instruction": "Submit Form 303 (Death Withdrawal Form) along with original PRAN card to the mapped Point of Presence (PoP).",
+                    "note": "100% lump-sum withdrawal of pension corpus is permissible to nominee / legal heirs upon death of subscriber."
+                },
+                {
+                    "step": 3,
+                    "title": "Production of Statutory Evidence",
+                    "instruction": "Produce Death Certificate, Claimant KYC, and Bank Account Proof for direct NEFT credit.",
+                    "note": "Post office or NPS CRA validates claimant entitlement before direct bank settlement."
+                }
+            ],
+            "statutory_documents_needed": [
+                "Form SB-84 (Post Office Deceased Depositor Claim Form)",
+                "Form 303 (NPS Death Withdrawal Form)",
+                "Original Passbook / National Savings Certificates / Original PRAN Card",
+                "Certified Extract of Death Certificate",
+                "Claimant Identity and Address Proof (Aadhaar / Voter ID / Passport)",
+                "Bank Account Proof (Cancelled Cheque with printed claimant name)"
+            ]
+        }
+
+    def discover_assets(
+        self,
+        query_params: Dict[str, Any],
+        consent_record_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        if not self.is_configured():
+            return {
+                "source_id": self.provider_id,
+                "status": IntegrationStatus.OFFICIAL_EXTERNAL_PROCESS.value,
+                "is_live_api": False,
+                "potential_matches": [],
+                "message": "Small savings and NPS claims require filing statutory claim forms with India Post or NPS CRA. Follow the official process below.",
+                "guide": self.get_discovery_guide(),
+                "query_echo": {
+                    "name_searched": query_params.get("deceased_name")
+                }
+            }
+
+        return {
+            "source_id": self.provider_id,
+            "status": IntegrationStatus.LIVE.value,
+            "potential_matches": []
+        }
+
+
 class SetuAADiscoveryAdapter(BaseAssetDiscoveryProvider):
     """
     Setu Account Aggregator Live Discovery Adapter.
@@ -493,12 +750,21 @@ class SetuAADiscoveryAdapter(BaseAssetDiscoveryProvider):
     @property
     def integration_status(self) -> IntegrationStatus:
         if self.is_configured():
+            # If sandbox mode or test credentials
+            if getattr(settings, "SMS_SANDBOX_MODE", False):
+                return IntegrationStatus.SANDBOX
             return IntegrationStatus.LIVE
         return IntegrationStatus.NOT_CONFIGURED
 
     @property
     def official_portal_url(self) -> str:
         return "https://setu.co/products/account-aggregator"
+
+    def supported_search_capabilities(self) -> List[str]:
+        return ["CLAIMANT_MOBILE_CONSENT", "FINANCIAL_INFORMATION_PROVIDER_DEPOSIT"]
+
+    def required_input_fields(self) -> List[str]:
+        return ["mobile"]
 
     def is_configured(self) -> bool:
         client_id = getattr(settings, "SETU_CLIENT_ID", None) or os.getenv("SETU_CLIENT_ID")
@@ -531,14 +797,13 @@ class SetuAADiscoveryAdapter(BaseAssetDiscoveryProvider):
                 "error": "Setu Account Aggregator credentials are not configured in settings."
             }
 
-        # Genuine Setu consent session call
         from claims.setu_client import create_consent
         mobile = query_params.get("mobile") or "9876543210"
         try:
             res = create_consent(mobile)
             return {
                 "source_id": self.provider_id,
-                "status": IntegrationStatus.LIVE.value,
+                "status": self.integration_status.value,
                 "is_live_api": True,
                 "setu_response": res,
                 "potential_matches": [],
@@ -554,43 +819,72 @@ class SetuAADiscoveryAdapter(BaseAssetDiscoveryProvider):
             }
 
 
-class MockTestingAssetDiscoveryAdapter(BaseAssetDiscoveryProvider):
+class SandboxTestingDiscoveryAdapter(BaseAssetDiscoveryProvider):
     """
-    STRICTLY FOR ISOLATED AUTOMATED TESTS.
-    Never exposed to users in production.
+    STRICTLY FOR ISOLATED AUTOMATED TESTS AND SANDBOX EVALUATIONS.
+    Supports controllable test outcomes:
+    - simulate_match: returns normalized legitimate test potential match
+    - simulate_no_match: returns completed search with 0 matches
+    - simulate_timeout: raises TimeoutError
+    - simulate_error: raises ConnectionError / exception
+    - simulate_not_configured: returns NOT_CONFIGURED status
+    - simulate_access_pending: returns ACCESS_PENDING status
+    Never mixed with production user discovery.
     """
 
-    def __init__(self, simulate_status: IntegrationStatus = IntegrationStatus.LIVE):
-        self._status = simulate_status
+    def __init__(
+        self,
+        provider_id: str = "SANDBOX_BANK_PROVIDER",
+        provider_name: str = "Sandbox Test Bank Gateway",
+        category: str = "BANK_DEPOSITS",
+        simulation_mode: str = "MATCH",
+        is_configured_flag: bool = True
+    ):
+        self._id = provider_id
+        self._name = provider_name
+        self._category = category
+        self.simulation_mode = simulation_mode
+        self._is_configured = is_configured_flag
 
     @property
     def provider_id(self) -> str:
-        return "TEST_ASSET_DISCOVERY_PROVIDER"
+        return self._id
 
     @property
     def provider_name(self) -> str:
-        return "Test Suite Asset Discovery Adapter"
+        return self._name
 
     @property
     def category(self) -> str:
-        return "TEST_CATEGORY"
+        return self._category
 
     @property
     def integration_status(self) -> IntegrationStatus:
-        return self._status
+        if not self._is_configured:
+            return IntegrationStatus.NOT_CONFIGURED
+        if self.simulation_mode == "ACCESS_PENDING":
+            return IntegrationStatus.ACCESS_PENDING
+        return IntegrationStatus.SANDBOX
 
     @property
     def official_portal_url(self) -> str:
-        return "https://example.com/test-portal"
+        return "https://sandbox.test-registry.local/"
 
     def is_configured(self) -> bool:
-        return self._status == IntegrationStatus.LIVE
+        return self._is_configured
+
+    def supported_search_capabilities(self) -> List[str]:
+        return ["DECEASED_NAME", "DECEASED_PAN"]
+
+    def required_input_fields(self) -> List[str]:
+        return ["deceased_name"]
 
     def get_discovery_guide(self) -> Dict[str, Any]:
         return {
             "source_id": self.provider_id,
             "source_name": self.provider_name,
-            "integration_status": self.integration_status.value
+            "integration_status": self.integration_status.value,
+            "is_sandbox_test": True
         }
 
     def discover_assets(
@@ -598,36 +892,150 @@ class MockTestingAssetDiscoveryAdapter(BaseAssetDiscoveryProvider):
         query_params: Dict[str, Any],
         consent_record_id: Optional[str] = None
     ) -> Dict[str, Any]:
+        if not self.is_configured():
+            return {
+                "source_id": self.provider_id,
+                "status": IntegrationStatus.NOT_CONFIGURED.value,
+                "is_live_api": False,
+                "is_sandbox_test": True,
+                "potential_matches": [],
+                "error": "Credentials missing for sandbox test provider."
+            }
+
+        if self.simulation_mode == "ACCESS_PENDING":
+            return {
+                "source_id": self.provider_id,
+                "status": IntegrationStatus.ACCESS_PENDING.value,
+                "is_live_api": False,
+                "is_sandbox_test": True,
+                "potential_matches": [],
+                "message": "Regulatory API access approval is currently pending."
+            }
+
+        if self.simulation_mode == "TIMEOUT":
+            raise TimeoutError("Sandbox connection timed out after 10000ms.")
+
+        if self.simulation_mode == "ERROR":
+            raise ConnectionError("502 Bad Gateway from upstream test endpoint.")
+
+        if self.simulation_mode == "NO_MATCH":
+            return {
+                "source_id": self.provider_id,
+                "status": IntegrationStatus.SANDBOX.value,
+                "is_live_api": True,
+                "is_sandbox_test": True,
+                "potential_matches": [],
+                "message": "Search completed successfully. No matching records identified in registry."
+            }
+
+        # Default: MATCH
+        name = query_params.get("deceased_name", "Test Person")
         return {
             "source_id": self.provider_id,
-            "status": self.integration_status.value,
-            "potential_matches": [],
-            "message": "Test provider response."
+            "status": IntegrationStatus.SANDBOX.value,
+            "is_live_api": True,
+            "is_sandbox_test": True,
+            "potential_matches": [
+                {
+                    "institution": "Union Bank of India (Sandbox Test)",
+                    "source_id": self.provider_id,
+                    "source_reference": "UBI-SBX-99482",
+                    "masked_reference": "XXXX-XXXX-9948",
+                    "asset_category": self.category,
+                    "amount": 0,  # Never fabricated
+                    "situation_label": "Sandbox Test Potential Account Match",
+                    "is_potential_match": True,
+                    "institution_verified": False,
+                    "verification_status": "UNVERIFIED_BY_INSTITUTION",
+                    "claim_status": "NOT_INITIATED",
+                    "message": f"Potential inactive account record identified for {name} in sandbox testing environment.",
+                    "documents_needed": ["Death Certificate", "Claimant Identity Proof", "Legal Heir Affidavit"],
+                    "next_steps": ["Submit verified evidence dossier to home branch"]
+                }
+            ],
+            "message": "Sandbox query completed with potential test match."
         }
 
 
+# Backwards compatibility alias for older test references
+MockTestingAssetDiscoveryAdapter = SandboxTestingDiscoveryAdapter
+
+
 class AssetDiscoveryRegistry:
-    """Registry managing all supported asset discovery providers."""
+    """
+    Central registry managing all supported statutory and partner discovery providers.
+    Provides alias resolution and category filtering.
+    """
 
     def __init__(self):
         self._providers: Dict[str, BaseAssetDiscoveryProvider] = {}
+        self._aliases: Dict[str, str] = {
+            "SEBI_MF_CENTRAL": "SEBI_MITRA",
+            "MF_CENTRAL": "SEBI_MITRA",
+            "MITRA": "SEBI_MITRA",
+            "IEPFA": "IEPF",
+            "EPFO": "EPFO_SERVICES",
+            "UDGAM": "RBI_UDGAM",
+            "BIMA_BHAROSA": "IRDAI_BIMA_BHAROSA",
+            "IRDAI": "IRDAI_BIMA_BHAROSA",
+            "SETU": "SETU_AA_DISCOVERY",
+            "SETU_AA": "SETU_AA_DISCOVERY",
+            "POST_OFFICE_NPS": "OTHER_INVESTMENTS",
+            "NPS": "OTHER_INVESTMENTS",
+            "POST_OFFICE": "OTHER_INVESTMENTS",
+        }
         self._register_default_providers()
 
     def _register_default_providers(self):
         self.register(RbiUdgamDiscoveryAdapter())
         self.register(IrdaiBimaBharosaDiscoveryAdapter())
-        self.register(SebiMfCentralDiscoveryAdapter())
+        self.register(SebiMitraDiscoveryAdapter())
         self.register(IepfDiscoveryAdapter())
+        self.register(EpfoDiscoveryAdapter())
+        self.register(OtherInvestmentsDiscoveryAdapter())
         self.register(SetuAADiscoveryAdapter())
 
     def register(self, provider: BaseAssetDiscoveryProvider):
         self._providers[provider.provider_id] = provider
 
     def get_provider(self, provider_id: str) -> Optional[BaseAssetDiscoveryProvider]:
-        return self._providers.get(provider_id)
+        if not provider_id:
+            return None
+        clean_id = provider_id.strip()
+        if clean_id in self._providers:
+            return self._providers[clean_id]
+        aliased = self._aliases.get(clean_id) or self._aliases.get(clean_id.upper())
+        if aliased and aliased in self._providers:
+            return self._providers[aliased]
+        return None
 
     def get_all_providers(self) -> List[BaseAssetDiscoveryProvider]:
         return list(self._providers.values())
+
+    def get_providers_for_categories(self, categories: List[str]) -> List[BaseAssetDiscoveryProvider]:
+        """Filters registered providers by selected asset categories."""
+        if not categories:
+            return self.get_all_providers()
+        
+        # Category normalization mapping
+        cat_map = {
+            "BANK_DEPOSITS": ["BANK_DEPOSITS"],
+            "BANK": ["BANK_DEPOSITS"],
+            "INSURANCE": ["INSURANCE"],
+            "MUTUAL_FUNDS": ["MUTUAL_FUNDS"],
+            "SHARES_DIVIDENDS": ["SHARES_DIVIDENDS", "CORPORATE_ASSETS"],
+            "CORPORATE_ASSETS": ["SHARES_DIVIDENDS", "CORPORATE_ASSETS"],
+            "PENSION_EPFO": ["PENSION_EPFO"],
+            "EPFO": ["PENSION_EPFO"],
+            "OTHER_INVESTMENTS": ["OTHER_INVESTMENTS"],
+        }
+        
+        target_cats = set()
+        for c in categories:
+            for mapped in cat_map.get(c, [c]):
+                target_cats.add(mapped)
+
+        return [p for p in self._providers.values() if p.category in target_cats]
 
     def get_all_guides(self) -> List[Dict[str, Any]]:
         return [p.get_discovery_guide() for p in self._providers.values()]
