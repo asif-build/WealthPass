@@ -1,0 +1,402 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Official Bank Claim Directory &amp; RBI Form Standard &mdash; WealthPass{% endblock %}
+
+{% block extra_head %}
+<style>
+/* WealthPass Dark Luxury Aesthetics */
+.dir-container {
+  min-height: 100vh;
+  background: #0c0c0c;
+  color: #ffffff;
+  padding: 80px 24px 80px;
+  max-width: 1560px;
+  margin: 0 auto;
+}
+
+.dir-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+}
+.dir-title {
+  font-family: var(--font-serif, "Playfair Display", serif);
+  font-size: 32px;
+  font-weight: 400;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+.dir-subtitle {
+  font-size: 14px;
+  color: #888888;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Bank Selector Bar */
+.bank-scroll-bar {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+}
+.bank-tab-btn {
+  padding: 10px 18px;
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  color: #aaaaaa;
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.bank-tab-btn:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  color: #ffffff;
+}
+.bank-tab-btn.active {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: #D4AF37;
+  color: #D4AF37;
+  font-weight: 500;
+}
+
+/* Scenario Selector */
+.scenario-selector-box {
+  display: flex;
+  gap: 12px;
+  background: #121212;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.scenario-pill {
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: #888888;
+  font-size: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.scenario-pill:hover {
+  color: #ffffff;
+}
+.scenario-pill.active {
+  background: #1f1f1f;
+  color: #D4AF37;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  font-weight: 500;
+}
+
+/* Main Grid Layout */
+.dir-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+@media (max-width: 1024px) {
+  .dir-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cards */
+.dir-card {
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 32px;
+}
+.card-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 8px;
+}
+.card-heading {
+  font-family: var(--font-serif, "Playfair Display", serif);
+  font-size: 22px;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+}
+
+/* RBI Statutory Rights Banner */
+.rbi-rights-banner {
+  background: rgba(212, 175, 55, 0.06);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 32px;
+}
+.rbi-rights-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #D4AF37;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rbi-rights-text {
+  font-size: 12px;
+  color: #cccccc;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Forms List */
+.form-item-box {
+  background: #181818;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.form-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.form-item-title {
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 500;
+}
+.form-badge-rbi {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(52, 211, 153, 0.1);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  white-space: nowrap;
+}
+.form-badge-differs {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  white-space: nowrap;
+}
+.form-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #D4AF37;
+  font-size: 12px;
+  text-decoration: underline;
+  margin-top: 6px;
+}
+
+/* Extra Requirements */
+.extra-req-item {
+  background: #161616;
+  border-left: 3px solid #D4AF37;
+  padding: 16px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: #cccccc;
+  line-height: 1.6;
+}
+.verified-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #888888;
+  margin-top: 8px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dir-container">
+
+  <!-- HEADER -->
+  <div class="dir-header">
+    <div style="font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #D4AF37; margin-bottom: 6px;">
+      Statutory Regulatory Directory &bull; RBI Master Directions 2025
+    </div>
+    <h1 class="dir-title">Scheduled Commercial Banks Claim Directory</h1>
+    <p class="dir-subtitle">
+      Real, verified public deceased-claim pages, official downloadable forms, and bank-specific extra requirements cross-referenced against RBI Standard Annexures (Annex I-A to I-H).
+    </p>
+  </div>
+
+  <!-- RBI STATUTORY RIGHTS & TIMELINE -->
+  <div class="rbi-rights-banner">
+    <div class="rbi-rights-title">&#9679; Claimant Rights under RBI Directions (RBI/2025-26/82)</div>
+    <p class="rbi-rights-text">
+      <strong>15 Calendar Days Timeline:</strong> Banks are legally bound to settle deceased depositor claims within a maximum of 15 calendar days from receiving the complete claim package.<br>
+      <strong>Delay Compensation:</strong> If settlement is delayed beyond 15 days without statutory cause, the bank is liable to pay penal compensation at the applicable rate.
+    </p>
+  </div>
+
+  <!-- BANK SELECTION TABS -->
+  <div class="bank-scroll-bar">
+    {% for b in banks %}
+    <a href="?bank={{ b.bank_code }}&amp;scenario={{ selected_scenario }}" class="bank-tab-btn {% if current_bank.bank_code == b.bank_code %}active{% endif %}">
+      {{ b.bank }}
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- SCENARIO SELECTION -->
+  <div class="scenario-selector-box">
+    <span style="font-size: 12px; color: #666666; align-self: center; margin-right: 6px;">Scenario:</span>
+    {% for code, label in scenarios %}
+    <a href="?bank={{ current_bank.bank_code }}&amp;scenario={{ code }}" class="scenario-pill {% if selected_scenario == code %}active{% endif %}">
+      {{ label }}
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- MAIN COMPARISON GRID -->
+  <div class="dir-grid">
+
+    <!-- LEFT: THE BANK'S OFFICIAL PORTAL & DOWNLOADS -->
+    <div class="dir-card">
+      <div class="card-eyebrow">{{ current_bank.bank }} Portal</div>
+      <h2 class="card-heading">Official Bank Claim Forms</h2>
+      
+      <div style="margin-bottom: 20px; font-size: 13px; color: #aaaaaa;">
+        Official Public Page: 
+        {% if current_bank.claim_page_url %}
+        <a href="{{ current_bank.claim_page_url }}" target="_blank" rel="noopener noreferrer" style="color: #D4AF37; text-decoration: underline;">
+          {{ current_bank.claim_page_url }} &rarr;
+        </a>
+        {% else %}
+        <span style="color: #ef4444;">Not found: check the bank's website or branch</span>
+        {% endif %}
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;">
+        <span style="font-size: 11px; padding: 4px 10px; border-radius: 9999px; background: rgba(255,255,255,0.05); color: #ccc;">
+          Portal Status: <strong style="color: #fff; text-transform: uppercase;">{{ current_bank.status }}</strong>
+        </span>
+        <span style="font-size: 11px; padding: 4px 10px; border-radius: 9999px; background: rgba(255,255,255,0.05); color: #ccc;">
+          Online Filing: <strong style="color: #fff;">{% if current_bank.online_claim_available %}Yes (Supported){% else %}Branch Visit Required{% endif %}</strong>
+        </span>
+        <span style="font-size: 11px; padding: 4px 10px; border-radius: 9999px; background: rgba(255,255,255,0.05); color: #ccc;">
+          Docket Tracking: <strong style="color: #fff;">{% if current_bank.tracking_available %}Available Online{% else %}Branch Inward Desk{% endif %}</strong>
+        </span>
+      </div>
+
+      <div style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #888888; margin-bottom: 12px;">
+        Published Forms for this Scenario
+      </div>
+
+      {% if matching_forms %}
+        {% for f in matching_forms %}
+        <div class="form-item-box">
+          <div class="form-item-header">
+            <div class="form-item-title">{{ f.label_as_published }}</div>
+            {% if f.maps_to_rbi_annex %}
+              <div class="form-badge-rbi">&#10003; Maps to {{ f.maps_to_rbi_annex }}</div>
+            {% else %}
+              <div class="form-badge-differs">Bank-specific form</div>
+            {% endif %}
+          </div>
+          {% if f.differs_from_rbi %}
+            <div style="font-size: 11px; color: #f59e0b; margin-bottom: 6px;">
+              &#9888; Bank form differs from RBI standard, confirm with branch.
+            </div>
+          {% endif %}
+          <a href="{{ f.official_download_url }}" target="_blank" rel="noopener noreferrer" class="form-link-btn">
+            Official Bank Download Link &rarr;
+          </a>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div style="padding: 16px; background: #1a1a1a; border-radius: 8px; font-size: 13px; color: #777;">
+          No scenario-specific form published online by the bank. Use standard RBI format below or check branch.
+        </div>
+      {% endif %}
+
+      <!-- Other Forms -->
+      {% if other_forms %}
+      <div style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #888888; margin: 24px 0 12px 0;">
+        Other Published Bank Forms
+      </div>
+      {% for f in other_forms %}
+      <div class="form-item-box">
+        <div class="form-item-header">
+          <div class="form-item-title" style="font-size: 13px;">{{ f.label_as_published }}</div>
+          {% if f.maps_to_rbi_annex %}
+            <div class="form-badge-rbi">{{ f.maps_to_rbi_annex }}</div>
+          {% endif %}
+        </div>
+        <a href="{{ f.official_download_url }}" target="_blank" rel="noopener noreferrer" class="form-link-btn">
+          Official Download &rarr;
+        </a>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+    </div>
+
+    <!-- RIGHT: RBI STANDARD COMPARISON & BANK EXTRA REQUIREMENTS -->
+    <div class="dir-card">
+      <div class="card-eyebrow">RBI Standard Framework</div>
+      <h2 class="card-heading">Mandated Standards &amp; Bank Extras</h2>
+
+      <div style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #888888; margin-bottom: 12px;">
+        Applicable RBI Standard Form(s)
+      </div>
+      <div style="background: #181818; border-radius: 12px; padding: 18px 20px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.06);">
+        {% for annex in applicable_annexes %}
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <span style="color: #34d399; font-weight: 600;">&#10003;</span>
+          <span style="font-size: 14px; color: #fff;">{{ annex }}</span>
+        </div>
+        {% endfor %}
+        <div style="font-size: 12px; color: #888; margin-top: 8px; line-height: 1.5;">
+          Per RBI Directions para 27-28, banks must accept standard forms or unified formats conforming to these standards.
+        </div>
+      </div>
+
+      <div style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #888888; margin-bottom: 12px;">
+        {{ current_bank.bank }} Bank-Specific Extra Requirements
+      </div>
+
+      {% if extras %}
+        {% for ext in extras %}
+        <div class="extra-req-item">
+          <div>{{ ext.text_as_published }}</div>
+          <div class="verified-tag">
+            <span>&#10003; Verified on {{ ext.verified_at|date:"d M Y" }}</span> &bull; 
+            <a href="{{ ext.source_url }}" target="_blank" rel="noopener noreferrer" style="color: #D4AF37; text-decoration: underline;">Source Link</a>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div style="padding: 16px; background: #1a1a1a; border-radius: 8px; font-size: 13px; color: #777;">
+          No bank-specific extra requirements identified beyond standard RBI statutory rules.
+        </div>
+      {% endif %}
+
+      <div style="margin-top: 32px; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.04);">
+        <div style="font-size: 13px; color: #fff; font-weight: 500; margin-bottom: 4px;">Need guided assistance?</div>
+        <p style="font-size: 12px; color: #888; margin: 0 0 14px 0;">Use WealthPass Form Copilot to fill and prepare your claim package online.</p>
+        <a href="/claims/" style="display: inline-block; padding: 10px 20px; background: #D4AF37; color: #000; border-radius: 9999px; font-size: 12px; font-weight: 600; text-decoration: none;">
+          Open Form Preparation &rarr;
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

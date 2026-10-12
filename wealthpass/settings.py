@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'claims',
     'accounts',
     'notifications',
+    'forms_guide',
 ]
 
 MIDDLEWARE = [

@@ -31,6 +31,7 @@ urlpatterns = [
     ),
     path('', include('accounts.urls')),
     path('', include('notifications.urls')),
+    path('guide/', include('forms_guide.urls')),
     path('', include('claims.urls')),
     re_path(r'^(?P<path>wealthpass-.*\.png|favicon.*|apple-touch-icon.*|assets/.*)$', serve, {'document_root': settings.STATICFILES_DIRS[0]}),
 ]
