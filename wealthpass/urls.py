@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from claims import views
+import forms_guide.views
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
@@ -32,6 +33,7 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('', include('notifications.urls')),
     path('guide/', include('forms_guide.urls')),
+    path('energy/', include([path('', forms_guide.views.energy_benchmark_view, name='energy_benchmark_root')])),
     path('', include('claims.urls')),
     re_path(r'^(?P<path>wealthpass-.*\.png|favicon.*|apple-touch-icon.*|assets/.*)$', serve, {'document_root': settings.STATICFILES_DIRS[0]}),
 ]

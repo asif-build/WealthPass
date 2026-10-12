@@ -145,3 +145,33 @@ class FormGuideSection(models.Model):
 
     def __str__(self):
         return f"{self.annex} - Sec {self.section_number}: {self.section_title}"
+
+
+class EnergyTelemetry(models.Model):
+    """
+    Green AI Energy & Carbon Benchmark Telemetry.
+    Records honest MEASURED wall-clock latencies and payload metrics,
+    along with standard ESTIMATED server power draw and carbon equivalents.
+    Rule 5: Energy numbers have honest MEASURED vs ESTIMATED tags.
+    """
+    METRIC_TAGS = [
+        ("MEASURED", "Measured (Wall-Clock / Real Payload)"),
+        ("ESTIMATED", "Estimated (Standard Hardware TDP Model)"),
+    ]
+    query_preview = models.CharField(max_length=100, default="")
+    latency_ms = models.FloatField(help_text="Measured execution time in milliseconds")
+    baseline_energy_j = models.FloatField(help_text="Estimated baseline energy consumption in Joules")
+    optimized_energy_j = models.FloatField(help_text="Optimized Green AI energy consumption in Joules")
+    energy_saved_pct = models.FloatField(help_text="Calculated energy reduction percentage")
+    co2_saved_mg = models.FloatField(help_text="Estimated CO2 avoided in milligrams")
+    measurement_tag = models.CharField(max_length=20, choices=METRIC_TAGS, default="MEASURED")
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['-timestamp']
+        verbose_name = "Energy Telemetry"
+        verbose_name_plural = "Energy Telemetries"
+
+    def __str__(self):
+        return f"{self.query_preview[:30]} - Saved {self.energy_saved_pct:.1f}% ({self.measurement_tag})"
+

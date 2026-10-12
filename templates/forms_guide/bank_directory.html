@@ -269,6 +269,212 @@
   color: var(--white-faint, #888888);
   margin-top: 8px;
 }
+
+/* Wealth Buddy Interactive Companion Card */
+.buddy-card {
+  background: var(--black-soft, #101010);
+  border: 1px solid rgba(222, 219, 200, 0.16);
+  border-radius: 18px;
+  padding: 24px 28px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+.buddy-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.buddy-profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.buddy-avatar-wrap {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #1c1c1c;
+  border: 2px solid var(--gold, #DEDBC8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+.buddy-avatar-wrap.state-idle {
+  animation: buddyBob 3.5s ease-in-out infinite;
+}
+.buddy-avatar-wrap.state-speaking {
+  box-shadow: 0 0 24px rgba(222, 219, 200, 0.45);
+  animation: buddySpeak 0.6s ease-in-out infinite alternate;
+}
+.buddy-avatar-wrap.state-thinking {
+  border-color: #34d399;
+  box-shadow: 0 0 20px rgba(52, 211, 153, 0.35);
+  animation: buddyThink 1.2s ease-in-out infinite;
+}
+@keyframes buddyBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes buddySpeak {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.06); }
+}
+@keyframes buddyThink {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(6deg); }
+  100% { transform: rotate(0deg); }
+}
+.buddy-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.buddy-title-box {
+  display: flex;
+  flex-direction: column;
+}
+.buddy-name {
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
+  font-size: 24px;
+  font-style: italic;
+  color: var(--white, #ffffff);
+  line-height: 1.2;
+}
+.buddy-role {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold, #DEDBC8);
+}
+.buddy-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.buddy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: var(--black-lifted, #181818);
+  border: 1px solid var(--border, rgba(255,255,255,0.08));
+  color: var(--white-muted, #cccccc);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.buddy-btn:hover {
+  border-color: var(--gold, #DEDBC8);
+  color: #fff;
+}
+.buddy-btn.active {
+  background: rgba(222, 219, 200, 0.15);
+  border-color: var(--gold, #DEDBC8);
+  color: var(--gold, #DEDBC8);
+  font-weight: 600;
+}
+.privacy-badge {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: #999;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 6px 14px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.speech-bubble {
+  background: #141414;
+  border: 1px solid rgba(222, 219, 200, 0.15);
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-bottom: 18px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: #ffffff;
+  line-height: 1.6;
+  min-height: 52px;
+  transition: font-size 0.2s ease;
+}
+.speech-bubble.large-text {
+  font-size: 17px !important;
+  line-height: 1.7;
+}
+.speech-citation {
+  display: block;
+  font-size: 11px;
+  color: var(--gold, #DEDBC8);
+  margin-top: 8px;
+  font-style: italic;
+}
+.ask-input-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.ask-input {
+  flex: 1;
+  background: #181818;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  padding: 10px 20px;
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.ask-input:focus {
+  border-color: var(--gold, #DEDBC8);
+}
+.ask-submit-btn {
+  background: var(--gold, #DEDBC8);
+  color: #000000;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 24px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.ask-submit-btn:hover {
+  background: #ffffff;
+}
+.quick-queries {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.quick-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 9999px;
+  padding: 5px 12px;
+  font-size: 11px;
+  color: #aaaaaa;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.quick-chip:hover {
+  border-color: var(--gold, #DEDBC8);
+  color: #ffffff;
+}
 </style>
 {% endblock %}
 
@@ -312,6 +518,68 @@
       {{ label }}
     </a>
     {% endfor %}
+  </div>
+
+  <!-- WEALTH BUDDY INTERACTIVE COMPANION -->
+  <div class="buddy-card">
+    <div class="buddy-header">
+      <div class="buddy-profile">
+        <div class="buddy-avatar-wrap state-idle" id="buddyAvatarWrap">
+          <img src="{% static 'images/wealth_buddy.png' %}" alt="Wealth Buddy" class="buddy-avatar-img">
+        </div>
+        <div class="buddy-title-box">
+          <span class="buddy-name">Wealth Buddy</span>
+          <span class="buddy-role">Voice Guide &bull; Grounded Statutory Assistant</span>
+        </div>
+      </div>
+      <div class="buddy-toolbar">
+        <button type="button" class="buddy-btn" id="voiceToggleBtn" onclick="toggleVoicePlayback()">
+          <span id="voiceIcon">&#9654;</span> <span id="voiceBtnText">Listen (Voice)</span>
+        </button>
+        <button type="button" class="buddy-btn" id="speedToggleBtn" onclick="toggleSpeed()">
+          <span id="speedLabel">Speed: Normal (1.0x)</span>
+        </button>
+        <button type="button" class="buddy-btn" id="largeTextToggleBtn" onclick="toggleLargeText()">
+          <span>Large Text</span>
+        </button>
+        <button type="button" class="buddy-btn" id="langToggleBtn" onclick="toggleLanguage()">
+          <span id="langLabel">Language: English</span>
+        </button>
+        <a href="/guide/energy/" class="buddy-btn" style="color: #34d399; text-decoration: none;" title="View honest Green AI power and latency telemetry">
+          <span>&bull; Green AI Telemetry</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- PRIVACY BANNER (RULE 2) -->
+    <div class="privacy-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      <span>Privacy Shield: Wealth Buddy never collects form fields and never accepts Aadhaar, PAN, or account numbers.</span>
+    </div>
+
+    <!-- SPEECH BUBBLE / CAPTION BOX -->
+    <div class="speech-bubble" id="speechBubble">
+      <span id="speechText">
+        Hello! I'm Wealth Buddy. Select your scenario above or ask me about {{ current_bank.bank }}'s claim process, the 15-day settlement timeline, or whether you need a notary.
+      </span>
+      <span class="speech-citation" id="speechCitation">
+        Source: RBI Master Directions 2025 &bull; Certified Regulatory Guidance
+      </span>
+    </div>
+
+    <!-- ASK BUDDY INPUT -->
+    <form onsubmit="handleBuddyAsk(event)" class="ask-input-box">
+      <input type="text" id="buddyQueryInput" class="ask-input" placeholder="Ask Buddy (e.g. 'What is the 15-day timeline?' or 'Do I need a notary?')" autocomplete="off">
+      <button type="submit" class="ask-submit-btn" id="buddySubmitBtn">Ask Buddy &rarr;</button>
+    </form>
+
+    <!-- QUICK PROMPTS -->
+    <div class="quick-queries">
+      <button type="button" class="quick-chip" onclick="quickAsk('What is the 15-day timeline?')">What is the 15-day timeline?</button>
+      <button type="button" class="quick-chip" onclick="quickAsk('Do I need stamp paper or a notary?')">Do I need stamp paper or notary?</button>
+      <button type="button" class="quick-chip" onclick="quickAsk('What if there is no registered nominee?')">What if there is no nominee?</button>
+      <button type="button" class="quick-chip" onclick="quickAsk('Which form is Form 14?')">Which form is Form 14?</button>
+    </div>
   </div>
 
   <!-- MAIN COMPARISON GRID -->
@@ -451,4 +719,215 @@
   </div>
 
 </div>
+
+<script>
+// Wealth Buddy Voice, Bilingual, and Grounded Q&A Controller
+let isVoiceActive = false;
+let speechRate = 1.0;
+let currentLanguage = 'en'; // 'en' or 'hi'
+let isLargeText = false;
+let currentSpeechUtterance = null;
+
+const currentBankCode = "{{ current_bank.bank_code|default:'sbi' }}";
+
+function setBuddyState(state) {
+  const avatar = document.getElementById('buddyAvatarWrap');
+  if (!avatar) return;
+  avatar.classList.remove('state-idle', 'state-speaking', 'state-thinking');
+  avatar.classList.add('state-' + state);
+}
+
+function toggleLargeText() {
+  isLargeText = !isLargeText;
+  const bubble = document.getElementById('speechBubble');
+  const btn = document.getElementById('largeTextToggleBtn');
+  if (bubble) {
+    bubble.classList.toggle('large-text', isLargeText);
+  }
+  if (btn) {
+    btn.classList.toggle('active', isLargeText);
+  }
+}
+
+function toggleSpeed() {
+  const btn = document.getElementById('speedToggleBtn');
+  const label = document.getElementById('speedLabel');
+  if (speechRate === 1.0) {
+    speechRate = 0.85; // Slow for elderly/clarity
+    label.innerText = 'Speed: Slow (0.85x)';
+    btn.classList.add('active');
+  } else {
+    speechRate = 1.0;
+    label.innerText = 'Speed: Normal (1.0x)';
+    btn.classList.remove('active');
+  }
+  if (isVoiceActive && window.speechSynthesis && window.speechSynthesis.speaking) {
+    playCurrentText();
+  }
+}
+
+function toggleLanguage() {
+  const btn = document.getElementById('langToggleBtn');
+  const label = document.getElementById('langLabel');
+  if (currentLanguage === 'en') {
+    currentLanguage = 'hi';
+    label.innerText = 'Language: हिन्दी (Hindi)';
+    btn.classList.add('active');
+    fetchSectionGuide('Annex I-A', 1, 'hi');
+  } else {
+    currentLanguage = 'en';
+    label.innerText = 'Language: English';
+    btn.classList.remove('active');
+    fetchSectionGuide('Annex I-A', 1, 'en');
+  }
+}
+
+function toggleVoicePlayback() {
+  if (isVoiceActive) {
+    stopVoicePlayback();
+  } else {
+    isVoiceActive = true;
+    document.getElementById('voiceToggleBtn').classList.add('active');
+    document.getElementById('voiceIcon').innerText = '⏹';
+    document.getElementById('voiceBtnText').innerText = 'Stop Voice';
+    playCurrentText();
+  }
+}
+
+function stopVoicePlayback() {
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+  isVoiceActive = false;
+  const btn = document.getElementById('voiceToggleBtn');
+  if (btn) btn.classList.remove('active');
+  const icon = document.getElementById('voiceIcon');
+  if (icon) icon.innerText = '▶';
+  const txt = document.getElementById('voiceBtnText');
+  if (txt) txt.innerText = 'Listen (Voice)';
+  setBuddyState('idle');
+}
+
+function playCurrentText() {
+  const textEl = document.getElementById('speechText');
+  if (!textEl || !window.speechSynthesis) return;
+
+  window.speechSynthesis.cancel();
+  const rawText = textEl.innerText.trim();
+  if (!rawText) return;
+
+  const utterance = new SpeechSynthesisUtterance(rawText);
+  utterance.rate = speechRate;
+  utterance.lang = currentLanguage === 'hi' ? 'hi-IN' : 'en-IN';
+
+  utterance.onstart = () => {
+    setBuddyState('speaking');
+  };
+  utterance.onend = () => {
+    setBuddyState('idle');
+    stopVoicePlayback();
+  };
+  utterance.onerror = () => {
+    setBuddyState('idle');
+    stopVoicePlayback();
+  };
+
+  currentSpeechUtterance = utterance;
+  window.speechSynthesis.speak(utterance);
+}
+
+function quickAsk(prompt) {
+  const input = document.getElementById('buddyQueryInput');
+  if (input) {
+    input.value = prompt;
+    handleBuddyAsk(new Event('submit'));
+  }
+}
+
+async function handleBuddyAsk(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const input = document.getElementById('buddyQueryInput');
+  if (!input) return;
+  const query = input.value.trim();
+  if (!query) return;
+
+  // Client-side PII safeguard check
+  const hasAadhaar = /\b[2-9]\d{3}[\s\-]?\d{4}[\s\-]?\d{4}\b/.test(query);
+  const hasPan = /\b[A-Za-z]{5}\d{4}[A-Za-z]\b/.test(query);
+  const hasAccount = /\b\d{9,18}\b/.test(query);
+
+  if (hasAadhaar || hasPan || hasAccount) {
+    input.value = '';
+    const bubble = document.getElementById('speechText');
+    const citation = document.getElementById('speechCitation');
+    bubble.innerText = "Privacy Guard Notice: Aadhaar, PAN, and account numbers are strictly prohibited. The entered number was immediately discarded. Please ask a procedural question.";
+    citation.innerText = "Refused: WealthPass Privacy Policy & Regulatory Protection";
+    setBuddyState('idle');
+    if (isVoiceActive) playCurrentText();
+    return;
+  }
+
+  setBuddyState('thinking');
+  const submitBtn = document.getElementById('buddySubmitBtn');
+  if (submitBtn) submitBtn.disabled = true;
+
+  try {
+    const res = await fetch('/guide/api/buddy/ask/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: query,
+        bank_code: currentBankCode,
+        lang: currentLanguage
+      })
+    });
+    const data = await res.json();
+    if (data.success && data.data) {
+      const bubble = document.getElementById('speechText');
+      const citation = document.getElementById('speechCitation');
+      bubble.innerText = data.data.answer;
+      citation.innerText = 'Source: ' + data.data.citation;
+      input.value = '';
+      if (isVoiceActive) {
+        playCurrentText();
+      } else {
+        setBuddyState('idle');
+      }
+    } else {
+      document.getElementById('speechText').innerText = "I'm not sure, please check with your bank or a lawyer.";
+      document.getElementById('speechCitation').innerText = "Refusal: Confidence below threshold";
+      setBuddyState('idle');
+    }
+  } catch (err) {
+    document.getElementById('speechText').innerText = "I'm not sure, please check with your bank or a lawyer.";
+    document.getElementById('speechCitation').innerText = "Network / Retrieval Failure";
+    setBuddyState('idle');
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
+}
+
+async function fetchSectionGuide(annex, section, lang) {
+  setBuddyState('thinking');
+  try {
+    const res = await fetch(`/guide/api/buddy/section/?annex=${encodeURIComponent(annex)}&section=${section}&lang=${lang}`);
+    const data = await res.json();
+    if (data.success && data.guide && data.guide.found) {
+      const g = data.guide;
+      const bubble = document.getElementById('speechText');
+      const citation = document.getElementById('speechCitation');
+      bubble.innerText = `${g.title}: ${g.explanation}\n\n• Who must sign: ${g.who_must_sign}\n• Stamp/Notary: ${g.stamp_notary_needed}`;
+      citation.innerText = `Verified by: ${g.reviewed_by} (${g.annex})`;
+      if (isVoiceActive) playCurrentText();
+    }
+  } catch (e) {
+    // keep current
+  } finally {
+    setBuddyState('idle');
+  }
+}
+</script>
 {% endblock %}
+
