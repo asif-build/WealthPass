@@ -3,101 +3,135 @@
 
 {% block title %}Official Bank Claim Directory &amp; RBI Form Standard &mdash; WealthPass{% endblock %}
 
-{% block extra_head %}
+{% block extra_css %}
 <style>
 /* WealthPass Dark Luxury Aesthetics */
 .dir-container {
-  min-height: 100vh;
-  background: #0c0c0c;
-  color: #ffffff;
-  padding: 80px 24px 80px;
-  max-width: 1560px;
+  min-height: calc(100vh - 76px);
+  background: var(--black, #000000);
+  color: var(--white, #E1E0CC);
+  padding: 40px 24px 80px;
+  max-width: 1240px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .dir-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
   padding-bottom: 24px;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
+}
+.dir-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold, #DEDBC8);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .dir-title {
-  font-family: var(--font-serif, "Playfair Display", serif);
-  font-size: 32px;
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
+  font-size: 38px !important;
+  font-style: italic;
   font-weight: 400;
-  color: #ffffff;
-  margin: 0 0 8px 0;
+  color: var(--white, #ffffff);
+  margin: 0 0 10px 0;
+  line-height: 1.2;
 }
 .dir-subtitle {
+  font-family: var(--font-sans);
   font-size: 14px;
-  color: #888888;
+  color: var(--white-faint, #B5B3A2);
   margin: 0;
   line-height: 1.6;
+  max-width: 820px;
 }
 
 /* Bank Selector Bar */
 .bank-scroll-bar {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
-  padding-bottom: 12px;
+  padding: 4px 2px 14px 2px;
   margin-bottom: 24px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(222, 219, 200, 0.25) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+.bank-scroll-bar::-webkit-scrollbar {
+  height: 6px;
+}
+.bank-scroll-bar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.bank-scroll-bar::-webkit-scrollbar-thumb {
+  background: rgba(222, 219, 200, 0.2);
+  border-radius: 9999px;
 }
 .bank-tab-btn {
-  padding: 10px 18px;
-  background: #141414;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+  padding: 9px 18px;
+  background: var(--black-soft, #141414);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
   border-radius: 9999px;
-  color: #aaaaaa;
+  color: var(--white-faint, #aaaaaa);
+  font-family: var(--font-sans);
   font-size: 13px;
   text-decoration: none;
   white-space: nowrap;
   transition: all 0.2s ease;
 }
 .bank-tab-btn:hover {
-  border-color: rgba(212, 175, 55, 0.4);
-  color: #ffffff;
+  border-color: rgba(222, 219, 200, 0.5);
+  color: var(--white, #ffffff);
 }
 .bank-tab-btn.active {
-  background: rgba(212, 175, 55, 0.12);
-  border-color: #D4AF37;
-  color: #D4AF37;
-  font-weight: 500;
+  background: rgba(222, 219, 200, 0.12);
+  border-color: var(--gold, #DEDBC8);
+  color: var(--gold, #DEDBC8);
+  font-weight: 600;
 }
 
 /* Scenario Selector */
 .scenario-selector-box {
   display: flex;
-  gap: 12px;
-  background: #121212;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 10px;
+  background: var(--black-soft, #101010);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.06));
   border-radius: 12px;
   padding: 8px 12px;
   margin-bottom: 32px;
   flex-wrap: wrap;
+  align-items: center;
 }
 .scenario-pill {
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 8px;
-  color: #888888;
+  color: var(--white-faint, #888888);
+  font-family: var(--font-sans);
   font-size: 12px;
   text-decoration: none;
   transition: all 0.2s ease;
 }
 .scenario-pill:hover {
-  color: #ffffff;
+  color: var(--white, #ffffff);
 }
 .scenario-pill.active {
-  background: #1f1f1f;
-  color: #D4AF37;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  font-weight: 500;
+  background: var(--black-lifted, #1c1c1c);
+  color: var(--gold, #DEDBC8);
+  border: 1px solid var(--border-gold, rgba(222, 219, 200, 0.3));
+  font-weight: 600;
 }
 
 /* Main Grid Layout */
 .dir-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 32px;
+  gap: 28px;
 }
 @media (max-width: 1024px) {
   .dir-grid {
@@ -107,53 +141,60 @@
 
 /* Cards */
 .dir-card {
-  background: #141414;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--black-soft, #101010);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
   border-radius: 16px;
   padding: 32px;
+  box-sizing: border-box;
 }
 .card-eyebrow {
+  font-family: var(--font-sans);
   font-size: 11px;
+  font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #D4AF37;
+  color: var(--gold, #DEDBC8);
   margin-bottom: 8px;
 }
 .card-heading {
-  font-family: var(--font-serif, "Playfair Display", serif);
-  font-size: 22px;
-  color: #ffffff;
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
+  font-size: 26px;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--white, #ffffff);
   margin: 0 0 16px 0;
 }
 
 /* RBI Statutory Rights Banner */
 .rbi-rights-banner {
-  background: rgba(212, 175, 55, 0.06);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: rgba(222, 219, 200, 0.04);
+  border: 1px solid rgba(222, 219, 200, 0.2);
   border-radius: 12px;
   padding: 20px 24px;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 .rbi-rights-title {
+  font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 600;
-  color: #D4AF37;
+  color: var(--gold, #DEDBC8);
   margin-bottom: 6px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 .rbi-rights-text {
-  font-size: 12px;
-  color: #cccccc;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--white-muted, #cccccc);
   line-height: 1.6;
   margin: 0;
 }
 
 /* Forms List */
 .form-item-box {
-  background: #181818;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--black-lifted, #181818);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.06));
   border-radius: 12px;
   padding: 18px 20px;
   margin-bottom: 14px;
@@ -166,55 +207,66 @@
   margin-bottom: 8px;
 }
 .form-item-title {
+  font-family: var(--font-sans);
   font-size: 14px;
-  color: #ffffff;
+  color: var(--white, #ffffff);
   font-weight: 500;
+  line-height: 1.4;
 }
 .form-badge-rbi {
+  font-family: var(--font-sans);
   font-size: 11px;
   padding: 3px 8px;
   border-radius: 4px;
-  background: rgba(52, 211, 153, 0.1);
-  color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.2);
+  background: rgba(74, 124, 89, 0.15);
+  color: #6ee7b7;
+  border: 1px solid rgba(74, 124, 89, 0.3);
   white-space: nowrap;
 }
 .form-badge-differs {
+  font-family: var(--font-sans);
   font-size: 11px;
   padding: 3px 8px;
   border-radius: 4px;
-  background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: rgba(180, 83, 9, 0.15);
+  color: #fcd34d;
+  border: 1px solid rgba(180, 83, 9, 0.3);
   white-space: nowrap;
 }
 .form-link-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #D4AF37;
+  color: var(--gold, #DEDBC8);
+  font-family: var(--font-sans);
   font-size: 12px;
   text-decoration: underline;
   margin-top: 6px;
+  transition: opacity 0.2s ease;
+}
+.form-link-btn:hover {
+  opacity: 0.8;
 }
 
 /* Extra Requirements */
 .extra-req-item {
-  background: #161616;
-  border-left: 3px solid #D4AF37;
+  background: var(--black-lifted, #161616);
+  border-left: 3px solid var(--gold, #DEDBC8);
   padding: 16px;
   border-radius: 0 8px 8px 0;
   margin-bottom: 12px;
+  font-family: var(--font-sans);
   font-size: 13px;
-  color: #cccccc;
+  color: var(--white-muted, #cccccc);
   line-height: 1.6;
 }
 .verified-tag {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  font-family: var(--font-sans);
   font-size: 11px;
-  color: #888888;
+  color: var(--white-faint, #888888);
   margin-top: 8px;
 }
 </style>
@@ -225,7 +277,7 @@
 
   <!-- HEADER -->
   <div class="dir-header">
-    <div style="font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #D4AF37; margin-bottom: 6px;">
+    <div class="dir-eyebrow">
       Statutory Regulatory Directory &bull; RBI Master Directions 2025
     </div>
     <h1 class="dir-title">Scheduled Commercial Banks Claim Directory</h1>
@@ -273,7 +325,7 @@
       <div style="margin-bottom: 20px; font-size: 13px; color: #aaaaaa;">
         Official Public Page: 
         {% if current_bank.claim_page_url %}
-        <a href="{{ current_bank.claim_page_url }}" target="_blank" rel="noopener noreferrer" style="color: #D4AF37; text-decoration: underline;">
+        <a href="{{ current_bank.claim_page_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--gold, #DEDBC8); text-decoration: underline;">
           {{ current_bank.claim_page_url }} &rarr;
         </a>
         {% else %}
@@ -376,7 +428,7 @@
           <div>{{ ext.text_as_published }}</div>
           <div class="verified-tag">
             <span>&#10003; Verified on {{ ext.verified_at|date:"d M Y" }}</span> &bull; 
-            <a href="{{ ext.source_url }}" target="_blank" rel="noopener noreferrer" style="color: #D4AF37; text-decoration: underline;">Source Link</a>
+            <a href="{{ ext.source_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--gold, #DEDBC8); text-decoration: underline;">Source Link</a>
           </div>
         </div>
         {% endfor %}
@@ -389,7 +441,7 @@
       <div style="margin-top: 32px; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.04);">
         <div style="font-size: 13px; color: #fff; font-weight: 500; margin-bottom: 4px;">Need guided assistance?</div>
         <p style="font-size: 12px; color: #888; margin: 0 0 14px 0;">Use WealthPass Form Copilot to fill and prepare your claim package online.</p>
-        <a href="/claims/" style="display: inline-block; padding: 10px 20px; background: #D4AF37; color: #000; border-radius: 9999px; font-size: 12px; font-weight: 600; text-decoration: none;">
+        <a href="/claims/" style="display: inline-block; padding: 10px 20px; background: var(--gold, #DEDBC8); color: #000; border-radius: 9999px; font-size: 12px; font-weight: 600; text-decoration: none;">
           Open Form Preparation &rarr;
         </a>
       </div>
