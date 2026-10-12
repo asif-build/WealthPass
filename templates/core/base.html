@@ -4,34 +4,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WealthPass - India's Unclaimed Asset Recovery Platform</title>
+  <title>{% block title %}WealthPass - India's Unclaimed Asset Recovery Platform{% endblock %}</title>
   
   <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
 
+  <!-- WealthPass Design System Tokens -->
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   {% block extra_css %}{% endblock %}
   
   <style>
-    /* Strict Layout Elements */
+    /* Tokenized Base Shell Overrides */
+    body {
+      background-color: var(--wp-surface-white);
+      color: var(--wp-text-primary);
+      font-family: var(--font-family-base);
+    }
+
     .navbar {
       position: fixed;
       top: 0; left: 0; width: 100%;
-      height: 76px;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(24px) saturate(1.4);
-      border-bottom: 1px solid var(--border);
+      height: 72px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px) saturate(1.4);
+      border-bottom: 1px solid var(--wp-border);
       z-index: 1000;
       display: flex;
       align-items: center;
+      transition: all var(--transition-fast);
     }
     .nav-container {
       width: 100%;
-      max-width: var(--container);
+      max-width: var(--container-max-width);
       margin: 0 auto;
-      padding: 0 40px;
+      padding: 0 var(--space-4);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -40,125 +49,132 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      text-decoration: none;
     }
     .nav-logo-text {
-      font-family: var(--font-sans);
-      font-weight: 800;
-      font-size: 19px;
-      letter-spacing: -0.06em;
-      color: var(--white);
+      font-family: var(--font-family-base);
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.03em;
+      color: var(--wp-ink-navy);
     }
     .nav-links {
       display: flex;
-      gap: 48px;
+      gap: var(--space-5);
     }
     .nav-link {
-      font-family: var(--font-sans);
-      font-weight: 400;
-      font-size: 12px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--white-faint);
-      padding: 28px 0;
+      font-family: var(--font-family-base);
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--wp-text-muted);
+      padding: 24px 0;
       position: relative;
-      transition: var(--fast);
+      text-decoration: none;
+      transition: color var(--transition-fast);
     }
-    .nav-link:hover { color: var(--white); }
-    .nav-link.active { color: var(--white); }
+    .nav-link:hover { color: var(--wp-trust-blue); }
+    .nav-link.active { color: var(--wp-trust-blue); font-weight: 600; }
     .nav-link.active::after {
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 2px;
-      background: var(--gold);
+      background: var(--wp-trust-blue);
+      border-radius: var(--radius-pill);
     }
     .nav-cta {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 10px 24px;
-      border: 1px solid var(--gold);
-      border-radius: 9999px; /* Pill shape */
-      background: var(--gold); /* Cream background */
-      color: #000000; /* Black text */
-      font-family: var(--font-sans);
+      min-height: 44px;
+      padding: 0 var(--space-3);
+      border: 1.5px solid var(--wp-trust-blue);
+      border-radius: var(--radius-pill);
+      background: var(--wp-trust-blue);
+      color: var(--wp-surface-white);
+      font-family: var(--font-family-base);
       font-weight: 600;
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+      font-size: 14px;
+      text-decoration: none;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all var(--transition-fast);
+      box-shadow: 0 4px 12px rgba(27, 95, 209, 0.2);
     }
     .nav-cta:hover {
-      background: #ffffff;
-      border-color: #ffffff;
-      color: #000000;
+      background: var(--wp-trust-blue-hover);
+      border-color: var(--wp-trust-blue-hover);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(222, 219, 200, 0.15);
+      box-shadow: 0 6px 16px rgba(27, 95, 209, 0.3);
     }
 
     .footer {
-      background: var(--black);
-      border-top: 1px solid var(--border);
+      background: var(--wp-ink-navy);
+      color: var(--wp-surface-white);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
       padding: 80px 0 40px;
     }
     .footer-grid {
       display: grid;
       grid-template-columns: 2fr 1fr 1fr 1.5fr;
       gap: 40px;
-      max-width: var(--container);
+      max-width: var(--container-max-width);
       margin: 0 auto;
-      padding: 0 40px;
+      padding: 0 var(--space-4);
     }
     .footer-col .label {
-      color: var(--white);
+      color: var(--wp-surface-white);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       margin-bottom: 24px;
     }
     .footer-col p {
-      font-family: var(--font-sans);
-      font-size: 13px;
-      font-weight: 300;
-      color: var(--white-faint);
-      line-height: 1.9;
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.7;
       margin-bottom: 24px;
     }
     .social-row { display: flex; gap: 16px; }
     .social-row a {
-      font-family: var(--font-sans);
-      font-size: 11px;
-      letter-spacing: 0.1em;
+      font-family: var(--font-family-base);
+      font-size: 12px;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
-      color: var(--white-faint);
-      transition: var(--fast);
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: color var(--transition-fast);
     }
-    .social-row a:hover { color: var(--gold); }
+    .social-row a:hover { color: var(--wp-surface-white); }
     
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 16px; }
-    .footer-col a { color: var(--white-faint); transition: var(--fast); }
-    .footer-col a:hover { color: var(--gold); }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 14px; padding: 0; margin: 0; }
+    .footer-col a { color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px; transition: color var(--transition-fast); }
+    .footer-col a:hover { color: var(--wp-surface-white); }
     
     .footer-bottom {
-      max-width: var(--container);
+      max-width: var(--container-max-width);
       margin: 60px auto 0;
-      padding: 32px 40px 0;
-      border-top: 1px solid var(--border);
+      padding: 32px var(--space-4) 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       justify-content: space-between;
     }
     .footer-bottom > div {
-      font-family: var(--font-sans);
-      font-size: 12px;
-      font-weight: 300;
-      color: var(--white-faint);
+      font-family: var(--font-family-base);
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.5);
     }
 
     @media (max-width: 768px) {
       .nav-links, .nav-cta { display: none; }
-      .footer-grid { grid-template-columns: 1fr; padding: 0 24px; }
-      .footer-bottom { padding: 32px 24px 0; flex-direction: column; gap: 16px; }
+      .footer-grid { grid-template-columns: 1fr; padding: 0 var(--space-3); }
+      .footer-bottom { padding: 32px var(--space-3) 0; flex-direction: column; gap: 16px; }
     }
   </style>
-<script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
@@ -167,40 +183,48 @@
   
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <div class="mobile-menu" id="mobileMenu">
-    <button class="hamburger" id="closeMenu" style="display:block; margin-bottom: 40px;">
+    <button class="hamburger" id="closeMenu" style="display:block; margin-bottom: 40px;" aria-label="Close Menu">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
     </button>
     <div style="display:flex; flex-direction:column; gap:24px;">
-      <a href="/" style="font-family:var(--font-sans); font-size:18px; color:var(--white);">Home</a>
-      <a href="#" style="font-family:var(--font-sans); font-size:18px; color:var(--white);">Security Process</a>
-      <a href="#" style="font-family:var(--font-sans); font-size:18px; color:var(--white);">Legal Mandate</a>
-      <a href="/search/" style="color:var(--gold); font-family:var(--font-sans); font-size:18px; margin-top:24px;">FIND ASSETS &rarr;</a>
+      <a href="/" style="font-family:var(--font-family-base); font-size:18px; color:var(--wp-ink-navy); text-decoration:none;">Home</a>
+      <a href="/search/" style="font-family:var(--font-family-base); font-size:18px; color:var(--wp-trust-blue); font-weight:600; text-decoration:none;">Find Assets &rarr;</a>
+      <a href="/guide/banks/" style="font-family:var(--font-family-base); font-size:18px; color:var(--wp-ink-navy); text-decoration:none;">Bank Directory</a>
+      <a href="/guide/fill-form/" style="font-family:var(--font-family-base); font-size:18px; color:var(--wp-ink-navy); text-decoration:none;">Fill Claim Online</a>
     </div>
   </div>
 
-
-  <nav class="navbar">
+  <nav class="navbar" id="mainNavbar">
     <div class="nav-container">
+      <a href="{% url 'landing' %}" class="nav-logo" aria-label="WealthPass Home">
+        <svg width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="3" y="4" width="30" height="28" rx="7" fill="var(--wp-trust-blue-light)" stroke="var(--wp-border)" stroke-width="1.5"/>
+          <path d="M10 13H26" stroke="var(--wp-trust-blue)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M10 18H21" stroke="var(--wp-trust-blue)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M10 23H17" stroke="var(--wp-trust-blue)" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="25" cy="22" r="2.5" fill="var(--wp-trust-blue)"/>
+        </svg>
+        <span class="nav-logo-text">WealthPass</span>
+      </a>
+
       <div class="nav-links">
         <a href="{% url 'landing' %}" class="nav-link active">Home</a>
-        <a href="#" class="nav-link">Security Process</a>
-        <a href="#" class="nav-link">Legal Mandate</a>
+        <a href="{% url 'search' %}" class="nav-link">Search Assets</a>
+        <a href="/guide/banks/" class="nav-link">Bank Directory</a>
+        <a href="/guide/fill-form/" class="nav-link">Fill Claim Forms</a>
       </div>
       
       <a href="{% url 'search' %}" class="nav-cta">FIND ASSETS</a>
 
-      <button class="hamburger" id="openMenu">
+      <button class="hamburger" id="openMenu" aria-label="Open Menu">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
       </button>
-
     </div>
   </nav>
 
-  <main style="padding-top: 76px;">
+  <main style="padding-top: 72px;">
     {% block content %}{% endblock %}
   </main>
-
-
 
   <script src="{% static 'js/app.js' %}"></script>
   
@@ -208,29 +232,23 @@
 
   <script>
     document.addEventListener('mousemove', (e) => {
-      // Global glow
       const glow = document.getElementById('global-glow');
       if(glow) {
         glow.style.left = e.clientX + 'px';
         glow.style.top = e.clientY + 'px';
       }
 
-      // 3D Glass Cards Tilt
       document.querySelectorAll('.glass-card').forEach(card => {
         const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left; // x position within the element.
-        const y = e.clientY - rect.top;  // y position within the element.
-        
-        // set properties for radial gradient
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
         card.style.setProperty('--mouseX', `${x}px`);
         card.style.setProperty('--mouseY', `${y}px`);
 
-        // calculate rotations (max 10 degrees)
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
         const rotateX = ((y - centerY) / centerY) * -5;
         const rotateY = ((x - centerX) / centerX) * 5;
-
         card.style.setProperty('--rotateX', `${rotateX}deg`);
         card.style.setProperty('--rotateY', `${rotateY}deg`);
       });
@@ -257,16 +275,16 @@
         </div>
       </div>
       <div class="footer-col">
-        <div class="label" style="font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;">Platform</div>
+        <div class="label">Platform</div>
         <ul>
           <li><a href="{% url 'landing' %}">Home</a></li>
           <li><a href="{% url 'search' %}">Find Assets</a></li>
           <li><a href="/discover-assets/">Discovery Engine</a></li>
-          <li><a href="/claim/">Claim Dossier</a></li>
+          <li><a href="/guide/fill-form/">Fill Claim Forms</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <div class="label" style="font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;">Legal &amp; Policy</div>
+        <div class="label">Legal &amp; Policy</div>
         <ul>
           <li><a href="/terms/">Terms &amp; Conditions</a></li>
           <li><a href="/privacy-policy/">Privacy Policy</a></li>
@@ -274,16 +292,16 @@
         </ul>
       </div>
       <div class="footer-col">
-        <div class="label" style="font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;">Inquiries</div>
-        <p style="font-size: 12px; margin-bottom: 12px;">Official Dedicated Support:</p>
-        <a href="mailto:wealthpass.official@gmail.com" style="color: var(--gold); font-size: 13px;">wealthpass.official@gmail.com</a>
+        <div class="label">Inquiries</div>
+        <p style="font-size: 13px; margin-bottom: 12px;">Official Dedicated Support:</p>
+        <a href="mailto:wealthpass.official@gmail.com" style="color: var(--wp-warm-accent); font-size: 14px; font-weight: 500;">wealthpass.official@gmail.com</a>
       </div>
     </div>
     <div class="footer-bottom">
       <div>&copy; 2026 WealthPass Technologies Pvt. Ltd. All rights reserved.</div>
       <div style="display: flex; gap: 24px;">
-        <a href="/terms/" style="color: var(--white-faint);">Terms &amp; Conditions</a>
-        <a href="/privacy-policy/" style="color: var(--white-faint);">Privacy Policy</a>
+        <a href="/terms/" style="color: rgba(255, 255, 255, 0.6); text-decoration: none;">Terms &amp; Conditions</a>
+        <a href="/privacy-policy/" style="color: rgba(255, 255, 255, 0.6); text-decoration: none;">Privacy Policy</a>
       </div>
     </div>
   </footer>
@@ -292,16 +310,16 @@
   <div class="cookie-banner" id="cookieBanner">
     <div style="display:flex; justify-content:space-between; align-items:flex-start;">
       <div>
-        <h4 style="font-family:var(--font-sans); color:var(--white); font-size:16px; margin-bottom:8px;">WEALTHPASS SECURE SESSION</h4>
-        <p style="font-family:var(--font-sans); color:var(--white-faint); font-size:13px; line-height:1.6; max-width:400px;">
+        <h4 style="font-family:var(--font-family-base); color:var(--wp-ink-navy); font-size:16px; margin-bottom:8px;">WEALTHPASS SECURE SESSION</h4>
+        <p style="font-family:var(--font-family-base); color:var(--wp-text-muted); font-size:13px; line-height:1.6; max-width:400px;">
           WealthPass uses cookies strictly for session management and security. No tracking. No third-party data sales.
         </p>
       </div>
-      <i class="ph ph-shield-check" style="font-size:32px; color:var(--gold);"></i>
+      <i class="ph ph-shield-check" style="font-size:32px; color:var(--wp-trust-blue);"></i>
     </div>
     <div style="display:flex; gap:12px; margin-top:8px;">
-      <button class="btn-primary" id="acceptCookies" style="padding:10px 24px;">ACCEPT ALL</button>
-      <button class="btn-secondary" style="padding:10px 24px;">MANAGE</button>
+      <button class="wp-btn wp-btn-primary" id="acceptCookies" style="min-height: 40px; padding: 0 20px;">ACCEPT ALL</button>
+      <button class="wp-btn wp-btn-secondary" style="min-height: 40px; padding: 0 20px;">MANAGE</button>
     </div>
   </div>
 
@@ -311,7 +329,10 @@
       const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
       const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const scrolled = (winScroll / height) * 100;
-      document.getElementById('progressBar').style.width = scrolled + '%';
+      const progressBar = document.getElementById('progressBar');
+      if (progressBar) {
+        progressBar.style.width = scrolled + '%';
+      }
     });
 
     // Mobile Menu
@@ -320,13 +341,13 @@
     const mobileMenu = document.getElementById('mobileMenu');
     const overlay = document.getElementById('mobileOverlay');
 
-    if (openMenu) {
+    if (openMenu && mobileMenu && overlay) {
       openMenu.addEventListener('click', () => {
         mobileMenu.classList.add('open');
         overlay.classList.add('open');
       });
     }
-    if (closeMenu) {
+    if (closeMenu && mobileMenu && overlay) {
       closeMenu.addEventListener('click', () => {
         mobileMenu.classList.remove('open');
         overlay.classList.remove('open');
@@ -338,27 +359,31 @@
     }
 
     // Cookie Banner
-    if (!localStorage.getItem('wealthpass_cookies_accepted')) {
-      setTimeout(() => {
-        document.getElementById('cookieBanner').classList.add('show');
-      }, 2000);
+    const cookieBanner = document.getElementById('cookieBanner');
+    const acceptCookies = document.getElementById('acceptCookies');
+    if (cookieBanner && acceptCookies) {
+      if (!localStorage.getItem('wealthpass_cookies_accepted')) {
+        setTimeout(() => {
+          cookieBanner.classList.add('show');
+        }, 2000);
+      }
+      acceptCookies.addEventListener('click', () => {
+        localStorage.setItem('wealthpass_cookies_accepted', 'true');
+        cookieBanner.classList.remove('show');
+      });
     }
-    document.getElementById('acceptCookies').addEventListener('click', () => {
-      localStorage.setItem('wealthpass_cookies_accepted', 'true');
-      document.getElementById('cookieBanner').classList.remove('show');
-    });
 
-    // Session Timeout Mock
+    // Session Activity Refresh
     let sessionTimeout;
     function resetSessionTimeout() {
       clearTimeout(sessionTimeout);
       sessionTimeout = setTimeout(() => {
-        alert("Session expiring in 1 minute due to inactivity. Please complete your transaction for security.");
-      }, 10 * 60 * 1000); // 10 minutes
+        // Safe notification
+      }, 15 * 60 * 1000);
     }
-    window.onload = resetSessionTimeout;
-    document.onmousemove = resetSessionTimeout;
-    document.onkeypress = resetSessionTimeout;
+    window.addEventListener('load', resetSessionTimeout);
+    document.addEventListener('mousemove', resetSessionTimeout);
+    document.addEventListener('keypress', resetSessionTimeout);
   </script>
 
 </body>
