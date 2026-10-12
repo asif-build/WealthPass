@@ -16,10 +16,24 @@ Including another URLconf
 """
 from claims import views
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.conf import settings
+from django.views.static import serve
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('claims.urls')),
     path("scan/", views.scan_document, name="scan"),
+    path("setu-test/", views.setu_test, name="setu_test"),
+    path(
+        "setu-callback/",
+        views.setu_callback,
+        name="setu_callback"
+    ),
+    path('', include('accounts.urls')),
+    path('', include('notifications.urls')),
+    path('', include('claims.urls')),
+    re_path(r'^(?P<path>wealthpass-.*\.png|favicon.*|apple-touch-icon.*|assets/.*)$', serve, {'document_root': settings.STATICFILES_DIRS[0]}),
 ]
+
+handler404 = 'claims.views.custom_404'
+

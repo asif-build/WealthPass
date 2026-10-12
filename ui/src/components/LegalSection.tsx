@@ -1,17 +1,19 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { WordsPullUpMultiStyle } from "./WordsPullUpMultiStyle";
 
 export const LegalSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const heading1 = [
     { text: "Grounded in the trust rails India already knows.", className: "text-[#E1E0CC] font-normal" }
   ];
 
   const heading2 = [
-    { text: "The design is elevated, but the message stays familiar.", className: "text-gray-500 font-normal" }
+    { text: "The design is elevated, but the message stays familiar.", className: "text-[#b0ad9b] font-normal" }
   ];
 
   const containerVariants = {
@@ -38,25 +40,50 @@ export const LegalSection = () => {
   const mandates = [
     {
       tag: "RBI",
+      institution: "Reserve Bank of India",
+      logo: "/static/assets/institutions/rbi.svg",
       title: "Consent-first access",
-      description: "Discovery cues and language mirror the seriousness expected from regulated financial journeys."
+      description: "Discovery pathways aligned with regulated banking ecosystems."
     },
     {
       tag: "IRDAI",
+      institution: "Insurance Regulatory and Development Authority of India",
+      logo: "/static/assets/institutions/irdai.svg",
       title: "Insurance-ready workflow",
-      description: "Clear benefit language explains how policy discovery fits into a premium recovery experience."
+      description: "Structured around established insurance discovery and claim processes."
     },
     {
-      tag: "EPFO",
+      tag: "IEPF",
+      institution: "Investor Education and Protection Fund Authority",
+      logo: "/static/assets/institutions/iepf.svg",
       title: "Claim path precision",
-      description: "Structured hierarchy and spacing make procedural clarity feel effortless on any screen size."
+      description: "Structured around established unclaimed-asset recovery mechanisms."
     },
     {
       tag: "UIDAI",
+      institution: "Unique Identification Authority of India",
+      logo: "/static/assets/institutions/uidai.svg",
       title: "Identity confidence",
-      description: "Verification signals are surfaced cleanly so the interface feels secure without becoming intimidating."
+      description: "Identity verification designed around authorized identity infrastructure."
     }
   ];
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const { scrollLeft, offsetWidth } = scrollRef.current;
+    const index = Math.round(scrollLeft / (offsetWidth * 0.82));
+    setActiveIndex(Math.min(Math.max(index, 0), mandates.length - 1));
+  };
+
+  const scrollToCard = (index: number) => {
+    if (!scrollRef.current) return;
+    const cardWidth = scrollRef.current.offsetWidth * 0.82;
+    scrollRef.current.scrollTo({
+      left: index * cardWidth,
+      behavior: "smooth"
+    });
+    setActiveIndex(index);
+  };
 
   return (
     <section id="legal" className="py-24 px-4 md:px-6 bg-black relative overflow-hidden flex flex-col justify-center border-t border-white/5">
@@ -65,9 +92,9 @@ export const LegalSection = () => {
       
       <div className="w-full max-w-7xl mx-auto z-10 relative">
         {/* Header */}
-        <div className="text-center mb-16 md:mb-24 flex flex-col gap-3">
+        <div className="text-center mb-16 md:mb-20 flex flex-col gap-3">
           <span className="text-primary text-[10px] sm:text-xs uppercase tracking-[0.2em] font-medium block">
-            Legal mandate
+            LEGAL MANDATE
           </span>
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-normal leading-tight max-w-2xl mx-auto">
             <WordsPullUpMultiStyle segments={heading1} />
@@ -77,38 +104,98 @@ export const LegalSection = () => {
           </h3>
         </div>
 
-        {/* Mandate Grid */}
-        <motion.div
-          ref={containerRef}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-        >
-          {mandates.map((item, idx) => (
-            <motion.article
-              key={idx}
-              variants={cardVariants}
-              className="bg-[#101010] border border-white/5 rounded-[2rem] p-8 flex flex-col justify-between min-h-[220px] relative group"
+        {/* Mandate Cards Carousel / Grid */}
+        <div className="relative">
+          <motion.div
+            ref={containerRef}
+            variants={containerVariants}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            className="w-full"
+          >
+            <div
+              ref={scrollRef}
+              onScroll={handleScroll}
+              className="flex lg:grid lg:grid-cols-4 gap-4 overflow-x-auto lg:overflow-x-visible snap-x snap-mandatory scroll-smooth pb-4 lg:pb-0 px-2 lg:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
             >
-              {/* Subtle hover indicator */}
-              <div className="absolute inset-0 bg-primary/[0.01] rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              {mandates.map((item, idx) => (
+                <motion.article
+                  key={idx}
+                  variants={cardVariants}
+                  className="bg-[#101010] border border-white/5 rounded-[2rem] p-7 sm:p-8 flex flex-col justify-between min-h-[290px] lg:min-h-[300px] relative group shrink-0 w-[82vw] sm:w-[320px] lg:w-auto snap-center select-none transition-all duration-300 hover:border-white/10"
+                >
+                  {/* Subtle hover indicator */}
+                  <div className="absolute inset-0 bg-primary/[0.015] rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-              <div>
-                <span className="bg-primary/10 text-primary px-3.5 py-1 text-[10px] sm:text-xs rounded-full uppercase tracking-widest font-semibold w-fit mb-6 block border border-primary/10">
-                  {item.tag}
-                </span>
-                <h4 className="text-base sm:text-lg font-medium text-[#E1E0CC] mb-3 group-hover:text-primary transition-colors">
-                  {item.title}
-                </h4>
-                <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            </motion.article>
-          ))}
-        </motion.div>
+                  <div className="flex flex-col h-full justify-between">
+                    <div>
+                      {/* Top Institutional Logo & Tag */}
+                      <div className="flex flex-col gap-3.5 mb-6">
+                        <div className="h-12 flex items-center justify-start">
+                          <img
+                            src={item.logo}
+                            alt={item.institution}
+                            loading="lazy"
+                            className="max-h-10 sm:max-h-11 max-w-[130px] w-auto h-auto object-contain select-none transition-all duration-300 opacity-90 group-hover:opacity-100"
+                            onError={(e) => {
+                              // Direct root fallback if static prefix fails
+                              if (e.currentTarget.src.includes("/static/")) {
+                                e.currentTarget.src = item.logo.replace("/static", "");
+                              }
+                            }}
+                          />
+                        </div>
+                        <span className="bg-primary/10 text-primary px-3 py-0.5 text-[10px] sm:text-xs rounded-full uppercase tracking-widest font-semibold w-fit border border-primary/10">
+                          {item.tag}
+                        </span>
+                      </div>
+
+                      {/* Title */}
+                      <h4 className="text-base sm:text-lg font-medium text-[#E1E0CC] mb-2.5 group-hover:text-primary transition-colors">
+                        {item.title}
+                      </h4>
+
+                      {/* Description */}
+                      <p className="text-gray-300 text-xs sm:text-sm leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    {/* Institution Full Name Footer */}
+                    <div className="pt-6 border-t border-white/[0.04] mt-4">
+                      <span className="text-[10px] uppercase tracking-wider text-gray-500 font-medium line-clamp-1">
+                        {item.institution}
+                      </span>
+                    </div>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Mobile Carousel Pagination Indicators */}
+          <div className="flex justify-center items-center gap-2 mt-4 lg:hidden">
+            {mandates.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Go to institutional mandate card ${i + 1}`}
+                onClick={() => scrollToCard(i)}
+                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  activeIndex === i ? "w-6 bg-primary" : "w-1.5 bg-white/20 hover:bg-white/40"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Subtle Informational Disclaimer */}
+        <p className="text-center text-[11px] sm:text-xs text-gray-400 max-w-xl mx-auto mt-10 md:mt-14 font-normal leading-relaxed">
+          Institutional references are for informational purposes only and do not imply endorsement, partnership, or affiliation.
+        </p>
       </div>
     </section>
   );
 };
+
+export default LegalSection;

@@ -12,6 +12,13 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()  # Load environment variables from .env file
+
+# Setu Account Aggregator
+SETU_CLIENT_ID = os.getenv("SETU_CLIENT_ID")
+SETU_CLIENT_SECRET = os.getenv("SETU_CLIENT_SECRET")
+SETU_PRODUCT_INSTANCE_ID = os.getenv("SETU_PRODUCT_INSTANCE_ID")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,8 +33,21 @@ SECRET_KEY = 'django-insecure-uedwbrnz4)dj(*(9)-#(2kys)z&cf8s9+a)el%#8z&_y1+c*0o
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver', '.onrender.com', '.ngrok-free.dev', '.ngrok.app']
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'https://afflicted-haven-anything.ngrok-free.dev',
+    'https://*.ngrok-free.dev',
+    'https://*.ngrok.app',
+    'https://*.onrender.com',
+]
+
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 # Application definition
 
@@ -39,6 +59,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'claims',
+    'accounts',
+    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +70,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'accounts.middleware.SessionSecurityMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -127,7 +150,36 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Email Configuration
-CONTACT_EMAIL = 'hello.wealthpass@gmail.com'
-DEFAULT_FROM_EMAIL = 'hello.wealthpass@gmail.com'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+CONTACT_EMAIL = os.getenv('CONTACT_EMAIL', 'wealthpass.official@gmail.com')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'wealthpass.official@gmail.com')
+
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+if EMAIL_HOST:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+    EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() in ('true', '1', 't')
+    EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False').lower() in ('true', '1', 't')
+else:
+    EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+
+# Security & Session Management
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_AGE = 1209600  # 14 days
+SESSION_INACTIVITY_TIMEOUT = 1800  # 30 minutes inactivity timeout
+SESSION_ABSOLUTE_TIMEOUT = 1209600  # 14 days absolute max
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = False
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+# SMS Provider Configuration (MSG91)
+MSG91_AUTH_KEY = os.getenv('MSG91_AUTH_KEY', '')
+MSG91_TEMPLATE_ID = os.getenv('MSG91_TEMPLATE_ID', '')
+MSG91_FLOW_ID = os.getenv('MSG91_FLOW_ID', '')
+MSG91_SENDER_ID = os.getenv('MSG91_SENDER_ID', 'WLTHPS')
+SMS_SANDBOX_MODE = os.getenv('SMS_SANDBOX_MODE', 'false').lower() in ('true', '1', 't')
 

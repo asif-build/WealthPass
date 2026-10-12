@@ -3,16 +3,20 @@ import { motion, useInView } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import { WordsPullUpMultiStyle } from "./WordsPullUpMultiStyle";
 
-export const FeaturesSection = () => {
+interface FeaturesSectionProps {
+  onNavigate?: (path: string) => void;
+}
+
+export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const isGridInView = useInView(gridRef, { once: true, margin: "-100px" });
 
   const heading1 = [
-    { text: "Institutional-grade discovery for family wealth.", className: "text-[#E1E0CC] font-normal" }
+    { text: "Simple discovery for your family's lost wealth.", className: "text-[#E1E0CC] font-normal" }
   ];
 
   const heading2 = [
-    { text: "Built for trust. Driven by security.", className: "text-gray-500 font-normal" }
+    { text: "Safe, secure, and straightforward.", className: "text-[#b0ad9b] font-normal" }
   ];
 
   const containerVariants = {
@@ -38,22 +42,22 @@ export const FeaturesSection = () => {
 
   // Checklist items for the cards
   const card2Items = [
-    "Consent-based database check",
-    "Real-time PAN validation",
-    "Multi-source tracking",
-    "Encrypted data privacy"
+    "Official bank & government searches",
+    "Instant PAN verification",
+    "All assets tracked in one place",
+    "Bank-grade data privacy"
   ];
 
   const card3Items = [
-    "Nominee vs legal-heir logic",
-    "Automated form pre-filling",
-    "Legal guidance and NOC templates"
+    "Clear guidance for heirs and nominees",
+    "Pre-filled claim paperwork",
+    "Step-by-step legal help & templates"
   ];
 
   const card4Items = [
-    "Zero-upfront processing fee",
-    "Immediate cash flow for families",
-    "Secure, automated payback path"
+    "No upfront fee",
+    "Financial support while claims process",
+    "Clear and transparent terms"
   ];
 
   return (
@@ -95,10 +99,10 @@ export const FeaturesSection = () => {
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             {/* Dark gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10" />
             
             <div className="absolute bottom-6 left-6 right-6 z-20">
-              <span className="text-xs text-primary/70 uppercase tracking-widest block mb-2 font-medium">
+              <span className="text-xs text-[#E1E0CC] uppercase tracking-widest block mb-2 font-medium">
                 Security Vault
               </span>
               <p className="text-lg md:text-xl font-medium text-[#E1E0CC]">
@@ -120,7 +124,7 @@ export const FeaturesSection = () => {
                   alt="Search icon"
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover bg-white/5 border border-white/10"
                 />
-                <span className="font-serif italic text-primary/40 text-2xl font-semibold select-none">
+                <span className="font-serif italic text-primary/70 text-2xl font-semibold select-none">
                   01
                 </span>
               </div>
@@ -131,8 +135,8 @@ export const FeaturesSection = () => {
               {/* Checklist */}
               <ul className="flex flex-col gap-3">
                 {card2Items.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-400">
-                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-200">
+                    <Check className="w-4 h-4 text-[#DEDBC8] shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -142,8 +146,16 @@ export const FeaturesSection = () => {
             {/* CTA Link */}
             <div className="mt-8 flex justify-start">
               <a
-                href="#inquiries"
-                className="inline-flex items-center gap-2 text-xs sm:text-sm text-primary font-medium group/link hover:text-white transition-colors"
+                href="/how-it-works/verify-match"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onNavigate) {
+                    onNavigate("/how-it-works/verify-match");
+                  } else {
+                    window.location.href = "/how-it-works/verify-match";
+                  }
+                }}
+                className="inline-flex items-center gap-2 text-xs sm:text-sm text-primary font-medium group/link hover:text-white transition-colors cursor-pointer"
               >
                 <span>Learn more</span>
                 <ArrowRight className="w-4 h-4 rotate-[-45deg] transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
@@ -164,7 +176,7 @@ export const FeaturesSection = () => {
                   alt="Claims icon"
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover bg-white/5 border border-white/10"
                 />
-                <span className="font-serif italic text-primary/40 text-2xl font-semibold select-none">
+                <span className="font-serif italic text-primary/70 text-2xl font-semibold select-none">
                   02
                 </span>
               </div>
@@ -175,8 +187,8 @@ export const FeaturesSection = () => {
               {/* Checklist */}
               <ul className="flex flex-col gap-3">
                 {card3Items.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-400">
-                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-200">
+                    <Check className="w-4 h-4 text-[#DEDBC8] shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -186,8 +198,16 @@ export const FeaturesSection = () => {
             {/* CTA Link */}
             <div className="mt-8 flex justify-start">
               <a
-                href="#inquiries"
-                className="inline-flex items-center gap-2 text-xs sm:text-sm text-primary font-medium group/link hover:text-white transition-colors"
+                href="/how-it-works/claim-preparation"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onNavigate) {
+                    onNavigate("/how-it-works/claim-preparation");
+                  } else {
+                    window.location.href = "/how-it-works/claim-preparation";
+                  }
+                }}
+                className="inline-flex items-center gap-2 text-xs sm:text-sm text-primary font-medium group/link hover:text-white transition-colors cursor-pointer"
               >
                 <span>Learn more</span>
                 <ArrowRight className="w-4 h-4 rotate-[-45deg] transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
@@ -208,7 +228,7 @@ export const FeaturesSection = () => {
                   alt="Liquidity icon"
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover bg-white/5 border border-white/10"
                 />
-                <span className="font-serif italic text-primary/40 text-2xl font-semibold select-none">
+                <span className="font-serif italic text-primary/70 text-2xl font-semibold select-none">
                   03
                 </span>
               </div>
@@ -219,8 +239,8 @@ export const FeaturesSection = () => {
               {/* Checklist */}
               <ul className="flex flex-col gap-3">
                 {card4Items.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-400">
-                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-200">
+                    <Check className="w-4 h-4 text-[#DEDBC8] shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -230,8 +250,16 @@ export const FeaturesSection = () => {
             {/* CTA Link */}
             <div className="mt-8 flex justify-start">
               <a
-                href="#inquiries"
-                className="inline-flex items-center gap-2 text-xs sm:text-sm text-primary font-medium group/link hover:text-white transition-colors"
+                href="/how-it-works/instant-liquidity"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onNavigate) {
+                    onNavigate("/how-it-works/instant-liquidity");
+                  } else {
+                    window.location.href = "/how-it-works/instant-liquidity";
+                  }
+                }}
+                className="inline-flex items-center gap-2 text-xs sm:text-sm text-primary font-medium group/link hover:text-white transition-colors cursor-pointer"
               >
                 <span>Learn more</span>
                 <ArrowRight className="w-4 h-4 rotate-[-45deg] transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />

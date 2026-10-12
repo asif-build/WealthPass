@@ -14,10 +14,10 @@ const AnimatedLetter = ({ char, progress, range }: AnimatedLetterProps) => {
   const end = Math.max(0, Math.min(1, range[1]));
   const adjustedRange = (start >= end ? [start, start + 0.01] : [start, end]) as [number, number];
 
-  const opacity = useTransform(progress, adjustedRange, [0.2, 1]);
+  const opacity = useTransform(progress, adjustedRange, [0.75, 1]);
 
   return (
-    <motion.span style={{ opacity }} className="char-span">
+    <motion.span style={{ opacity }} className="char-span text-[#E1E0CC]">
       {char}
     </motion.span>
   );
@@ -57,7 +57,7 @@ export const AboutSection = () => {
           <WordsPullUpMultiStyle segments={headingSegments} />
         </h2>
 
-        <div ref={containerRef} className="max-w-3xl text-[#DEDBC8] text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed md:leading-loose tracking-wide">
+        <div ref={containerRef} className="max-w-3xl text-[#E1E0CC] text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed md:leading-loose tracking-wide font-normal">
           {characters.map((char, index) => {
             const charProgress = index / characters.length;
             const range: [number, number] = [charProgress - 0.1, charProgress + 0.05];

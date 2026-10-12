@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
@@ -10,6 +10,42 @@ urlpatterns = [
     path('accept-loan/<uuid:session_id>/', views.accept_loan, name='accept_loan'),
     path('success/<uuid:session_id>/', views.success, name='success'),
     path('print-forms/<uuid:session_id>/', views.print_forms, name='print_forms'),
+    path('how-it-works/', views.landing, name='how_it_works'),
+    path('how-it-works/<slug:step>/', views.landing, name='how_it_works_step'),
+    path('verify/', views.landing, name='verify_page'),
+    path('discover-assets/', views.landing, name='discover_assets_page'),
+    path('sources/', views.landing, name='sources_page'),
+    path('claim/', views.landing, name='claim_page'),
+    path('register/', views.landing, name='register_page'),
+    path('login/', views.landing, name='login_page'),
+    path('verify-email/', views.landing, name='verify_email_page'),
+    path('forgot-password/', views.landing, name='forgot_password_page'),
+    path('reset-password/', views.landing, name='reset_password_page'),
+    path('terms/', views.landing, name='terms_page'),
+    path('privacy-policy/', views.landing, name='privacy_policy_page'),
+    path('dashboard/', views.landing, name='dashboard_page'),
+    path('settings/', views.landing, name='settings_page'),
+    path('404/', views.landing, name='404_page'),
     path('api/contact/', views.contact_inquiry, name='contact_inquiry'),
+    path('api/verify/', views.api_verify, name='api_verify'),
+    path('api/consent/', views.api_consent, name='api_consent'),
+    path('api/relationship/', views.api_relationship, name='api_relationship'),
+    path('api/relationship/evidence/', views.api_relationship_evidence, name='api_relationship_evidence'),
+    path('api/relationship/status/<uuid:session_id>/', views.api_relationship_status, name='api_relationship_status'),
+    path('api/relationship/transition/', views.api_relationship_transition, name='api_relationship_transition'),
+    path('api/relationship/document/<uuid:document_id>/', views.api_document_delete, name='api_document_delete'),
+    path('api/documents/<uuid:document_id>/download/', views.api_document_download, name='api_document_download'),
+    path('api/discover/', views.api_discover, name='api_discover'),
+    path('api/discover/query/', views.api_discover_query, name='api_discover_query'),
+    path('api/sources/', views.api_sources, name='api_sources'),
+    path('api/claim-preparation/', views.api_claim_preparation, name='api_claim_preparation'),
+    path('api/claim-preparation/<str:asset_id>/', views.api_claim_preparation, name='api_claim_preparation_id'),
+    path('assets/discover/', views.landing, name='assets_discover_page'),
+    path('api/user/claims/', views.api_user_claims, name='api_user_claims'),
+    path('api/user/claims/draft/', views.api_user_claim_draft, name='api_user_claim_draft'),
+    path('api/user/claims/<uuid:session_id>/', views.api_user_claim_detail, name='api_user_claim_detail'),
+    path('claims/<uuid:session_id>/download-document/', views.download_document, name='download_document'),
+    path('api/scan-document/', views.scan_document, name='api_scan_document'),
+    re_path(r'^.*$', views.landing, name='catchall'),
 ]
 
