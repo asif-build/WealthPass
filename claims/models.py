@@ -363,3 +363,12 @@ class GreenAIBenchmarkRecord(models.Model):
     def __str__(self):
         return f"Benchmark {self.run_timestamp:%Y-%m-%d %H:%M} - Energy Cut: {self.energy_reduction_pct:.1f}%"
 
+
+# Claim Copilot Models Import
+from .copilot_models import (
+    ClaimProcedure,
+    ClaimCopilotProgress,
+    CapabilityType,
+    ClaimCategory,
+    ClaimProcedureStatus
+)

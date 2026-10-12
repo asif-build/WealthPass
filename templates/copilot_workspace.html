@@ -1,0 +1,696 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Claim Copilot Workspace &mdash; {{ procedure.institution_name }} | WealthPass{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ========================================================
+   WEALTHPASS CLAIM COPILOT WORKSPACE (SIDE-BY-SIDE)
+   Strict adherence to WealthPass dark luxury aesthetics:
+   #0c0c0c background, #141414 cards, #D4AF37 gold accents
+   Zero claimant-facing AI telemetry/energy clutter
+======================================================== */
+.copilot-container {
+  min-height: 100vh;
+  background: #0c0c0c;
+  color: #ffffff;
+  padding: 80px 24px 60px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* Header & Status Bar */
+.copilot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.copilot-title-group h1 {
+  font-family: var(--font-serif, "Playfair Display", serif);
+  font-size: 28px;
+  font-weight: 400;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.copilot-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(212, 175, 55, 0.1);
+  color: #D4AF37;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+.copilot-subtext {
+  font-size: 13px;
+  color: #888888;
+  margin: 0;
+}
+
+/* Asset Selector Tabs */
+.asset-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+.asset-tab {
+  padding: 8px 16px;
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  color: #aaaaaa;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.asset-tab:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  color: #ffffff;
+}
+.asset-tab.active {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: #D4AF37;
+  color: #D4AF37;
+  font-weight: 500;
+}
+
+/* Side-by-Side Grid */
+.copilot-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 28px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .copilot-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* LEFT PANEL: Official Form & Instructions */
+.official-panel {
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 32px;
+  position: relative;
+}
+.panel-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 12px;
+}
+.panel-heading {
+  font-family: var(--font-serif, "Playfair Display", serif);
+  font-size: 22px;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+}
+
+/* Capability Notification Banner */
+.capability-banner {
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #D4AF37;
+  padding: 14px 18px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: #cccccc;
+  line-height: 1.5;
+}
+.capability-banner strong {
+  color: #ffffff;
+}
+
+/* Step-by-Step Instructions Accordion/List */
+.official-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.step-card {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.step-idx {
+  font-family: var(--font-serif, "Playfair Display", serif);
+  font-size: 18px;
+  color: #D4AF37;
+  flex-shrink: 0;
+  line-height: 1;
+  padding-top: 2px;
+}
+.step-text {
+  font-size: 13px;
+  color: #d1d1d1;
+  line-height: 1.6;
+}
+
+/* Interactive Form Mock / Field Selector */
+.form-preview-card {
+  background: #181818;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.form-field-row {
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: #121212;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.form-field-row:hover {
+  background: #1c1c1c;
+  border-color: rgba(212, 175, 55, 0.3);
+}
+.form-field-row.active {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: #D4AF37;
+}
+.field-title {
+  font-size: 13px;
+  color: #ffffff;
+  font-weight: 500;
+}
+.field-meta {
+  font-size: 11px;
+  color: #888888;
+  margin-top: 2px;
+}
+.field-status-tag {
+  font-size: 11px;
+  color: #D4AF37;
+  background: rgba(212, 175, 55, 0.1);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* External Portal CTA Action */
+.external-cta-box {
+  background: rgba(212, 175, 55, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 20px;
+}
+.external-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #D4AF37;
+  color: #0c0c0c;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  margin-top: 10px;
+}
+.external-btn:hover {
+  opacity: 0.9;
+}
+
+/* RIGHT PANEL: Copilot Guidance & Checklist */
+.copilot-panel {
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 32px;
+  position: sticky;
+  top: 100px;
+}
+
+/* Active Field Guidance Card */
+.guidance-box {
+  background: #1c1c1c;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 28px;
+  position: relative;
+}
+.guidance-field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.guidance-field-name {
+  font-family: var(--font-serif, "Playfair Display", serif);
+  font-size: 18px;
+  color: #ffffff;
+}
+.guidance-section-title {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #888888;
+  margin: 16px 0 6px 0;
+}
+.guidance-text {
+  font-size: 13px;
+  color: #d1d1d1;
+  line-height: 1.6;
+  margin: 0;
+}
+.guidance-tag {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Source Reference Link */
+.source-ref-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #D4AF37;
+  text-decoration: underline;
+  margin-top: 14px;
+}
+
+/* Document Checklist Section */
+.checklist-section {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.checklist-cb {
+  margin-top: 3px;
+  accent-color: #D4AF37;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+.checklist-label {
+  font-size: 13px;
+  color: #d1d1d1;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.checklist-sub {
+  font-size: 11px;
+  color: #777777;
+  margin-top: 2px;
+}
+
+/* Self-Reported External Submission Section */
+.submission-tracker-box {
+  margin-top: 28px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+.tracker-status-tag {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #aaaaaa;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.tracker-status-tag.verified {
+  background: rgba(52, 211, 153, 0.1);
+  color: #34d399;
+}
+.record-submission-btn {
+  width: 100%;
+  padding: 12px;
+  background: #1f1f1f;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #D4AF37;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 12px;
+}
+.record-submission-btn:hover {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: #D4AF37;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="copilot-container">
+
+  <!-- TOP HEADER -->
+  <div class="copilot-header">
+    <div class="copilot-title-group">
+      <h1>
+        Claim Copilot Workspace
+        <span class="copilot-badge">&#9679; Official Regulatory Guidance</span>
+      </h1>
+      <p class="copilot-subtext">
+        Guiding legal heir <strong style="color: #ffffff;">{{ claimant_name }}</strong> through verified statutory procedures for <strong style="color: #ffffff;">{{ deceased_name }}</strong>.
+      </p>
+    </div>
+    <div>
+      <a href="{% url 'results' session_id=session.id %}" style="font-size: 13px; color: #888888; text-decoration: none; padding: 8px 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 9999px;">
+        &larr; Back to Discovered Assets
+      </a>
+    </div>
+  </div>
+
+  <!-- ASSET SELECTION TABS -->
+  <div class="asset-tabs">
+    {% for ast in assets %}
+    <a href="?asset_id={{ ast.id }}" class="asset-tab {% if current_asset.id == ast.id %}active{% endif %}">
+      {{ ast.institution }} ({{ ast.asset_category }})
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- MAIN SIDE-BY-SIDE GRID -->
+  <div class="copilot-grid">
+
+    <!-- ========================================================
+         LEFT PANEL: Official Form & Statutory Instructions
+    ======================================================== -->
+    <div class="official-panel">
+      <div class="panel-eyebrow">{{ procedure.institution_name }} &bull; {{ procedure.form_identifier }}</div>
+      <h2 class="panel-heading">{{ procedure.form_name }}</h2>
+
+      <!-- Capability Distinction Notice -->
+      <div class="capability-banner">
+        <strong>Official External Form Guidance:</strong> WealthPass provides verified procedural guidance and checklist assistance. Under official regulatory guidelines, the claimant reviews and files the final claim directly with the servicing institution or official portal. WealthPass never charges an arbitrary fee or executes unauthorized submissions.
+      </div>
+
+      <!-- Eligibility & Legal Framework -->
+      <div style="margin-bottom: 24px; padding: 16px 20px; background: #161616; border-radius: 12px; border: 1px solid rgba(255,255,255,0.04);">
+        <div style="font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #D4AF37; margin-bottom: 8px;">Statutory Eligibility Framework</div>
+        <p style="font-size: 13px; color: #bbbbbb; line-height: 1.6; margin: 0; white-space: pre-line;">{{ procedure.eligibility_notes }}</p>
+      </div>
+
+      <!-- Step-by-Step Official Recovery Roadmap -->
+      <div style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #888888; margin-bottom: 12px;">Official Step-by-Step Procedure</div>
+      <div class="official-steps">
+        {% for step in procedure.step_by_step_instructions %}
+        <div class="step-card">
+          <div class="step-idx">0{{ forloop.counter }}</div>
+          <div class="step-text">{{ step }}</div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Form Field Inspection List (Interactive) -->
+      <div style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #888888; margin: 24px 0 12px 0;">Official Form Field Breakdown &bull; Select Field to Inspect</div>
+      <div class="form-preview-card">
+        {% for f in procedure.fields_catalog %}
+        <div class="form-field-row {% if forloop.first %}active{% endif %}" onclick="selectField('{{ f.field_id }}', this)">
+          <div>
+            <div class="field-title">{{ f.label }}</div>
+            <div class="field-meta">Document: {{ f.supporting_doc }}</div>
+          </div>
+          <div class="field-status-tag">{% if f.is_mandatory %}Mandatory{% else %}Optional{% endif %}</div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- External Institution Portal CTA -->
+      <div class="external-cta-box">
+        <div style="font-size: 13px; color: #ffffff; font-weight: 500;">Ready to file directly with {{ procedure.institution_name }}?</div>
+        <div style="font-size: 12px; color: #888888; margin-top: 4px;">Open the official submission portal or download the statutory Form 14 package.</div>
+        <div style="margin-top: 14px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          {% if procedure.official_portal_url %}
+          <a href="{{ procedure.official_portal_url }}" target="_blank" rel="noopener noreferrer" class="external-btn">
+            Open Official Portal &rarr;
+          </a>
+          {% endif %}
+          <a href="{% url 'print_forms' session_id=session.id %}" target="_blank" style="display: inline-flex; align-items: center; padding: 12px 20px; border-radius: 9999px; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #ffffff; font-size: 13px; text-decoration: none;">
+            Download Statutory Form 14 PDF
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================
+         RIGHT PANEL: WealthPass Claim Copilot
+    ======================================================== -->
+    <div class="copilot-panel">
+      <div class="panel-eyebrow">WealthPass Claim Copilot</div>
+      <h3 style="font-family: var(--font-serif, 'Playfair Display', serif); font-size: 20px; margin: 0 0 16px 0; color: #ffffff;">Field Explanations &amp; Guidance</h3>
+
+      <!-- Contextual Field Guidance Card -->
+      <div class="guidance-box" id="guidanceBox">
+        <div class="guidance-field-header">
+          <div class="guidance-field-name" id="gFieldLabel">Loading field...</div>
+          <div id="gMandatoryBadge" class="field-status-tag">Required</div>
+        </div>
+
+        <div class="guidance-section-title">What Information is Requested</div>
+        <p class="guidance-text" id="gExplanation">Select a form field from the left panel to inspect official instructions.</p>
+
+        <div class="guidance-section-title">Where to Find This Information</div>
+        <p class="guidance-text" id="gWhereToFind">&mdash;</p>
+
+        <div class="guidance-section-title">Expected Format</div>
+        <div class="guidance-tag" id="gExpectedFormat">&mdash;</div>
+
+        <div class="guidance-section-title">Supporting Document</div>
+        <p class="guidance-text" id="gSupportingDocs">&mdash;</p>
+
+        <a id="gOfficialSource" href="{{ procedure.official_source_url }}" target="_blank" rel="noopener noreferrer" class="source-ref-link">
+          Official Regulatory Citation &rarr;
+        </a>
+      </div>
+
+      <!-- Statutory Document Checklist -->
+      <div class="checklist-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #D4AF37;">Document Checklist</div>
+          <div style="font-size: 11px; color: #888888;" id="checklistProgressCounter">0 / {{ procedure.required_documents|length }} Collected</div>
+        </div>
+
+        <div id="checklistContainer">
+          {% for doc in procedure.required_documents %}
+          <div class="checklist-item">
+            <input type="checkbox" id="doc_{{ forloop.counter }}" class="checklist-cb" value="{{ doc.doc_name }}" onchange="saveChecklistProgress()" {% if doc.doc_name in progress.checked_document_ids %}checked{% endif %}>
+            <label for="doc_{{ forloop.counter }}" class="checklist-label">
+              <div>{{ doc.doc_name }} {% if doc.mandatory %}<span style="color: #ef4444; font-size: 11px;">*</span>{% endif %}</div>
+              <div class="checklist-sub">{{ doc.description }} (Authority: {{ doc.issuing_authority }})</div>
+            </label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Self-Reported External Submission Tracker -->
+      <div class="submission-tracker-box">
+        <div style="font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #888888; margin-bottom: 8px;">Claim Tracking Status</div>
+        <div class="tracker-status-tag {% if progress.is_institution_confirmed %}verified{% endif %}" id="displayStatusTag">
+          {{ progress.get_status_display }}
+        </div>
+
+        <div style="font-size: 12px; color: #bbbbbb; line-height: 1.5;">
+          Once you submit the claim dossier at the branch or online portal, record your acknowledgement number to track the 15-day statutory turnaround.
+        </div>
+
+        <div id="submissionRecordForm" style="margin-top: 12px; display: none;">
+          <input type="text" id="ackNumberInput" placeholder="Acknowledgement / Docket / Inward No." style="width: 100%; background: #121212; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 12px; margin-bottom: 8px; outline: none;">
+          <input type="text" id="branchInput" placeholder="Servicing Branch Name (e.g. Mumbai Main Branch)" style="width: 100%; background: #121212; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 12px; margin-bottom: 8px; outline: none;">
+          <button onclick="submitExternalEvidence()" style="width: 100%; padding: 8px; background: #D4AF37; color: #000; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Save Acknowledgement</button>
+        </div>
+
+        <button class="record-submission-btn" id="toggleAckBtn" onclick="document.getElementById('submissionRecordForm').style.display='block'; this.style.display='none';">
+          + Record Submission Acknowledgement
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const institutionId = "{{ procedure.institution_id }}";
+const procedureVersion = "{{ procedure.version }}";
+const currentSessionId = "{{ session.id }}";
+const currentAssetId = "{{ current_asset.id }}";
+
+// Fetch initial field guidance on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const firstRow = document.querySelector('.form-field-row');
+  if (firstRow) {
+    firstRow.click();
+  }
+  updateChecklistCounter();
+});
+
+// Select and fetch field guidance
+async function selectField(fieldId, element) {
+  document.querySelectorAll('.form-field-row').forEach(r => r.classList.remove('active'));
+  if (element) element.classList.add('active');
+
+  const labelEl = document.getElementById('gFieldLabel');
+  const expEl = document.getElementById('gExplanation');
+  const whereEl = document.getElementById('gWhereToFind');
+  const fmtEl = document.getElementById('gExpectedFormat');
+  const docsEl = document.getElementById('gSupportingDocs');
+  const badgeEl = document.getElementById('gMandatoryBadge');
+  const srcEl = document.getElementById('gOfficialSource');
+
+  try {
+    const res = await fetch('/api/claims/copilot/field-guidance/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({
+        institution_id: institutionId,
+        procedure_version: procedureVersion,
+        field_id: fieldId
+      })
+    });
+    const data = await res.json();
+    if (data.success && data.guidance) {
+      const g = data.guidance;
+      labelEl.textContent = g.field_label;
+      expEl.textContent = g.field_explanation;
+      whereEl.textContent = g.where_to_find_information;
+      fmtEl.textContent = g.expected_format;
+      docsEl.textContent = g.relevant_document_types.join(', ');
+      badgeEl.textContent = g.is_mandatory ? 'Required' : 'Optional';
+      srcEl.href = g.official_source_reference;
+    }
+  } catch (err) {
+    console.error('Copilot guidance error:', err);
+  }
+}
+
+// Checklist Progress Tracker
+function updateChecklistCounter() {
+  const cbs = document.querySelectorAll('.checklist-cb');
+  const checked = document.querySelectorAll('.checklist-cb:checked').length;
+  document.getElementById('checklistProgressCounter').textContent = `${checked} / ${cbs.length} Collected`;
+}
+
+async function saveChecklistProgress() {
+  updateChecklistCounter();
+  const checked = Array.from(document.querySelectorAll('.checklist-cb:checked')).map(cb => cb.value);
+
+  try {
+    await fetch(`/api/claims/${currentSessionId}/copilot-progress/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({
+        asset_id: currentAssetId,
+        checked_documents: checked,
+        status: checked.length > 0 ? 'DOCUMENTS_COLLECTED' : 'PREPARATION_STARTED'
+      })
+    });
+  } catch (err) {
+    console.error('Checklist save error:', err);
+  }
+}
+
+// External Submission Evidence Recording
+async function submitExternalEvidence() {
+  const ackNo = document.getElementById('ackNumberInput').value.trim();
+  const branch = document.getElementById('branchInput').value.trim();
+  if (!ackNo) {
+    alert('Please enter your acknowledgement or docket number.');
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/claims/${currentSessionId}/copilot-progress/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({
+        asset_id: currentAssetId,
+        acknowledgement_number: ackNo,
+        servicing_branch: branch,
+        status: 'SUBMISSION_EVIDENCE_RECORDED'
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('displayStatusTag').textContent = data.status_display;
+      document.getElementById('submissionRecordForm').innerHTML = `<div style="font-size: 12px; color: #34d399; margin-top: 8px;">✓ Acknowledgement recorded: <strong>${ackNo}</strong> (${branch || 'Servicing Branch'})</div>`;
+    }
+  } catch (err) {
+    console.error('Submission recording error:', err);
+  }
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+</script>
+{% endblock %}

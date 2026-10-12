@@ -2422,10 +2422,13 @@ def api_document_classify_and_extract(request):
     Runs the multi-tiered green cascade (Layer D -> Layer A -> Layer B -> Layer C -> Layer E).
     Enforces strict Pydantic validation, safe upload constraints, and zero-hallucination guarantees.
     """
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Authentication required. Please sign in.'}, status=401)
+
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'Method not allowed. Use POST.'}, status=405)
 
-    user = request.user if request.user.is_authenticated else None
+    user = request.user
 
     import json
     from .ocr import extract_text
@@ -2727,4 +2730,236 @@ def api_submit_online_claim(request, session_id):
         'message': 'Claim package submitted and verified. Form 14 is ready for download.',
         'print_url': f'/print_forms/{session.id}/'
     })
+
+
+# ========================================================
+# CLAIM COPILOT VIEWS & WORKSPACE
+# ========================================================
+
+def claim_copilot_workspace(request, session_id):
+    """
+    Renders the side-by-side Claim Copilot Workspace.
+    LEFT PANEL: Official form, statutory instructions, or clear external portal action.
+    RIGHT PANEL: WealthPass Claim Copilot (field explanations, checklist, progress tracker).
+    """
+    session, err_resp = get_authorized_claim(request, session_id)
+    if err_resp:
+        return err_resp
+
+    from .copilot_models import ClaimProcedure, ClaimCopilotProgress
+    from .models import DiscoveredAsset
+
+    asset_id = request.GET.get('asset_id')
+    asset = None
+    if asset_id:
+        try:
+            asset = DiscoveredAsset.objects.filter(id=int(asset_id), session=session).first()
+        except (ValueError, TypeError):
+            asset = None
+    if not asset:
+        asset = session.assets.first()
+
+    # Map asset to matching verified procedure
+    procedure = None
+    if asset:
+        inst_name = (asset.institution or "").lower()
+        if "state bank" in inst_name or "sbi" in inst_name:
+            procedure = ClaimProcedure.objects.filter(institution_id='sbi').first()
+        elif "canara" in inst_name:
+            procedure = ClaimProcedure.objects.filter(institution_id='canara_bank').first()
+        elif "lic" in inst_name or "life insurance" in inst_name:
+            procedure = ClaimProcedure.objects.filter(institution_id='lic_india').first()
+        elif "epf" in inst_name or "provident" in inst_name:
+            procedure = ClaimProcedure.objects.filter(institution_id='epfo').first()
+        elif "iepf" in inst_name or "share" in inst_name:
+            procedure = ClaimProcedure.objects.filter(institution_id='iepf').first()
+        elif "mutual" in inst_name or "cams" in inst_name or "kfin" in inst_name:
+            procedure = ClaimProcedure.objects.filter(institution_id='cams_kfintech').first()
+        else:
+            # Fallback to category match or default SBI Form 14
+            procedure = ClaimProcedure.objects.filter(asset_category=asset.asset_category).first() or \
+                        ClaimProcedure.objects.filter(institution_id='sbi').first()
+    else:
+        procedure = ClaimProcedure.objects.filter(institution_id='sbi').first()
+
+    # Get or create ClaimCopilotProgress
+    user = request.user if request.user.is_authenticated else session.user
+    progress = None
+    if user:
+        progress, _ = ClaimCopilotProgress.objects.get_or_create(
+            session=session,
+            asset=asset,
+            defaults={
+                'user': user,
+                'procedure': procedure,
+                'status': ClaimCopilotProgress.ProgressStatus.PREPARATION_STARTED
+            }
+        )
+
+    all_procedures = ClaimProcedure.objects.filter(procedure_status='VERIFIED').order_by('institution_name')
+
+    context = {
+        'session': session,
+        'current_asset': asset,
+        'assets': session.assets.all(),
+        'procedure': procedure,
+        'all_procedures': all_procedures,
+        'progress': progress,
+        'claimant_name': session.claimant_name,
+        'deceased_name': session.deceased_name,
+    }
+    return render(request, 'copilot_workspace.html', context)
+
+
+@csrf_exempt
+def api_copilot_field_guidance(request):
+    """
+    Field-level AI/Deterministic Guidance Endpoint.
+    Receives only minimal metadata: institution_id, procedure_version, field_id.
+    Zero transmission of claimant personal details or sensitive credentials.
+    """
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Authentication required.'}, status=401)
+
+    import json
+    try:
+        data = json.loads(request.body.decode('utf-8')) if request.body else {}
+    except Exception:
+        data = request.POST.dict()
+
+    field_id = data.get('field_id', '').strip()
+    institution_id = data.get('institution_id', 'sbi').strip()
+    procedure_version = data.get('procedure_version', 'v2024.1').strip()
+    user_question = data.get('user_question', '').strip()
+
+    if not field_id:
+        return JsonResponse({'success': False, 'error': 'field_id is required.'}, status=400)
+
+    from .copilot.guidance_engine import ClaimCopilotGuidanceEngine
+    from .copilot.schemas import FieldGuidanceRequest
+
+    req_obj = FieldGuidanceRequest(
+        institution_id=institution_id,
+        procedure_version=procedure_version,
+        field_id=field_id,
+        user_question=user_question if user_question else None
+    )
+
+    engine = ClaimCopilotGuidanceEngine()
+    resp_obj = engine.get_guidance(req_obj)
+
+    return JsonResponse({
+        'success': True,
+        'guidance': resp_obj.model_dump(mode='json')
+    })
+
+
+@csrf_exempt
+def api_copilot_progress(request, session_id):
+    """
+    Manages claimant preparation checklist and self-reported submission status.
+    Strictly separates user-reported status from institution confirmation.
+    """
+    session, err_resp = get_authorized_claim(request, session_id)
+    if err_resp:
+        return err_resp
+
+    from .copilot_models import ClaimCopilotProgress, ClaimProcedure
+    from .models import DiscoveredAsset
+
+    user = request.user if request.user.is_authenticated else session.user
+    asset_id = request.GET.get('asset_id') or request.POST.get('asset_id')
+
+    if request.method == 'GET':
+        asset = None
+        if asset_id:
+            try:
+                asset = DiscoveredAsset.objects.filter(id=int(asset_id), session=session).first()
+            except (ValueError, TypeError):
+                pass
+        progress = ClaimCopilotProgress.objects.filter(session=session, asset=asset).first() if asset else \
+                   ClaimCopilotProgress.objects.filter(session=session).first()
+
+        if not progress:
+            return JsonResponse({'success': True, 'progress': None})
+
+        return JsonResponse({
+            'success': True,
+            'progress': {
+                'status': progress.status,
+                'status_display': progress.get_status_display(),
+                'checked_documents': progress.checked_document_ids,
+                'completed_fields': progress.completed_field_ids,
+                'user_notes': progress.user_notes,
+                'acknowledgement_number': progress.acknowledgement_number,
+                'servicing_branch': progress.servicing_branch_or_desk,
+                'user_reported_submission_date': progress.user_reported_submission_date.isoformat() if progress.user_reported_submission_date else None,
+                'is_institution_confirmed': progress.is_institution_confirmed,
+                'institution_reference': progress.institution_reference
+            }
+        })
+
+    elif request.method == 'POST':
+        import json
+        try:
+            data = json.loads(request.body.decode('utf-8')) if request.body else {}
+        except Exception:
+            data = request.POST.dict()
+
+        asset = None
+        target_asset_id = data.get('asset_id') or asset_id
+        if target_asset_id:
+            try:
+                asset = DiscoveredAsset.objects.filter(id=int(target_asset_id), session=session).first()
+            except (ValueError, TypeError):
+                pass
+        if not asset:
+            asset = session.assets.first()
+
+        procedure_id = data.get('procedure_id')
+        procedure = None
+        if procedure_id:
+            procedure = ClaimProcedure.objects.filter(id=procedure_id).first()
+
+        progress, _ = ClaimCopilotProgress.objects.get_or_create(
+            session=session,
+            asset=asset,
+            defaults={
+                'user': user,
+                'procedure': procedure,
+                'status': ClaimCopilotProgress.ProgressStatus.PREPARATION_STARTED
+            }
+        )
+
+        # Update checklist fields
+        if 'checked_documents' in data:
+            progress.checked_document_ids = data['checked_documents']
+        if 'completed_fields' in data:
+            progress.completed_field_ids = data['completed_fields']
+        if 'user_notes' in data:
+            progress.user_notes = data['user_notes']
+
+        # Transition status safely
+        new_status = data.get('status')
+        if new_status and new_status in ClaimCopilotProgress.ProgressStatus.values:
+            # Enforce that user cannot set INSTITUTION_CONFIRMED unless confirmed independently
+            if new_status == ClaimCopilotProgress.ProgressStatus.INSTITUTION_CONFIRMED and not request.user.is_staff:
+                new_status = ClaimCopilotProgress.ProgressStatus.SUBMISSION_EVIDENCE_RECORDED
+            progress.status = new_status
+
+        # User-reported external submission details
+        if data.get('acknowledgement_number'):
+            progress.acknowledgement_number = data['acknowledgement_number'].strip()
+            progress.servicing_branch_or_desk = data.get('servicing_branch', '').strip()
+            progress.user_reported_submission_date = timezone.now()
+            progress.status = ClaimCopilotProgress.ProgressStatus.SUBMISSION_EVIDENCE_RECORDED
+
+        progress.save()
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Claim preparation progress saved successfully.',
+            'status': progress.status,
+            'status_display': progress.get_status_display()
+        })
 

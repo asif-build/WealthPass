@@ -267,15 +267,16 @@
           {% endif %}
         </div>
         <div class="action-btns">
-          <a href="{% url 'online_claim_form' session_id=session_id %}" class="premium-cta-btn" style="width: 240px;">
-            <span>FILE CLAIM ONLINE</span>
+          <a href="{% url 'claim_copilot_workspace' session_id=session_id %}?asset_id={{ asset.id }}" class="premium-cta-btn" style="width: 260px;">
+            <span>PREPARE MY CLAIM</span>
             <div class="arrow-circle">
               <svg class="arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
               </svg>
             </div>
           </a>
-          <a href="{% url 'print_forms' session_id=session_id %}" target="_blank" class="btn-secondary" style="width: 240px; text-align:center; display:flex; justify-content:center; align-items:center;">DOWNLOAD FORM 14</a>
+          <a href="{% url 'online_claim_form' session_id=session_id %}" class="btn-secondary" style="width: 260px; text-align:center; display:flex; justify-content:center; align-items:center;">DIRECT DIGITAL FILING</a>
+          <a href="{% url 'print_forms' session_id=session_id %}" target="_blank" class="btn-secondary" style="width: 260px; text-align:center; display:flex; justify-content:center; align-items:center;">DOWNLOAD FORM 14</a>
         </div>
       </div>
     </div>
