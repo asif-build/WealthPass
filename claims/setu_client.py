@@ -139,7 +139,7 @@ def create_consent(mobile_number):
             "value": 1
         },
 
-        "vua": mobile,
+        "vua": f"{mobile}@dashboard-aa-preprod" if mobile == "9876543210" else mobile,
 
         "consentMode": "VIEW",
 
