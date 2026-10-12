@@ -818,7 +818,7 @@ class SetuAADiscoveryAdapter(BaseAssetDiscoveryProvider):
                         "institution": fip_id,
                         "masked_reference": masked_acc,
                         "source_reference": link_ref or consent_id,
-                        "amount": Decimal("0.00"),
+                        "amount": 0.0,
                         "is_amount_undisclosed": True,
                         "situation_label": f"Verified {acc_type} Account",
                         "color": "green",

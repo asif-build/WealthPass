@@ -2350,14 +2350,68 @@ def setu_test(request):
 
 # SETU CALLBACK
 def setu_callback(request):
-    print("SETU CALLBACK")
-    print(request.GET)
+    """
+    Callback handler redirected by Setu Account Aggregator upon consent completion.
+    Syncs discovered bank accounts and redirects the claimant back to the dashboard.
+    """
+    consent_id = request.GET.get('id') or request.GET.get('consent_id')
+    
+    if consent_id:
+        try:
+            from .models import ClaimSession, DiscoverySourceJob, DiscoveredAsset
+            from .providers.asset_discovery import AssetDiscoveryRegistry
+            
+            session = ClaimSession.objects.filter(setu_consent_id=consent_id).first()
+            if session:
+                registry = AssetDiscoveryRegistry()
+                provider = registry.get_provider('SETU_AA_DISCOVERY')
+                if provider:
+                    res = provider.discover_assets({
+                        'consent_id': consent_id,
+                        'mobile': session.mobile
+                    })
+                    
+                    job = session.source_jobs.filter(source_id='SETU_AA_DISCOVERY').first()
+                    if job:
+                        job.status = res.get('status', 'COMPLETED')
+                        job.response_payload = res
+                        job.save()
+                        
+                    matches = res.get('potential_matches', [])
+                    for m in matches:
+                        DiscoveredAsset.objects.update_or_create(
+                            session=session,
+                            source_id='SETU_AA_DISCOVERY',
+                            source_reference=m.get('source_reference', consent_id),
+                            defaults={
+                                'user': session.user,
+                                'institution': m.get('institution', 'Participating Bank (Setu AA)'),
+                                'masked_reference': m.get('masked_reference', ''),
+                                'amount': Decimal(str(m.get('amount', 0))),
+                                'is_amount_undisclosed': True,
+                                'asset_category': 'BANK_DEPOSITS',
+                                'situation_label': m.get('situation_label', 'Verified Bank Deposit Account'),
+                                'color': 'green',
+                                'is_potential_match': False,
+                                'institution_verified': True,
+                                'match_status': 'CONFIRMED_ACCOUNT_MATCH',
+                                'verification_status': 'API_VERIFIED',
+                                'claim_status': 'READY_FOR_SUBMISSION',
+                                'message': m.get('message', ''),
+                                'documents_needed': m.get('documents_needed', []),
+                                'next_steps': m.get('next_steps', []),
+                                'official_portal_url': provider.official_portal_url
+                            }
+                        )
+                    session.setu_consent_status = res.get('consent_status', 'ACTIVE')
+                    if matches:
+                        session.status = 'READY_FOR_CLAIM'
+                        session.total_assets_found = Decimal(str(session.assets.count()))
+                    session.save()
+        except Exception as e:
+            print("Error syncing Setu callback:", e)
 
-    return JsonResponse({
-        "success": True,
-        "message": "Returned from Setu",
-        "params": request.GET.dict()
-    })
+    return redirect('/dashboard?aa_success=true')
 
 
 @csrf_exempt
