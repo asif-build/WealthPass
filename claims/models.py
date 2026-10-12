@@ -290,3 +290,76 @@ class AuditLog(models.Model):
 
     def __str__(self):
         return f"[{self.timestamp}] {self.event_type} - {self.session_token}"
+
+
+class DocumentIntelligenceRun(models.Model):
+    """
+    Audit and execution record for Green AI document classification and extraction.
+    Stores telemetry, energy metrics, and strict Pydantic validated output.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='doc_intelligence_runs', db_index=True)
+    claim_document = models.ForeignKey(ClaimDocument, on_delete=models.SET_NULL, null=True, blank=True, related_name='intelligence_runs')
+    file_sha256 = models.CharField(max_length=64, db_index=True)
+    document_category = models.CharField(max_length=64, db_index=True)
+    confidence = models.FloatField(default=0.0)
+    classification_method = models.CharField(max_length=64)
+    pipeline_type = models.CharField(max_length=32)
+    extracted_fields = models.JSONField(default=dict)
+    explanation = models.TextField(blank=True, default='')
+    latency_ms = models.FloatField(default=0.0)
+    energy_wh = models.FloatField(default=0.0)
+    emissions_g_co2 = models.FloatField(default=0.0)
+    escalated_to_baseline = models.BooleanField(default=False)
+    cached = models.BooleanField(default=False)
+    model_name = models.CharField(max_length=64)
+    pipeline_version = models.CharField(max_length=32)
+    provenance = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.document_category} ({self.classification_method}) - {self.confidence:.2f}"
+
+
+class DocumentIntelligenceCache(models.Model):
+    """
+    SHA-256 hash-keyed cache for identical unchanged document inputs.
+    Eliminates redundant GPU/CPU inference FLOPs.
+    """
+    cache_key = models.CharField(max_length=128, primary_key=True)
+    file_sha256 = models.CharField(max_length=64, db_index=True)
+    document_category = models.CharField(max_length=64)
+    extracted_fields = models.JSONField(default=dict)
+    confidence = models.FloatField(default=0.0)
+    explanation = models.TextField(blank=True, default='')
+    model_name = models.CharField(max_length=64)
+    pipeline_version = models.CharField(max_length=32)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Cache {self.cache_key[:16]}... ({self.document_category})"
+
+
+class GreenAIBenchmarkRecord(models.Model):
+    """
+    Stores measured before-and-after Green AI energy and accuracy benchmark runs.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    run_timestamp = models.DateTimeField(auto_now_add=True)
+    split_name = models.CharField(max_length=32, default='test')
+    total_documents = models.IntegerField(default=0)
+    baseline_accuracy_pct = models.FloatField(default=0.0)
+    optimized_accuracy_pct = models.FloatField(default=0.0)
+    accuracy_delta_pct = models.FloatField(default=0.0)
+    energy_reduction_pct = models.FloatField(default=0.0)
+    baseline_energy_wh_per_doc = models.FloatField(default=0.0)
+    optimized_energy_wh_per_doc = models.FloatField(default=0.0)
+    baseline_latency_ms = models.FloatField(default=0.0)
+    optimized_latency_ms = models.FloatField(default=0.0)
+    escalation_rate_pct = models.FloatField(default=0.0)
+    measurement_tag = models.CharField(max_length=32, default='MEASURED')
+    benchmark_payload = models.JSONField(default=dict)
+
+    def __str__(self):
+        return f"Benchmark {self.run_timestamp:%Y-%m-%d %H:%M} - Energy Cut: {self.energy_reduction_pct:.1f}%"
+

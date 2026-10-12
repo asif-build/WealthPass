@@ -30,6 +30,7 @@ import type { DiscoveredAssetItem } from "./services/AssetDiscoveryEngine";
 import { NotificationProvider, useNotifications } from "./components/notifications/NotificationContext";
 import { DynamicIslandNotification } from "./components/notifications/DynamicIslandNotification";
 import { NotificationCenter } from "./components/notifications/NotificationCenter";
+import { EnergyDashboardPage } from "./components/energy/EnergyDashboardPage";
 
 const VALID_PATHS = [
   "/how-it-works/verify-match",
@@ -40,6 +41,8 @@ const VALID_PATHS = [
   "/relationship",
   "/discover-assets",
   "/sources",
+  "/energy",
+  "/document-intelligence",
   "/claim",
   "/register",
   "/login",
@@ -259,6 +262,7 @@ function App() {
   const navItems = [
     { name: "Security Process", href: "#about" },
     { name: "Legal Mandate", href: "#legal" },
+    { name: "Green AI Energy", href: "/energy" },
     { name: "Inquiries", href: "#inquiries" },
   ];
 
@@ -538,6 +542,16 @@ function App() {
           onNavigateHome={() => handleNavigate("/")}
           onNavigateVerify={() => handleNavigate("/verify")}
         />
+        {renderFooter()}
+      </div>
+    );
+  }
+
+  // ROUTE: GREEN AI DOCUMENT INTELLIGENCE & ENERGY TELEMETRY (/energy)
+  if (currentPath === "/energy" || currentPath === "/document-intelligence") {
+    return (
+      <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
+        <EnergyDashboardPage onNavigateHome={() => handleNavigate("/")} />
         {renderFooter()}
       </div>
     );

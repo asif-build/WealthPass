@@ -50,6 +50,8 @@ urlpatterns = [
     path('api/user/claims/<uuid:session_id>/', views.api_user_claim_detail, name='api_user_claim_detail'),
     path('claims/<uuid:session_id>/download-document/', views.download_document, name='download_document'),
     path('api/scan-document/', views.scan_document, name='api_scan_document'),
+    path('api/documents/classify-and-extract/', views.api_document_classify_and_extract, name='api_document_classify_and_extract'),
+    path('api/documents/energy-benchmark/', views.api_document_energy_benchmark, name='api_document_energy_benchmark'),
     re_path(r'^.*$', views.landing, name='catchall'),
 ]
 

@@ -2358,3 +2358,157 @@ def setu_callback(request):
         "message": "Returned from Setu",
         "params": request.GET.dict()
     })
+
+
+@csrf_exempt
+def api_document_classify_and_extract(request):
+    """
+    Green AI Financial Document Intelligence endpoint.
+    Accepts an uploaded document file or OCR text string.
+    Runs the multi-tiered green cascade (Layer D -> Layer A -> Layer B -> Layer C -> Layer E).
+    Enforces strict Pydantic validation, safe upload constraints, and zero-hallucination guarantees.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Method not allowed. Use POST.'}, status=405)
+
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Authentication required.'}, status=401)
+
+    import json
+    from .ocr import extract_text
+    from .doc_intelligence.cascade_pipeline import GreenDocumentIntelligenceCascade
+    from .doc_intelligence.ocr_utils import compute_sha256
+    from .models import DocumentIntelligenceRun, ClaimDocument
+
+    ocr_text = ""
+    file_sha = ""
+    claim_doc = None
+
+    if 'file' in request.FILES:
+        uploaded_file = request.FILES['file']
+        
+        # Security: Size limit 10MB
+        if uploaded_file.size > 10 * 1024 * 1024:
+            return JsonResponse({'success': False, 'error': 'File size exceeds 10MB limit.'}, status=400)
+
+        # Security: Allowed extensions
+        ext = os.path.splitext(uploaded_file.name)[1].lower()
+        if ext not in ('.pdf', '.jpg', '.jpeg', '.png'):
+            return JsonResponse({'success': False, 'error': 'Invalid file format. Only PDF, JPG, and PNG are permitted.'}, status=400)
+
+        # Read bytes safely for hash
+        content_bytes = uploaded_file.read()
+        file_sha = hashlib.sha256(content_bytes).hexdigest()
+        uploaded_file.seek(0)
+
+        # Extract text via OCR
+        try:
+            ocr_text = extract_text(uploaded_file)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': f'OCR processing failed: {str(e)}'}, status=500)
+
+        # Save private ClaimDocument record
+        try:
+            claim_doc = ClaimDocument.objects.create(
+                user=request.user,
+                document_type="FINANCIAL_EVIDENCE",
+                file=uploaded_file,
+                original_filename=uploaded_file.name,
+                file_size=uploaded_file.size,
+                mime_type=uploaded_file.content_type,
+                ocr_text=ocr_text[:5000]
+            )
+        except Exception:
+            pass
+    else:
+        # Accept text input in request body
+        try:
+            data = json.loads(request.body.decode('utf-8')) if request.body else {}
+        except Exception:
+            data = request.POST.dict()
+
+        ocr_text = data.get('text', '').strip()
+        if not ocr_text:
+            return JsonResponse({'success': False, 'error': 'No file uploaded or text provided.'}, status=400)
+        file_sha = compute_sha256(ocr_text)
+
+    # Execute Green AI Multi-tiered Cascade
+    cascade = GreenDocumentIntelligenceCascade()
+    # Ensure trained on synthetic dataset
+    from .doc_intelligence.dataset_generator import save_dataset_to_disk
+    data_path = os.path.join(os.path.dirname(__file__), "doc_intelligence", "data", "synthetic_eval_dataset.json")
+    if not os.path.exists(data_path):
+        save_dataset_to_disk(data_path)
+    with open(data_path, "r", encoding="utf-8") as f:
+        ds = json.load(f)
+    cascade.ensure_trained(ds["splits"]["train"])
+
+    result = cascade.process(ocr_text)
+
+    # Persist DocumentIntelligenceRun record in DB
+    try:
+        run_record = DocumentIntelligenceRun.objects.create(
+            user=request.user,
+            claim_document=claim_doc,
+            file_sha256=file_sha,
+            document_category=result.document_category.value,
+            confidence=result.confidence,
+            classification_method=result.classification_method.value,
+            pipeline_type=result.pipeline_type.value,
+            extracted_fields=result.extracted_fields.model_dump(mode='json'),
+            explanation=result.explanation or '',
+            latency_ms=result.latency_ms,
+            energy_wh=result.energy_wh,
+            emissions_g_co2=result.emissions_g_co2,
+            escalated_to_baseline=result.escalated_to_baseline,
+            cached=result.cached,
+            model_name=result.model_name,
+            pipeline_version=result.pipeline_version,
+            provenance=result.provenance
+        )
+    except Exception as e:
+        run_record = None
+
+    return JsonResponse({
+        'success': True,
+        'result': result.model_dump(mode='json'),
+        'run_id': str(run_record.id) if run_record else None
+    })
+
+
+def api_document_energy_benchmark(request):
+    """
+    Returns latest Green AI before-and-after energy and accuracy benchmark metrics.
+    Accessible to dashboard views and auditor telemetry.
+    """
+    from .models import GreenAIBenchmarkRecord
+    latest = GreenAIBenchmarkRecord.objects.order_by('-run_timestamp').first()
+
+    if not latest:
+        # Run a live benchmark run if none exists
+        from .doc_intelligence.evaluator import DocumentIntelligenceEvaluator
+        evaluator = DocumentIntelligenceEvaluator()
+        evaluator.load_or_generate_data()
+        summary = evaluator.run_benchmark(split_name="test")
+        latest = GreenAIBenchmarkRecord.objects.create(
+            split_name="test",
+            total_documents=summary["total_documents"],
+            baseline_accuracy_pct=summary["baseline"]["accuracy"],
+            optimized_accuracy_pct=summary["optimized"]["accuracy"],
+            accuracy_delta_pct=summary["comparison"]["accuracy_delta_pct"],
+            energy_reduction_pct=summary["comparison"]["energy_reduction_pct"],
+            baseline_energy_wh_per_doc=summary["baseline"]["energy_wh_per_doc"],
+            optimized_energy_wh_per_doc=summary["optimized"]["energy_wh_per_doc"],
+            baseline_latency_ms=summary["baseline"]["mean_latency_ms"],
+            optimized_latency_ms=summary["optimized"]["mean_latency_ms"],
+            escalation_rate_pct=summary["optimized"]["escalation_rate_pct"],
+            measurement_tag=summary["optimized"]["measurement_tag"],
+            benchmark_payload=summary
+        )
+
+    return JsonResponse({
+        'success': True,
+        'benchmark': latest.benchmark_payload,
+        'recorded_at': latest.run_timestamp.isoformat(),
+        'hardware_tag': latest.measurement_tag
+    })
