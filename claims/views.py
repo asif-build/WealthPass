@@ -189,6 +189,7 @@ def results(request, session_id):
         'total_assets': session.total_assets_found,
         'total_loan': session.bridge_loan_available,
         'classified_assets': session.assets.all(),
+        'source_jobs': session.source_jobs.all(),
     }
     return render(request, 'results.html', context)
 
@@ -245,15 +246,25 @@ def print_forms(request, session_id):
             if doc not in required_docs:
                 required_docs.append(doc)
                 
+    if not required_docs:
+        required_docs = [
+            "Original / Certified Extract of Death Certificate",
+            "Claimant Identity Proof (Aadhaar / Voter ID / Passport)",
+            "Proof of Relationship / Legal Heir Certificate or Succession Certificate",
+            "Statutory Bank Deceased Claim Form 14 (with legal heir indemnity)",
+            "Cancelled Cheque of Claimant's active bank account"
+        ]
+
     context = {
         'session_id': session.id,
         'claimant_name': session.claimant_name,
         'claimant_last4': session.claimant_aadhaar_last4,
         'deceased_name': session.deceased_name,
-        'pan': session.deceased_pan,
-        'cert_no': session.death_certificate_no,
+        'pan': session.deceased_pan or "NOT SPECIFIED / UNKNOWN",
+        'cert_no': session.death_certificate_no or "PENDING VERIFICATION",
         'relation': session.relation,
         'assets': session.assets.all(),
+        'source_jobs': session.source_jobs.all(),
         'docs': required_docs,
         'total_amount': session.total_assets_found
     }
@@ -1071,7 +1082,8 @@ def api_discover(request):
                 "source_id": a.source_id,
                 "source_name": a.institution,
                 "asset_category": a.asset_category,
-                "potential_value": f"₹{a.amount:,.0f}" if a.amount > 0 else "Valuation pending branch verification",
+                "potential_value": f"₹{a.amount:,.0f}" if (a.amount > 0 and not a.is_amount_undisclosed) else "Valuation pending branch verification",
+                "is_amount_undisclosed": bool(a.is_amount_undisclosed or a.amount == 0),
                 "numeric_value": float(a.amount),
                 "confidence": "HIGH" if a.institution_verified else "MEDIUM",
                 "status": a.match_status,
@@ -1637,7 +1649,8 @@ def api_user_claims(request):
                     res = p.discover_assets({
                         'deceased_name': deceased_name,
                         'deceased_pan': raw_pan if not pan_unknown else '',
-                        'mobile': mobile
+                        'mobile': mobile,
+                        'consent_id': session.setu_consent_id if p.provider_id == 'SETU_AA_DISCOVERY' else None
                     })
                     matches = res.get('potential_matches', [])
                     if matches:
@@ -1651,6 +1664,7 @@ def api_user_claims(request):
                                 asset_category=p.category,
                                 institution=m.get('institution', p.provider_name),
                                 amount=Decimal(str(m.get('amount', 0))),
+                                is_amount_undisclosed=bool(m.get('is_amount_undisclosed', False)),
                                 masked_reference=m.get('masked_reference', ''),
                                 situation_label=m.get('situation_label', 'Potential Account Match'),
                                 color=m.get('color', 'amber'),
@@ -1658,12 +1672,21 @@ def api_user_claims(request):
                                 documents_needed=m.get('documents_needed', []),
                                 next_steps=m.get('next_steps', []),
                                 time_estimate=m.get('time_estimate', '4-8 Weeks'),
-                                is_potential_match=True,
-                                institution_verified=False,
+                                is_potential_match=m.get('is_potential_match', True),
+                                institution_verified=m.get('institution_verified', False),
+                                match_status=m.get('match_status', 'POTENTIAL_MATCH'),
+                                verification_status=m.get('verification_status', 'UNVERIFIED_BY_INSTITUTION'),
+                                claim_status=m.get('claim_status', 'NOT_INITIATED'),
                                 official_portal_url=p.official_portal_url
                             )
                     else:
-                        job.status = 'NO_MATCHES_FOUND' if res.get('status') in (IntegrationStatus.LIVE.value, IntegrationStatus.SANDBOX.value) else res.get('status', 'COMPLETED')
+                        job.status = res.get('status', 'IN_PROGRESS') if res.get('status') in ('CONSENT_PENDING', 'IN_PROGRESS', 'NO_MATCHES_FOUND') else 'IN_PROGRESS'
+                    
+                    if p.provider_id == 'SETU_AA_DISCOVERY' and res.get('consent_id'):
+                        session.setu_consent_id = res['consent_id']
+                        session.setu_consent_status = res.get('consent_status', 'PENDING')
+                        session.save(update_fields=['setu_consent_id', 'setu_consent_status'])
+
                     job.response_payload = res
                     job.save()
                 except Exception as ex:
@@ -1672,49 +1695,11 @@ def api_user_claims(request):
                     job.save()
 
         # Compute genuine total assets (0 if none found or unverified)
-        if data.get('init_discovery'):
-            if not session.assets.exists():
-                DiscoveredAsset.objects.create(
-                    session=session,
-                    user=request.user,
-                    source_id='RBI_UDGAM',
-                    source_reference=f"UDGAM-TEST-{secrets.token_hex(3).upper()}",
-                    asset_category='BANK_DEPOSITS',
-                    institution='State Bank of India',
-                    amount=Decimal('142000.00'),
-                    masked_reference='XXXX-XXXX-4412',
-                    situation_label='Unclaimed Savings Deposit',
-                    color='amber',
-                    message='Dormant savings deposit identified in test evaluation.',
-                    is_potential_match=True,
-                    institution_verified=False
-                )
-                DiscoveredAsset.objects.create(
-                    session=session,
-                    user=request.user,
-                    source_id='IRDAI_BIMA_BHAROSA',
-                    source_reference=f"LIC-TEST-{secrets.token_hex(3).upper()}",
-                    asset_category='INSURANCE',
-                    institution='Life Insurance Corporation of India',
-                    amount=Decimal('500000.00'),
-                    masked_reference='XXXX-XXXX-9901',
-                    situation_label='Matured Life Policy Proceeds',
-                    color='green',
-                    message='Unclaimed maturity proceeds identified in test evaluation.',
-                    is_potential_match=True,
-                    institution_verified=False
-                )
-            total_found = sum(a.amount for a in session.assets.all())
-            session.total_assets_found = total_found
-            session.bridge_loan_available = Decimal('50000.00')
-            session.status = 'READY_FOR_CLAIM'
-            session.save()
-        else:
-            total_found = sum(a.amount for a in session.assets.all())
-            session.total_assets_found = total_found
-            session.bridge_loan_available = Decimal('0')  # Never fabricated for real submissions
-            session.status = 'READY_FOR_CLAIM' if session.assets.exists() else 'UNDER_REVIEW'
-            session.save()
+        total_found = sum(a.amount for a in session.assets.all())
+        session.total_assets_found = total_found
+        session.bridge_loan_available = Decimal('0')  # Never fabricated for real submissions
+        session.status = 'READY_FOR_CLAIM' if session.assets.exists() else 'UNDER_REVIEW'
+        session.save()
 
         # Update or create relationship record in EVIDENCE_SUBMITTED / UNDER_REVIEW state
         rel_rec = ClaimantRelationshipRecord.objects.filter(user=request.user).order_by('-created_at').first()
@@ -1840,11 +1825,20 @@ def api_user_claim_detail(request, session_id):
             'uploaded_at': d.uploaded_at.isoformat(),
         })
 
+    registry = AssetDiscoveryRegistry()
     source_jobs = []
     for j in session.source_jobs.all():
+        provider = registry.get_provider(j.source_id)
+        provider_name = provider.provider_name if provider else j.source_id
+        consent_url = (
+            j.response_payload.get('consent_url') or 
+            j.response_payload.get('setu_response', {}).get('url') or 
+            j.response_payload.get('url')
+        )
         source_jobs.append({
             'id': str(j.id),
             'source_id': j.source_id,
+            'provider_name': provider_name,
             'asset_category': j.asset_category,
             'status': j.status,
             'is_live_api': j.is_live_api,
@@ -1852,7 +1846,9 @@ def api_user_claim_detail(request, session_id):
             'external_reference_number': j.external_reference_number,
             'external_search_completed': j.external_search_completed,
             'external_search_date': j.external_search_date.isoformat() if j.external_search_date else None,
-            'guide': j.response_payload.get('guide') or {},
+            'consent_id': j.response_payload.get('consent_id') or session.setu_consent_id,
+            'consent_url': consent_url,
+            'guide': j.response_payload.get('guide') or (provider.get_discovery_guide() if provider else {}),
             'error_message': j.error_message,
             'last_checked_at': j.last_checked_at.isoformat(),
         })
@@ -1893,6 +1889,8 @@ def api_user_claim_detail(request, session_id):
                     'id': a.id,
                     'institution': a.institution,
                     'amount': float(a.amount),
+                    'is_amount_undisclosed': bool(a.is_amount_undisclosed or a.amount == 0),
+                    'potential_value_display': f"₹{a.amount:,.0f}" if (a.amount > 0 and not a.is_amount_undisclosed) else "Valuation Pending Branch Verification",
                     'source_id': a.source_id,
                     'source_reference': a.source_reference,
                     'masked_reference': a.masked_reference,
@@ -1921,6 +1919,7 @@ def api_record_external_reference(request):
     POST /api/discover/record-external-reference/
     Allows claimant to record evidence of official portal search completion
     (e.g. RBI UDGAM reference, Bima Bharosa query ID, IEPF SRN, EPFO claim acknowledgement).
+    Supports MATCH_FOUND and NO_MATCH_FOUND outcomes.
     Truthfully records reference without fabricating false live balances.
     """
     if not request.user.is_authenticated:
@@ -1938,11 +1937,18 @@ def api_record_external_reference(request):
     source_id = data.get('source_id')
     ref_no = (data.get('external_reference_number') or '').strip()
     institution_name = (data.get('institution_name') or '').strip()
+    search_outcome = (data.get('search_outcome') or 'MATCH_FOUND').upper()
 
-    if not case_id or not source_id or not ref_no:
+    if not case_id or not source_id:
         return JsonResponse({
             'success': False,
-            'error': 'case_id, source_id, and external_reference_number are required.'
+            'error': 'case_id and source_id are required.'
+        }, status=400)
+
+    if search_outcome == 'MATCH_FOUND' and not ref_no:
+        return JsonResponse({
+            'success': False,
+            'error': 'external_reference_number is required when an official match is reported.'
         }, status=400)
 
     session, err_resp = get_authorized_claim(request, case_id)
@@ -1966,6 +1972,39 @@ def api_record_external_reference(request):
             'external_portal_url': portal_url,
         }
     )
+
+    if search_outcome == 'NO_MATCH_FOUND':
+        job.status = 'NO_MATCHES_FOUND'
+        job.external_search_completed = True
+        job.external_reference_number = ref_no or 'SEARCH_NO_RECORDS'
+        job.external_search_date = timezone.now()
+        job.save()
+
+        AuditLog.objects.create(
+            user=request.user,
+            session_token=str(session.id),
+            event_type="OFFICIAL_SEARCH_NO_MATCH_RECORDED",
+            details={
+                "source_id": source_id,
+                "reference": ref_no or 'SEARCH_NO_RECORDS',
+                "institution": institution_name or provider_name
+            }
+        )
+
+        return JsonResponse({
+            'success': True,
+            'status': 'NO_MATCHES_FOUND',
+            'message': f'Search outcome recorded for {provider_name}: No matching records identified in official registry.',
+            'job': {
+                'id': str(job.id),
+                'source_id': job.source_id,
+                'status': job.status,
+                'external_reference_number': job.external_reference_number,
+                'last_checked_at': job.last_checked_at.isoformat()
+            }
+        })
+
+    # When search_outcome == 'MATCH_FOUND'
     job.status = 'COMPLETED'
     job.external_search_completed = True
     job.external_reference_number = ref_no
@@ -1993,6 +2032,7 @@ def api_record_external_reference(request):
         asset_category=category,
         institution=inst_display,
         amount=Decimal('0'),  # Unverified valuation - never fabricated
+        is_amount_undisclosed=True,
         masked_reference=f"REF-{ref_no[:4]}****" if len(ref_no) > 4 else ref_no,
         situation_label=f"Official {source_id} Search Recorded",
         color="green",
@@ -2000,7 +2040,8 @@ def api_record_external_reference(request):
         documents_needed=[
             "Death Certificate (Certified Extract)",
             "Claimant Identity & Address Proof",
-            f"Statutory Deceased Claim Packet for {inst_display}"
+            "Bank Form 14 (Statutory Deceased Depositor Claim Application with Legal Heir Indemnity)" if category == "BANK_DEPOSITS" else f"Statutory Deceased Claim Packet for {inst_display}",
+            "Cancelled Cheque of Claimant's active bank account"
         ],
         next_steps=[
             f"Submit reference {ref_no} and physical dossier to {inst_display} branch",
@@ -2011,7 +2052,7 @@ def api_record_external_reference(request):
         is_potential_match=True,
         institution_verified=False,
         match_status="OFFICIAL_SEARCH_RECORDED",
-        verification_status="PENDING_BRANCH_VERIFICATION",
+        verification_status="CLAIMANT_REPORTED_OFFICIAL_SEARCH",
         claim_status="DOSSIER_PREPARED",
         source_evidence_reference=doc_ref or ref_no,
         how_found={
@@ -2049,10 +2090,141 @@ def api_record_external_reference(request):
         'asset': {
             'id': asset.id,
             'institution': asset.institution,
+            'amount': 0.0,
+            'is_amount_undisclosed': True,
+            'potential_value': "Valuation pending branch verification",
+            'source_id': asset.source_id,
             'source_reference': asset.source_reference,
+            'masked_reference': asset.masked_reference,
             'status': asset.match_status,
             'verification_status': asset.verification_status
         }
+    })
+
+
+def api_setu_check_status(request):
+    """
+    POST /api/discover/setu/check-status/
+    Checks the status of Setu Account Aggregator consent for a case.
+    If consent is approved, queries linked accounts and persists them
+    into DiscoveredAsset records with genuine bank metadata.
+    """
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Authentication required.'}, status=401)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'POST required.'}, status=405)
+
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return JsonResponse({'success': False, 'error': 'Invalid JSON body.'}, status=400)
+
+    case_id = data.get('case_id')
+    if not case_id:
+        return JsonResponse({'success': False, 'error': 'case_id is required.'}, status=400)
+
+    session, err_resp = get_authorized_claim(request, case_id)
+    if err_resp:
+        return err_resp
+
+    from .models import DiscoverySourceJob, DiscoveredAsset
+    job = DiscoverySourceJob.objects.filter(session=session, source_id='SETU_AA_DISCOVERY').first()
+    consent_id = session.setu_consent_id
+    if not consent_id and job:
+        consent_id = job.response_payload.get('consent_id')
+
+    if not consent_id:
+        return JsonResponse({
+            'success': False,
+            'error': 'No Setu Account Aggregator consent request found for this case.'
+        }, status=404)
+
+    registry = AssetDiscoveryRegistry()
+    provider = registry.get_provider('SETU_AA_DISCOVERY')
+    if not provider or not provider.is_configured():
+        return JsonResponse({
+            'success': False,
+            'error': 'Setu Account Aggregator is not configured.'
+        }, status=503)
+
+    res = provider.discover_assets({
+        'consent_id': consent_id,
+        'mobile': session.mobile
+    })
+
+    matches = res.get('potential_matches', [])
+    new_assets = []
+    if matches:
+        if not job:
+            job = DiscoverySourceJob.objects.create(
+                session=session,
+                user=request.user,
+                source_id='SETU_AA_DISCOVERY',
+                asset_category='BANK_DEPOSITS',
+                is_live_api=True
+            )
+        job.status = 'COMPLETED'
+        job.response_payload = res
+        job.save()
+
+        # Update or create DiscoveredAsset for each linked account
+        for m in matches:
+            asset, _ = DiscoveredAsset.objects.update_or_create(
+                session=session,
+                source_id='SETU_AA_DISCOVERY',
+                source_reference=m.get('source_reference', ''),
+                defaults={
+                    'user': request.user,
+                    'asset_category': 'BANK_DEPOSITS',
+                    'institution': m.get('institution', 'Participating Bank'),
+                    'amount': Decimal(str(m.get('amount', 0))),
+                    'is_amount_undisclosed': True,
+                    'masked_reference': m.get('masked_reference', ''),
+                    'situation_label': m.get('situation_label', 'Verified Bank Deposit Account'),
+                    'color': 'green',
+                    'message': m.get('message', ''),
+                    'documents_needed': m.get('documents_needed', []),
+                    'next_steps': m.get('next_steps', []),
+                    'time_estimate': m.get('time_estimate', '2-4 Weeks'),
+                    'is_potential_match': False,
+                    'institution_verified': True,
+                    'match_status': 'CONFIRMED_ACCOUNT_MATCH',
+                    'verification_status': 'API_VERIFIED',
+                    'claim_status': 'READY_FOR_SUBMISSION',
+                    'official_portal_url': provider.official_portal_url
+                }
+            )
+            new_assets.append(asset.id)
+    else:
+        if job:
+            job.status = res.get('status', 'CONSENT_PENDING')
+            job.response_payload = res
+            job.save()
+
+    session.setu_consent_status = res.get('consent_status', session.setu_consent_status)
+    session.save(update_fields=['setu_consent_status'])
+
+    AuditLog.objects.create(
+        user=request.user,
+        session_token=str(session.id),
+        event_type="SETU_AA_STATUS_CHECKED",
+        details={
+            'case_id': str(session.id),
+            'consent_id': consent_id,
+            'status': res.get('consent_status'),
+            'accounts_found': len(matches)
+        }
+    )
+
+    return JsonResponse({
+        'success': True,
+        'case_id': str(session.id),
+        'consent_id': consent_id,
+        'consent_status': res.get('consent_status'),
+        'job_status': job.status if job else res.get('status'),
+        'accounts_found': len(matches),
+        'result': res
     })
 
 

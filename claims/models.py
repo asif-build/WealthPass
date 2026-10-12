@@ -108,6 +108,7 @@ class DiscoveredAsset(models.Model):
     asset_category = models.CharField(max_length=50, default='BANK_DEPOSITS', db_index=True)
     institution = models.CharField(max_length=100)
     amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    is_amount_undisclosed = models.BooleanField(default=False)
     masked_reference = models.CharField(max_length=100, blank=True, default='')
     situation_label = models.CharField(max_length=255)
     color = models.CharField(max_length=50, default='amber')  # green, amber, red

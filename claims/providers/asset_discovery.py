@@ -1,4 +1,5 @@
 import os
+from decimal import Decimal
 from typing import Dict, Any, List, Optional
 from django.conf import settings
 from .base import BaseAssetDiscoveryProvider, IntegrationStatus
@@ -797,18 +798,79 @@ class SetuAADiscoveryAdapter(BaseAssetDiscoveryProvider):
                 "error": "Setu Account Aggregator credentials are not configured in settings."
             }
 
-        from claims.setu_client import create_consent
+        from claims.setu_client import create_consent, get_consent
+        consent_id = query_params.get("consent_id")
         mobile = query_params.get("mobile") or "9876543210"
+
         try:
-            res = create_consent(mobile)
-            return {
-                "source_id": self.provider_id,
-                "status": self.integration_status.value,
-                "is_live_api": True,
-                "setu_response": res,
-                "potential_matches": [],
-                "message": "Consent request created via Setu AA framework."
-            }
+            if consent_id:
+                consent_data = get_consent(consent_id)
+                consent_status = consent_data.get("status", "PENDING")
+                accounts_linked = consent_data.get("accountsLinked", [])
+                matches = []
+
+                for acc in accounts_linked:
+                    link_ref = acc.get("linkRefNumber", "")
+                    fip_id = acc.get("fipId", "Participating Bank")
+                    acc_type = acc.get("accountType", "DEPOSIT")
+                    masked_acc = acc.get("maskedAccNumber") or (f"ACC-****{link_ref[-4:]}" if len(link_ref) >= 4 else "ACC-****")
+                    matches.append({
+                        "institution": fip_id,
+                        "masked_reference": masked_acc,
+                        "source_reference": link_ref or consent_id,
+                        "amount": Decimal("0.00"),
+                        "is_amount_undisclosed": True,
+                        "situation_label": f"Verified {acc_type} Account",
+                        "color": "green",
+                        "message": f"Verified bank account linked via RBI Account Aggregator framework ({fip_id}).",
+                        "documents_needed": [
+                            "Bank Account Mandate Form",
+                            "Claimant Identity & Address Proof",
+                            "Original / Certified Extract of Death Certificate"
+                        ],
+                        "next_steps": [
+                            f"Submit verified claim packet to {fip_id} servicing branch",
+                            "Branch verification of nominee or legal heir entitlement",
+                            "Direct settlement credit to claimant bank account"
+                        ],
+                        "time_estimate": "2-4 Weeks",
+                        "is_potential_match": False,
+                        "institution_verified": True,
+                        "match_status": "CONFIRMED_ACCOUNT_MATCH",
+                        "verification_status": "API_VERIFIED",
+                        "claim_status": "READY_FOR_SUBMISSION",
+                        "official_portal_url": self.official_portal_url
+                    })
+
+                status_mapped = "COMPLETED" if (consent_status in ("ACTIVE", "APPROVED") and matches) else (
+                    "NO_MATCHES_FOUND" if consent_status in ("ACTIVE", "APPROVED") else "CONSENT_PENDING"
+                )
+
+                return {
+                    "source_id": self.provider_id,
+                    "status": status_mapped,
+                    "is_live_api": True,
+                    "consent_id": consent_id,
+                    "consent_status": consent_status,
+                    "consent_url": consent_data.get("url"),
+                    "setu_response": consent_data,
+                    "potential_matches": matches,
+                    "message": f"Setu AA consent status: {consent_status} with {len(matches)} account(s) discovered."
+                }
+            else:
+                res = create_consent(mobile)
+                new_consent_id = res.get("id")
+                new_url = res.get("url")
+                return {
+                    "source_id": self.provider_id,
+                    "status": "CONSENT_PENDING",
+                    "is_live_api": True,
+                    "consent_id": new_consent_id,
+                    "consent_url": new_url,
+                    "setu_response": res,
+                    "potential_matches": [],
+                    "message": "Consent request created via Setu AA framework. Claimant approval required on Account Aggregator UI."
+                }
         except Exception as e:
             return {
                 "source_id": self.provider_id,

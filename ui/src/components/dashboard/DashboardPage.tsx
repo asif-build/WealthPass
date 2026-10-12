@@ -20,6 +20,11 @@ interface ClaimAsset {
   id: number;
   institution: string;
   amount: number;
+  is_amount_undisclosed?: boolean;
+  potential_value_display?: string;
+  source_id?: string;
+  source_reference?: string;
+  masked_reference?: string;
   situation_label: string;
   color: string;
   message: string;
@@ -27,6 +32,28 @@ interface ClaimAsset {
   next_steps: string[];
   time_estimate: string;
   loan_amount: number;
+  match_status?: string;
+  verification_status?: string;
+  claim_status?: string;
+  official_portal_url?: string;
+}
+
+interface DiscoverySourceJobItem {
+  id: string;
+  source_id: string;
+  provider_name?: string;
+  asset_category: string;
+  status: string;
+  is_live_api: boolean;
+  external_portal_url?: string;
+  external_reference_number?: string;
+  external_search_completed?: boolean;
+  external_search_date?: string;
+  consent_id?: string;
+  consent_url?: string;
+  guide?: Record<string, any>;
+  error_message?: string;
+  last_checked_at?: string;
 }
 
 interface ClaimCase {
@@ -47,6 +74,7 @@ interface ClaimCase {
   assets_count?: number;
   created_at: string;
   assets?: ClaimAsset[];
+  source_jobs?: DiscoverySourceJobItem[];
 }
 
 interface ActivityItem {
@@ -97,6 +125,18 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
   const [isTerminatingSessions, setIsTerminatingSessions] = useState(false);
   const [terminationMessage, setTerminationMessage] = useState<string | null>(null);
+
+  // Record external reference modal state (accessible from dossier)
+  const [isRecordRefModalOpen, setIsRecordRefModalOpen] = useState(false);
+  const [recordSourceId, setRecordSourceId] = useState("RBI_UDGAM");
+  const [recordCategory, setRecordCategory] = useState("BANK_DEPOSITS");
+  const [recordInstitution, setRecordInstitution] = useState("");
+  const [recordRefNo, setRecordRefNo] = useState("");
+  const [recordOutcome, setRecordOutcome] = useState<"MATCH_FOUND" | "NO_MATCH_FOUND">("MATCH_FOUND");
+  const [isRecordingRef, setIsRecordingRef] = useState(false);
+  const [recordRefError, setRecordRefError] = useState<string | null>(null);
+  const [recordRefSuccess, setRecordRefSuccess] = useState<string | null>(null);
+  const [isCheckingSetu, setIsCheckingSetu] = useState(false);
 
   // Keep activeTab in sync if initialTab prop changes
   useEffect(() => {
@@ -176,6 +216,74 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       if (local) setSelectedCase(local);
     } finally {
       setIsDetailLoading(false);
+    }
+  };
+
+  // Check Setu Account Aggregator status
+  const handleCheckSetuStatus = async (caseId: string) => {
+    setIsCheckingSetu(true);
+    try {
+      const res = await apiFetch<{ success: boolean; consent_status: string; accounts_found: number }>(
+        "/api/discover/setu/check-status/",
+        {
+          method: "POST",
+          body: { case_id: caseId },
+        }
+      );
+      if (res.ok) {
+        await handleSelectCase(caseId);
+        fetchCases();
+      }
+    } catch {
+      // Non-critical
+    } finally {
+      setIsCheckingSetu(false);
+    }
+  };
+
+  // Submit recorded official reference from dossier
+  const handleRecordReferenceSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedCase) return;
+    if (recordOutcome === "MATCH_FOUND" && !recordRefNo.trim()) {
+      setRecordRefError("Please enter the official reference number or search token.");
+      return;
+    }
+
+    setIsRecordingRef(true);
+    setRecordRefError(null);
+    setRecordRefSuccess(null);
+
+    try {
+      const res = await apiFetch<{ success: boolean; message: string }>("/api/discover/record-external-reference/", {
+        method: "POST",
+        body: {
+          case_id: selectedCase.id,
+          source_id: recordSourceId,
+          external_reference_number: recordRefNo.trim() || undefined,
+          institution_name: recordInstitution.trim() || undefined,
+          asset_category: recordCategory,
+          search_outcome: recordOutcome,
+        },
+      });
+
+      if (res.ok && res.data?.success) {
+        setRecordRefSuccess(res.data.message || "Reference recorded successfully.");
+        await handleSelectCase(selectedCase.id);
+        fetchCases();
+        setTimeout(() => {
+          setIsRecordRefModalOpen(false);
+          setRecordRefNo("");
+          setRecordInstitution("");
+          setRecordRefSuccess(null);
+        }, 1200);
+      } else {
+        setRecordRefError(res.error || "Failed to record reference.");
+      }
+    } catch {
+      setRecordRefError("Network error recording reference.");
+    } finally {
+      setIsRecordingRef(false);
     }
   };
 
@@ -1140,9 +1248,19 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             <span className="text-primary text-[10px] tracking-[0.2em] uppercase font-semibold block mb-1">
               Case Dossier
             </span>
-            <h2 className="text-xl sm:text-2xl font-medium text-white mb-1">
-              {selectedCase.deceased_name}
-            </h2>
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+              <h2 className="text-xl sm:text-2xl font-medium text-white">
+                {selectedCase.deceased_name}
+              </h2>
+              <div className="text-right">
+                <span className="text-[10px] text-gray-400 uppercase tracking-wider block font-mono">Confirmed Capital</span>
+                <span className="text-sm font-semibold text-primary">
+                  {selectedCase.total_assets_found > 0
+                    ? `₹${Number(selectedCase.total_assets_found).toLocaleString("en-IN")}`
+                    : "Pending Branch Valuation"}
+                </span>
+              </div>
+            </div>
             <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 mb-6 font-mono">
               <span>PAN: {maskPan(selectedCase.deceased_pan)}</span>
               <span>•</span>
@@ -1153,9 +1271,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
             {/* Discovered Assets List */}
             <div className="space-y-4 mb-6">
-              <h3 className="text-xs uppercase tracking-wider text-gray-400 font-semibold">
-                Discovered Asset Matches ({selectedCase.assets?.length || 0})
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs uppercase tracking-wider text-gray-400 font-semibold">
+                  Discovered Asset Matches ({selectedCase.assets?.length || 0})
+                </h3>
+                <span className="text-[11px] text-gray-500">
+                  {selectedCase.assets?.length || 0} Record(s) Logged
+                </span>
+              </div>
 
               {isDetailLoading ? (
                 <div className="p-6 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-center gap-2 text-xs text-gray-400">
@@ -1163,8 +1286,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   <span>Loading case assets...</span>
                 </div>
               ) : !selectedCase.assets || selectedCase.assets.length === 0 ? (
-                <div className="p-6 rounded-2xl bg-black/40 border border-white/5 text-center text-xs text-gray-400">
-                  Discovery scan currently evaluating statutory matches across official registries.
+                <div className="p-6 rounded-2xl bg-black/40 border border-white/5 text-center text-xs text-gray-400 space-y-1">
+                  <p className="text-gray-300 font-medium">No confirmed asset disbursements logged yet.</p>
+                  <p className="text-gray-500">Statutory registry searches are actively in progress across official channels below.</p>
                 </div>
               ) : (
                 selectedCase.assets.map((asset) => (
@@ -1174,14 +1298,32 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <span className="text-sm font-medium text-white block">
-                          {asset.institution}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-white block">
+                            {asset.institution}
+                          </span>
+                          <span className="px-1.5 py-0.5 rounded text-[10px] bg-white/5 border border-white/10 font-mono text-gray-300">
+                            {asset.verification_status || "UNVERIFIED"}
+                          </span>
+                        </div>
                         <span className="text-xs text-gray-400">{asset.situation_label}</span>
+                        {asset.masked_reference && (
+                          <span className="text-[11px] font-mono text-gray-500 block mt-0.5">
+                            Ref: {asset.masked_reference}
+                          </span>
+                        )}
                       </div>
-                      <span className="text-sm font-semibold text-primary">
-                        ₹{Number(asset.amount).toLocaleString("en-IN")}
-                      </span>
+                      <div className="text-right">
+                        {asset.amount > 0 && !asset.is_amount_undisclosed ? (
+                          <span className="text-sm font-semibold text-primary">
+                            ₹{Number(asset.amount).toLocaleString("en-IN")}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-amber-300 font-medium bg-amber-950/40 border border-amber-500/20 px-2 py-0.5 rounded block">
+                            Valuation Pending Branch Verification
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     <p className="text-xs text-gray-300 leading-relaxed">
@@ -1203,17 +1345,131 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               )}
             </div>
 
+            {/* Statutory Discovery Channels & Jobs */}
+            <div className="space-y-3 mb-6 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs uppercase tracking-wider text-gray-400 font-semibold">
+                  Statutory Discovery Registries ({selectedCase.source_jobs?.length || 0})
+                </h3>
+                <span className="text-[10px] text-gray-500 font-mono">
+                  Official Channels
+                </span>
+              </div>
+
+              {selectedCase.source_jobs && selectedCase.source_jobs.length > 0 ? (
+                <div className="space-y-2.5">
+                  {selectedCase.source_jobs.map((job) => (
+                    <div
+                      key={job.id}
+                      className="p-3.5 rounded-xl bg-black/40 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    >
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-medium text-white">
+                            {job.provider_name || job.source_id}
+                          </span>
+                          <span className="text-[10px] text-gray-400 font-mono">
+                            ({job.asset_category})
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-400">
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-mono ${
+                              job.status === "COMPLETED"
+                                ? "bg-emerald-950/60 text-emerald-300 border border-emerald-500/30"
+                                : job.status === "NO_MATCHES_FOUND"
+                                ? "bg-gray-800 text-gray-300 border border-gray-600"
+                                : "bg-amber-950/60 text-amber-300 border border-amber-500/30"
+                            }`}
+                          >
+                            {job.status.replace(/_/g, " ")}
+                          </span>
+
+                          {job.external_reference_number && (
+                            <span className="font-mono text-primary">
+                              Ref: {job.external_reference_number}
+                            </span>
+                          )}
+
+                          {job.external_portal_url && (
+                            <a
+                              href={job.external_portal_url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-gray-400 hover:text-white underline underline-offset-2"
+                            >
+                              Official Portal ↗
+                            </a>
+                          )}
+
+                          {job.consent_url && (
+                            <a
+                              href={job.consent_url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-amber-300 hover:text-amber-200 underline underline-offset-2"
+                            >
+                              Approve AA Consent ↗
+                            </a>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {job.source_id === "SETU_AA_DISCOVERY" && (
+                          <button
+                            type="button"
+                            onClick={() => handleCheckSetuStatus(selectedCase.id)}
+                            disabled={isCheckingSetu}
+                            className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] text-white transition-colors cursor-pointer disabled:opacity-50"
+                          >
+                            {isCheckingSetu ? "Checking..." : "Check AA Status"}
+                          </button>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setRecordSourceId(job.source_id);
+                            setRecordCategory(job.asset_category);
+                            setIsRecordRefModalOpen(true);
+                          }}
+                          className="px-2.5 py-1 rounded-lg bg-primary/20 hover:bg-primary/30 text-[11px] text-primary transition-colors cursor-pointer"
+                        >
+                          + Record Reference
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 rounded-xl bg-black/40 border border-white/5 text-xs text-gray-400 text-center">
+                  Statutory search jobs queued for execution.
+                </div>
+              )}
+            </div>
+
             {/* Modal Actions */}
             <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/10">
-              <a
-                href={`/print-forms/${selectedCase.id}/`}
-                target="_blank"
-                rel="noreferrer"
-                className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-xs text-gray-300 hover:text-white transition-colors flex items-center gap-2"
-              >
-                <FileText className="w-3.5 h-3.5 text-primary" />
-                <span>Download Pre-filled Claim Dossier</span>
-              </a>
+              <div className="flex items-center gap-2">
+                <a
+                  href={`/print-forms/${selectedCase.id}/`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3.5 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-xs text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+                >
+                  <FileText className="w-3.5 h-3.5 text-primary" />
+                  <span>Download Pre-filled Claim Dossier</span>
+                </a>
+
+                <button
+                  type="button"
+                  onClick={() => setIsRecordRefModalOpen(true)}
+                  className="px-3.5 py-2 rounded-xl border border-primary/30 bg-primary/10 hover:bg-primary/20 text-xs text-primary transition-colors cursor-pointer"
+                >
+                  + Record Reference
+                </button>
+              </div>
 
               <button
                 onClick={() => setSelectedCase(null)}
@@ -1222,6 +1478,151 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 Done
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================= */}
+      {/* MODAL: RECORD OFFICIAL SEARCH REFERENCE */}
+      {/* ============================================================= */}
+      {isRecordRefModalOpen && selectedCase && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-[#141414] border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+            <button
+              onClick={() => {
+                setIsRecordRefModalOpen(false);
+                setRecordRefError(null);
+                setRecordRefSuccess(null);
+              }}
+              className="absolute top-5 right-5 text-gray-400 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <span className="text-primary text-[10px] tracking-[0.2em] uppercase font-semibold block mb-1">
+              Official Registry Record
+            </span>
+            <h2 className="text-lg sm:text-xl font-medium text-white mb-1">
+              Record External Search Reference
+            </h2>
+            <p className="text-xs text-gray-400 mb-5 leading-relaxed">
+              Record reference code from official search (e.g. RBI UDGAM, IRDAI Bima Bharosa, SEBI MITRA, IEPF, or EPFO).
+            </p>
+
+            {recordRefError && (
+              <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-300 text-xs mb-4">
+                {recordRefError}
+              </div>
+            )}
+            {recordRefSuccess && (
+              <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs mb-4">
+                {recordRefSuccess}
+              </div>
+            )}
+
+            <form onSubmit={handleRecordReferenceSubmit} className="space-y-4">
+              <div>
+                <label className="text-xs text-gray-300 block mb-1">Discovery Source</label>
+                <select
+                  value={recordSourceId}
+                  onChange={(e) => {
+                    const src = e.target.value;
+                    setRecordSourceId(src);
+                    if (src === "RBI_UDGAM") setRecordCategory("BANK_DEPOSITS");
+                    else if (src === "SETU_AA_DISCOVERY") setRecordCategory("BANK_DEPOSITS");
+                    else if (src === "IRDAI_BIMA_BHAROSA") setRecordCategory("INSURANCE");
+                    else if (src === "SEBI_MITRA") setRecordCategory("MUTUAL_FUNDS");
+                    else if (src === "IEPF") setRecordCategory("SHARES_DIVIDENDS");
+                    else if (src === "EPFO_SERVICES") setRecordCategory("PENSION_EPFO");
+                    else setRecordCategory("OTHER_INVESTMENTS");
+                  }}
+                  className="w-full px-3 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-primary"
+                >
+                  <option value="RBI_UDGAM">RBI UDGAM (Unclaimed Bank Deposits)</option>
+                  <option value="SETU_AA_DISCOVERY">Setu Account Aggregator Gateway</option>
+                  <option value="IRDAI_BIMA_BHAROSA">IRDAI Bima Bharosa (Insurance)</option>
+                  <option value="SEBI_MITRA">SEBI MITRA &amp; MF Central (Mutual Funds)</option>
+                  <option value="IEPF">IEPF Authority (Shares &amp; Dividends)</option>
+                  <option value="EPFO_SERVICES">EPFO Services (PF &amp; Pension)</option>
+                  <option value="OTHER_INVESTMENTS">Post Office &amp; NPS</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-300 block mb-1">Official Search Outcome</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setRecordOutcome("MATCH_FOUND")}
+                    className={`px-3 py-2 rounded-xl text-xs font-medium border text-center transition-all cursor-pointer ${
+                      recordOutcome === "MATCH_FOUND"
+                        ? "bg-emerald-950/60 border-emerald-500/50 text-emerald-300"
+                        : "bg-black/40 border-white/10 text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    Match Found
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRecordOutcome("NO_MATCH_FOUND")}
+                    className={`px-3 py-2 rounded-xl text-xs font-medium border text-center transition-all cursor-pointer ${
+                      recordOutcome === "NO_MATCH_FOUND"
+                        ? "bg-gray-800 border-gray-500 text-gray-200"
+                        : "bg-black/40 border-white/10 text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    No Matches in Registry
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-300 block mb-1">Holding Institution Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. State Bank of India, HDFC Bank, LIC of India"
+                  value={recordInstitution}
+                  onChange={(e) => setRecordInstitution(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-primary"
+                />
+              </div>
+
+              {recordOutcome === "MATCH_FOUND" && (
+                <div>
+                  <label className="text-xs text-gray-300 block mb-1">
+                    Official Reference / Acknowledgement Number *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. UDGAM-1049281, SRN-294812, etc."
+                    value={recordRefNo}
+                    onChange={(e) => setRecordRefNo(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white font-mono focus:outline-none focus:border-primary"
+                  />
+                  <span className="text-[10px] text-gray-500 mt-1 block">
+                    UDGAM confirms account existence without publishing private balances. Recorded with undisclosed valuation.
+                  </span>
+                </div>
+              )}
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setIsRecordRefModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-white/10 text-xs text-gray-300 hover:text-white transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isRecordingRef}
+                  className="px-5 py-2 rounded-xl bg-primary text-black font-semibold text-xs hover:bg-white transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {isRecordingRef ? "Recording..." : "Save Reference"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

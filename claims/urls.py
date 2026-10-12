@@ -38,6 +38,7 @@ urlpatterns = [
     path('api/discover/', views.api_discover, name='api_discover'),
     path('api/discover/query/', views.api_discover_query, name='api_discover_query'),
     path('api/discover/record-external-reference/', views.api_record_external_reference, name='api_record_external_reference'),
+    path('api/discover/setu/check-status/', views.api_setu_check_status, name='api_setu_check_status'),
     path('api/sources/', views.api_sources, name='api_sources'),
     path('api/claims/bridge-loan/apply/', views.api_bridge_loan_apply, name='api_bridge_loan_apply'),
     path('api/claims/bridge-loan/<uuid:session_id>/', views.api_bridge_loan_status, name='api_bridge_loan_status'),

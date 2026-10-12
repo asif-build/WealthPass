@@ -118,22 +118,99 @@
         <div class="section-title">Discovered Assets Initiated For Claim</div>
         <table>
             <tr>
-                <th style="color:#000; font-weight:bold;">Institution</th>
-                <th style="color:#000; font-weight:bold; width: auto;">Amount</th>
-                <th style="color:#000; font-weight:bold; width: auto;">Status</th>
+                <th style="color:#000; font-weight:bold;">Institution &amp; Category</th>
+                <th style="color:#000; font-weight:bold;">Masked Reference</th>
+                <th style="color:#000; font-weight:bold; width: auto;">Amount / Valuation</th>
+                <th style="color:#000; font-weight:bold; width: auto;">Verification Level</th>
             </tr>
-            {% for asset in assets %}
+            {% if assets %}
+                {% for asset in assets %}
+                <tr>
+                    <td>{{ asset.institution }}<br><small style="color:#555;">{{ asset.asset_category }}</small></td>
+                    <td>{{ asset.masked_reference|default:"PENDING" }}</td>
+                    <td>
+                        {% if asset.amount > 0 and not asset.is_amount_undisclosed %}
+                            INR {{ asset.amount }}
+                        {% else %}
+                            <span style="color:#666; font-style:italic;">Valuation Pending Branch Verification</span>
+                        {% endif %}
+                    </td>
+                    <td><span style="font-size:11px; font-weight:bold;">{{ asset.verification_status }}</span></td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" style="text-align:center; padding:15px; color:#555; font-style:italic;">
+                        Statutory searches currently evaluating official registries. No confirmed assets disbursed yet.<br>
+                        See Statutory Discovery &amp; Verification Status below.
+                    </td>
+                </tr>
+            {% endif %}
             <tr>
-                <td>{{ asset.institution }}</td>
-                <td>INR {{ asset.amount }}</td>
-                <td>Claim Prep</td>
-            </tr>
-            {% endfor %}
-            <tr>
-                <td style="border-top: 2px solid #000;"><strong>Total Value</strong></td>
-                <td colspan="2" style="border-top: 2px solid #000;"><strong>INR {{ total_amount }}</strong></td>
+                <td colspan="2" style="border-top: 2px solid #000;"><strong>Total Confirmed Balance</strong></td>
+                <td colspan="2" style="border-top: 2px solid #000;">
+                    <strong>
+                        {% if total_amount > 0 %}
+                            INR {{ total_amount }}
+                        {% else %}
+                            Valuation Pending Branch Verification
+                        {% endif %}
+                    </strong>
+                </td>
             </tr>
         </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Statutory Discovery &amp; Registry Verification Status</div>
+        <table>
+            <tr>
+                <th style="color:#000; font-weight:bold;">Discovery Source / Authority</th>
+                <th style="color:#000; font-weight:bold;">Category</th>
+                <th style="color:#000; font-weight:bold;">Official Search Ref / SRN</th>
+                <th style="color:#000; font-weight:bold;">Registry Status</th>
+            </tr>
+            {% if source_jobs %}
+                {% for job in source_jobs %}
+                <tr>
+                    <td>
+                        <strong>{{ job.source_id }}</strong><br>
+                        <small style="color:#555;">{{ job.external_portal_url|default:"Official Statutory Channel" }}</small>
+                    </td>
+                    <td>{{ job.asset_category }}</td>
+                    <td>
+                        {% if job.external_reference_number %}
+                            <code>{{ job.external_reference_number }}</code>
+                        {% else %}
+                            <span style="color:#888;">Pending Search</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span style="font-size:11px; padding:2px 6px; background:#eee; border:1px solid #ccc; font-weight:bold;">
+                            {{ job.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" style="text-align:center; color:#666;">No source jobs initialized.</td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Statutory Banking Claim Protocol (Bank Form 14)</div>
+        <p style="font-size:12px; color:#333; margin-top:0;">
+            Under Reserve Bank of India Master Circulars on Settlement of Claims in respect of Deceased Depositors:
+        </p>
+        <ol style="font-size:12px; color:#444; padding-left:20px; line-height:1.6;">
+            <li><strong>Branch Jurisdiction:</strong> Submit this consolidated packet along with Bank Form 14 (Deceased Depositor Claim Application) to the servicing branch of the holding bank.</li>
+            <li><strong>Balance Disclosure:</strong> Official portals (such as RBI UDGAM) confirm the existence of an unclaimed deposit without publishing private balances on the public internet. The holding branch calculates interest and discloses final balance upon verification of legal heirship.</li>
+            <li><strong>Indemnity &amp; NOC:</strong> In non-nominee claims up to the bank's threshold limit, claims are settled on the basis of a stamped Letter of Indemnity and NOC from other legal heirs without requiring a court Succession Certificate.</li>
+            <li><strong>Disbursement:</strong> Settlement is credited directly to the claimant's verified bank account via NEFT/RTGS.</li>
+        </ol>
     </div>
 
     <div class="section">
