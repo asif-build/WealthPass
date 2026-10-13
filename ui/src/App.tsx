@@ -5,7 +5,6 @@ import { WordsPullUp } from "./components/WordsPullUp";
 import { AboutSection } from "./components/AboutSection";
 import { FeaturesSection } from "./components/FeaturesSection";
 import { LegalSection } from "./components/LegalSection";
-import { MegaNavbar } from "./components/navigation/MegaNavbar";
 import { HowItWorksNavbar } from "./components/how-it-works/HowItWorksNavbar";
 import { VerifyMatchPage } from "./components/how-it-works/VerifyMatchPage";
 import { ClaimPreparationPage } from "./components/how-it-works/ClaimPreparationPage";
@@ -258,6 +257,13 @@ function App() {
     setContactEmail("");
     setContactMessage("");
   };
+
+  const navItems = [
+    { name: "Security Process", href: "#about" },
+    { name: "Legal Mandate", href: "#legal" },
+    { name: "Green AI Energy", href: "/energy" },
+    { name: "Inquiries", href: "#inquiries" },
+  ];
 
   const customEase = [0.16, 1, 0.3, 1] as any;
 
@@ -662,8 +668,44 @@ function App() {
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#0755C9]/40 via-transparent to-[#0755C9]/85 z-10" />
 
-          {/* Directional Hover Mega Navbar */}
-          <MegaNavbar onNavigate={handleNavigate} currentUser={currentUser} />
+          {/* Navbar */}
+          <nav className="absolute top-0 left-1/2 -translate-x-1/2 z-30 w-auto">
+            <div className="bg-[#083B8A] rounded-b-2xl md:rounded-b-3xl px-5 py-2.5 md:px-8 md:py-3.5 flex items-center justify-center gap-4 sm:gap-6 md:gap-8 border-x border-b border-white/10 shadow-2xl">
+              {navItems.map((item, idx) => (
+                <a
+                  key={idx}
+                  href={item.href}
+                  className="text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase transition-colors duration-300 text-white/90 hover:text-white"
+                >
+                  {item.name}
+                </a>
+              ))}
+              <div className="h-4 w-[1px] bg-white/15 hidden sm:block" />
+              {currentUser ? (
+                <a
+                  href="/dashboard"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavigate("/dashboard");
+                  }}
+                  className="text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase text-primary hover:text-white transition-colors"
+                >
+                  Dashboard
+                </a>
+              ) : (
+                <a
+                  href="/login"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavigate("/login");
+                  }}
+                  className="text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase text-primary hover:text-white transition-colors"
+                >
+                  Sign In
+                </a>
+              )}
+            </div>
+          </nav>
 
           {/* Hero Content (bottom-aligned) */}
           <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 md:p-12 lg:p-16 z-20">
