@@ -79,19 +79,19 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
   };
 
   return (
-    <div className="min-h-screen bg-black text-[#E1E0CC] flex flex-col justify-center items-center px-4 py-16 selection:bg-primary selection:text-black">
-      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-[#1d1a13]/30 via-transparent to-transparent" />
+    <div className="min-h-screen bg-[#0755C9] text-white flex flex-col justify-center items-center px-4 py-16 selection:bg-primary selection:text-[#102A56]">
+      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent" />
 
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-[#121212] border border-white/10 rounded-3xl p-8 sm:p-10 shadow-2xl relative z-10"
+        className="w-full max-w-md bg-[#0646AD] border border-white/15 rounded-3xl p-8 sm:p-10 shadow-2xl relative z-10"
       >
         <div className="flex flex-col items-center text-center mb-8">
           <h1 className="text-2xl font-medium text-white tracking-tight">
             Create new password
           </h1>
-          <p className="text-gray-400 text-xs sm:text-sm mt-1 max-w-xs">
+          <p className="text-[#EAF2FF] text-xs sm:text-sm mt-1 max-w-xs">
             Enter your new password below.
           </p>
         </div>
@@ -109,15 +109,15 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
               <CheckCircle2 className="w-8 h-8" />
             </div>
             <h2 className="text-xl font-medium text-white mb-2">Password updated!</h2>
-            <p className="text-gray-300 text-xs sm:text-sm leading-relaxed mb-8">
+            <p className="text-[#EAF2FF] text-xs sm:text-sm leading-relaxed mb-8">
               Your password has been reset. You can now sign in to your account.
             </p>
             <button
               onClick={() => onNavigate("/login")}
-              className="group w-full flex items-center justify-between p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-black font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-white transition-all cursor-pointer shadow-lg"
+              className="group w-full flex items-center justify-between p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-[#102A56] font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-white transition-all cursor-pointer shadow-lg"
             >
               <span>Sign In with New Password</span>
-              <div className="bg-black rounded-full w-9 h-9 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <div className="bg-[#083B8A] rounded-full w-9 h-9 flex items-center justify-center group-hover:scale-105 transition-transform">
                 <ArrowRight className="w-4 h-4 text-primary" />
               </div>
             </button>
@@ -126,7 +126,7 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {!token && (
               <div>
-                <label className="text-[11px] uppercase tracking-wider text-gray-300 font-medium block mb-1.5">
+                <label className="text-[11px] uppercase tracking-wider text-[#EAF2FF] font-medium block mb-1.5">
                   Reset Token
                 </label>
                 <input
@@ -135,14 +135,14 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
                   value={token}
                   onChange={(e) => setToken(e.target.value)}
                   placeholder="Paste your reset token here"
-                  className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-3 text-[#E1E0CC] placeholder-gray-500 text-sm focus:outline-none focus:border-primary/60 transition-colors"
+                  className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-4 py-3 text-white placeholder-blue-200/60 text-sm focus:outline-none focus:border-white/40 transition-colors"
                 />
               </div>
             )}
 
             {/* New Password */}
             <div>
-              <label className="text-[11px] uppercase tracking-wider text-gray-300 font-medium block mb-1.5">
+              <label className="text-[11px] uppercase tracking-wider text-[#EAF2FF] font-medium block mb-1.5">
                 New Password
               </label>
               <div className="relative">
@@ -152,12 +152,12 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-3 pr-11 text-[#E1E0CC] placeholder-gray-500 text-sm focus:outline-none focus:border-primary/60 transition-colors"
+                  className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-4 py-3 pr-11 text-white placeholder-blue-200/60 text-sm focus:outline-none focus:border-white/40 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-blue-200 hover:text-white"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -165,21 +165,21 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
               </div>
 
               {/* Password checklist */}
-              <div className="grid grid-cols-2 gap-1.5 mt-2.5 p-3 rounded-lg bg-white/[0.02] border border-white/5 text-[11px]">
-                <span className={`flex items-center gap-1.5 ${hasMinLength ? "text-emerald-400" : "text-gray-500"}`}>
-                  <Check className={`w-3.5 h-3.5 ${hasMinLength ? "opacity-100" : "opacity-30"}`} />
+              <div className="grid grid-cols-2 gap-1.5 mt-2.5 p-3 rounded-lg bg-white/5 border border-white/10 text-[11px]">
+                <span className={`flex items-center gap-1.5 ${hasMinLength ? "text-emerald-300" : "text-blue-200/60"}`}>
+                  <Check className={`w-3.5 h-3.5 ${hasMinLength ? "opacity-100" : "opacity-40"}`} />
                   8+ characters
                 </span>
-                <span className={`flex items-center gap-1.5 ${hasUpper ? "text-emerald-400" : "text-gray-500"}`}>
-                  <Check className={`w-3.5 h-3.5 ${hasUpper ? "opacity-100" : "opacity-30"}`} />
+                <span className={`flex items-center gap-1.5 ${hasUpper ? "text-emerald-300" : "text-blue-200/60"}`}>
+                  <Check className={`w-3.5 h-3.5 ${hasUpper ? "opacity-100" : "opacity-40"}`} />
                   Uppercase letter
                 </span>
-                <span className={`flex items-center gap-1.5 ${hasLower ? "text-emerald-400" : "text-gray-500"}`}>
-                  <Check className={`w-3.5 h-3.5 ${hasLower ? "opacity-100" : "opacity-30"}`} />
+                <span className={`flex items-center gap-1.5 ${hasLower ? "text-emerald-300" : "text-blue-200/60"}`}>
+                  <Check className={`w-3.5 h-3.5 ${hasLower ? "opacity-100" : "opacity-40"}`} />
                   Lowercase letter
                 </span>
-                <span className={`flex items-center gap-1.5 ${hasNumber && hasSpecial ? "text-emerald-400" : "text-gray-500"}`}>
-                  <Check className={`w-3.5 h-3.5 ${hasNumber && hasSpecial ? "opacity-100" : "opacity-30"}`} />
+                <span className={`flex items-center gap-1.5 ${hasNumber && hasSpecial ? "text-emerald-300" : "text-blue-200/60"}`}>
+                  <Check className={`w-3.5 h-3.5 ${hasNumber && hasSpecial ? "opacity-100" : "opacity-40"}`} />
                   Number & symbol
                 </span>
               </div>
@@ -187,7 +187,7 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
 
             {/* Confirm Password */}
             <div>
-              <label className="text-[11px] uppercase tracking-wider text-gray-300 font-medium block mb-1.5">
+              <label className="text-[11px] uppercase tracking-wider text-[#EAF2FF] font-medium block mb-1.5">
                 Confirm New Password
               </label>
               <div className="relative">
@@ -197,29 +197,29 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-3 pr-11 text-[#E1E0CC] placeholder-gray-500 text-sm focus:outline-none focus:border-primary/60 transition-colors"
+                  className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-4 py-3 pr-11 text-white placeholder-blue-200/60 text-sm focus:outline-none focus:border-white/40 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-blue-200 hover:text-white"
                   aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                 >
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               {confirmPassword.length > 0 && !passwordsMatch && (
-                <span className="text-[10px] text-red-400 mt-1 block">Passwords do not match.</span>
+                <span className="text-[10px] text-red-300 mt-1 block">Passwords do not match.</span>
               )}
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full mt-2 group flex items-center justify-between p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-black font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-white disabled:opacity-50 transition-all cursor-pointer shadow-lg"
+              className="w-full mt-2 group flex items-center justify-between p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-[#102A56] font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-white disabled:opacity-50 transition-all cursor-pointer shadow-lg"
             >
               <span>{isLoading ? "Updating Password..." : "Update Password"}</span>
-              <div className="bg-black rounded-full w-9 h-9 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <div className="bg-[#083B8A] rounded-full w-9 h-9 flex items-center justify-center group-hover:scale-105 transition-transform">
                 <Lock className="w-4 h-4 text-primary" />
               </div>
             </button>

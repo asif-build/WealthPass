@@ -10,7 +10,7 @@ interface InstantLiquidityPageProps {
 
 export const InstantLiquidityPage: React.FC<InstantLiquidityPageProps> = ({ onNavigate }) => {
   return (
-    <div className="bg-[#050505] text-[#E1E0CC] min-h-screen">
+    <div className="bg-[#0755C9] text-white min-h-screen">
       {/* HERO */}
       <HowItWorksHero
         stepNumber="03"
@@ -42,21 +42,21 @@ export const InstantLiquidityPage: React.FC<InstantLiquidityPageProps> = ({ onNa
           </div>
 
           <div className="space-y-2.5">
-            <div className="bg-[#1c1c1c] p-3 rounded-xl border border-white/5 flex items-center justify-between">
-              <span className="text-xs text-[#E1E0CC]">Initial Registry Search</span>
-              <span className="text-xs font-semibold text-emerald-400">₹0 (Free)</span>
+            <div className="bg-[#083B8A] p-3 rounded-xl border border-white/10 flex items-center justify-between">
+              <span className="text-xs text-white">Initial Registry Search</span>
+              <span className="text-xs font-semibold text-emerald-300">₹0 (Free)</span>
             </div>
-            <div className="bg-[#1c1c1c] p-3 rounded-xl border border-white/5 flex items-center justify-between">
-              <span className="text-xs text-[#E1E0CC]">Identity & Document Check</span>
-              <span className="text-xs font-semibold text-emerald-400">₹0 (Free)</span>
+            <div className="bg-[#083B8A] p-3 rounded-xl border border-white/10 flex items-center justify-between">
+              <span className="text-xs text-white">Identity & Document Check</span>
+              <span className="text-xs font-semibold text-emerald-300">₹0 (Free)</span>
             </div>
-            <div className="bg-[#1c1c1c] p-3 rounded-xl border border-white/5 flex items-center justify-between">
-              <span className="text-xs text-[#E1E0CC]">Upfront Platform Retainer</span>
-              <span className="text-xs font-semibold text-emerald-400">₹0 (Zero Upfront)</span>
+            <div className="bg-[#083B8A] p-3 rounded-xl border border-white/10 flex items-center justify-between">
+              <span className="text-xs text-white">Upfront Platform Retainer</span>
+              <span className="text-xs font-semibold text-emerald-300">₹0 (Zero Upfront)</span>
             </div>
           </div>
 
-          <p className="text-[11px] text-gray-400 mt-1 italic">
+          <p className="text-[11px] text-[#EAF2FF]/80 mt-1 italic">
             * Complete transparency is maintained at every phase of the recovery and bridge liquidity roadmap.
           </p>
         </div>
@@ -81,29 +81,29 @@ export const InstantLiquidityPage: React.FC<InstantLiquidityPageProps> = ({ onNa
             </span>
           </div>
 
-          <div className="bg-[#1c1c1c] p-4 rounded-xl border border-white/5 flex flex-col gap-3">
+          <div className="bg-[#083B8A] p-4 rounded-xl border border-white/10 flex flex-col gap-3">
             <div className="flex items-start gap-3">
               <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
                 1
               </div>
-              <p className="text-xs text-gray-200">
-                <span className="font-semibold text-[#E1E0CC]">Verified Asset as Foundation:</span> The confirmed institutional claim serves as the security basis for underwriting.
+              <p className="text-xs text-blue-100">
+                <span className="font-semibold text-white">Verified Asset as Foundation:</span> The confirmed institutional claim serves as the security basis for underwriting.
               </p>
             </div>
             <div className="flex items-start gap-3">
               <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
                 2
               </div>
-              <p className="text-xs text-gray-200">
-                <span className="font-semibold text-[#E1E0CC]">Timely Disbursal:</span> Approved funds can be transferred directly to the verified legal heir's bank account.
+              <p className="text-xs text-blue-100">
+                <span className="font-semibold text-white">Timely Disbursal:</span> Approved funds can be transferred directly to the verified legal heir's bank account.
               </p>
             </div>
             <div className="flex items-start gap-3">
               <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
                 3
               </div>
-              <p className="text-xs text-gray-200">
-                <span className="font-semibold text-[#E1E0CC]">Zero Stress During Waiting:</span> Urgent expenses are met while the institutional claim finishes its legal cycle.
+              <p className="text-xs text-blue-100">
+                <span className="font-semibold text-white">Zero Stress During Waiting:</span> Urgent expenses are met while the institutional claim finishes its legal cycle.
               </p>
             </div>
           </div>
@@ -125,34 +125,34 @@ export const InstantLiquidityPage: React.FC<InstantLiquidityPageProps> = ({ onNa
 
           {/* Visual Lifecycle */}
           <div className="flex flex-col items-center gap-2 text-xs">
-            <div className="w-full max-w-sm bg-[#1c1c1c] px-4 py-2 rounded-xl border border-white/10 text-center text-[#E1E0CC]">
+            <div className="w-full max-w-sm bg-[#083B8A] px-4 py-2 rounded-xl border border-white/10 text-center text-white">
               ASSET IDENTIFIED
             </div>
             <ArrowDown className="w-3 h-3 text-primary/60" />
 
-            <div className="w-full max-w-sm bg-[#1c1c1c] px-4 py-2 rounded-xl border border-white/10 text-center text-[#E1E0CC]">
+            <div className="w-full max-w-sm bg-[#083B8A] px-4 py-2 rounded-xl border border-white/10 text-center text-white">
               ELIGIBILITY CHECK
             </div>
             <ArrowDown className="w-3 h-3 text-primary/60" />
 
-            <div className="w-full max-w-sm bg-[#242424] px-4 py-2 rounded-xl border border-primary/30 text-center font-medium text-primary">
+            <div className="w-full max-w-sm bg-[#0646AD] px-4 py-2 rounded-xl border border-white/20 text-center font-medium text-white">
               LIQUIDITY BRIDGE
             </div>
             <ArrowDown className="w-3 h-3 text-primary/60" />
 
-            <div className="w-full max-w-sm bg-[#1c1c1c] px-4 py-2 rounded-xl border border-white/10 text-center text-[#E1E0CC]">
+            <div className="w-full max-w-sm bg-[#083B8A] px-4 py-2 rounded-xl border border-white/10 text-center text-white">
               CLAIM RECOVERY
             </div>
             <ArrowDown className="w-3 h-3 text-primary/60" />
 
-            <div className="w-full max-w-sm bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-xl text-center font-semibold">
+            <div className="w-full max-w-sm bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-4 py-2 rounded-xl text-center font-semibold">
               SETTLEMENT
             </div>
           </div>
 
-          <div className="mt-2 p-3 bg-[#181818] rounded-xl border border-white/5 flex items-center gap-2.5">
+          <div className="mt-2 p-3 bg-[#083B8A] rounded-xl border border-white/10 flex items-center gap-2.5">
             <RefreshCw className="w-4 h-4 text-primary shrink-0" />
-            <p className="text-[11px] text-gray-300">
+            <p className="text-[11px] text-[#EAF2FF]">
               Remaining balance after advance settlement is transferred directly to the beneficiary.
             </p>
           </div>
@@ -173,7 +173,7 @@ export const InstantLiquidityPage: React.FC<InstantLiquidityPageProps> = ({ onNa
             <span className="text-[10px] uppercase tracking-widest text-primary/70 font-semibold">
               WEALTHPASS RECOVERY
             </span>
-            <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+            <span className="text-[10px] text-[#EAF2FF]/70 uppercase tracking-wider">
               Prototype View
             </span>
           </div>
@@ -181,32 +181,32 @@ export const InstantLiquidityPage: React.FC<InstantLiquidityPageProps> = ({ onNa
           {/* Mock Status Component */}
           <div className="flex flex-col gap-2.5">
             {/* Status 1 */}
-            <div className="bg-[#1c1c1c] px-4 py-3 rounded-xl border border-emerald-500/20 flex items-center justify-between">
-              <span className="text-xs font-medium text-gray-300">Asset</span>
-              <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1.5">
+            <div className="bg-[#083B8A] px-4 py-3 rounded-xl border border-emerald-400/30 flex items-center justify-between">
+              <span className="text-xs font-medium text-blue-100">Asset</span>
+              <span className="text-xs font-semibold text-emerald-300 flex items-center gap-1.5">
                 Potentially Identified ✓
               </span>
             </div>
 
             {/* Status 2 */}
-            <div className="bg-[#1c1c1c] px-4 py-3 rounded-xl border border-amber-500/20 flex items-center justify-between">
-              <span className="text-xs font-medium text-gray-300">Eligibility</span>
-              <span className="text-xs font-semibold text-amber-400 flex items-center gap-1.5">
+            <div className="bg-[#083B8A] px-4 py-3 rounded-xl border border-amber-400/30 flex items-center justify-between">
+              <span className="text-xs font-medium text-blue-100">Eligibility</span>
+              <span className="text-xs font-semibold text-amber-300 flex items-center gap-1.5">
                 Under Review ●
               </span>
             </div>
 
             {/* Status 3 */}
-            <div className="bg-[#1c1c1c] px-4 py-3 rounded-xl border border-white/5 flex items-center justify-between opacity-80">
-              <span className="text-xs font-medium text-gray-400">Recovery</span>
-              <span className="text-xs font-medium text-gray-300 flex items-center gap-1.5">
+            <div className="bg-[#083B8A] px-4 py-3 rounded-xl border border-white/10 flex items-center justify-between opacity-80">
+              <span className="text-xs font-medium text-blue-200">Recovery</span>
+              <span className="text-xs font-medium text-blue-100 flex items-center gap-1.5">
                 Pending ○
               </span>
             </div>
 
             {/* Status 4 */}
-            <div className="bg-[#1c1c1c] px-4 py-3 rounded-xl border border-primary/20 flex items-center justify-between">
-              <span className="text-xs font-medium text-gray-300">Liquidity</span>
+            <div className="bg-[#083B8A] px-4 py-3 rounded-xl border border-white/20 flex items-center justify-between">
+              <span className="text-xs font-medium text-blue-100">Liquidity</span>
               <span className="text-xs font-semibold text-primary flex items-center gap-1.5">
                 Available if Eligible ○
               </span>

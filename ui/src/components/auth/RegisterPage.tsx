@@ -196,7 +196,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
           <BorderGlow
             edgeSensitivity={30}
             glowColor="40 80 80"
-            backgroundColor="#120F17"
+            backgroundColor="#0646AD"
             borderRadius={24}
             glowRadius={40}
             glowIntensity={1.0}
@@ -262,7 +262,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
         <BorderGlow
           edgeSensitivity={30}
           glowColor="40 80 80"
-          backgroundColor="#120F17"
+          backgroundColor="#0646AD"
           borderRadius={24}
           glowRadius={40}
           glowIntensity={1.0}
@@ -277,7 +277,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
           <h1 className="text-2xl font-medium text-white tracking-tight">
             Create account
           </h1>
-          <p className="text-gray-400 text-xs sm:text-sm mt-1">
+          <p className="text-[#EAF2FF] text-xs sm:text-sm mt-1">
             Sign up to find and reclaim your family&apos;s assets.
           </p>
         </div>
@@ -292,7 +292,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
           {/* Full Name */}
           <div>
-            <label className="text-xs text-gray-300 font-medium block mb-1">
+            <label className="text-xs text-[#EAF2FF] font-medium block mb-1">
               Full Name
             </label>
             <input
@@ -301,13 +301,13 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="e.g. Arun Sharma"
-              className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-3.5 py-2.5 text-[#E1E0CC] placeholder-gray-500 text-sm focus:outline-none focus:border-primary/60 transition-colors"
+              className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-3.5 py-2.5 text-white placeholder-blue-200/60 text-sm focus:outline-none focus:border-white/40 transition-colors"
             />
           </div>
 
           {/* Email Address */}
           <div>
-            <label className="text-xs text-gray-300 font-medium block mb-1">
+            <label className="text-xs text-[#EAF2FF] font-medium block mb-1">
               Email Address
             </label>
             <input
@@ -316,9 +316,9 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-3.5 py-2.5 text-[#E1E0CC] placeholder-gray-500 text-sm focus:outline-none focus:border-primary/60 transition-colors"
+              className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-3.5 py-2.5 text-white placeholder-blue-200/60 text-sm focus:outline-none focus:border-white/40 transition-colors"
             />
-            <span className="text-[11px] text-gray-500 mt-1 block">
+            <span className="text-[11px] text-blue-200 mt-1 block">
               We&apos;ll send a verification link to this email.
             </span>
           </div>
@@ -326,11 +326,11 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
           {/* Mobile Number */}
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="text-xs text-gray-300 font-medium">
+              <label className="text-xs text-[#EAF2FF] font-medium">
                 Mobile Number
               </label>
               {phoneError && (
-                <span className="text-[11px] text-red-400 font-medium flex items-center gap-1">
+                <span className="text-[11px] text-red-300 font-medium flex items-center gap-1">
                   <AlertCircle className="w-3 h-3 shrink-0" />
                   {phoneError}
                 </span>
@@ -355,11 +355,11 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                 }
               }}
               placeholder="+91 98765 43210"
-              className={`w-full bg-[#1a1a1a] border ${
+              className={`w-full bg-[#083B8A] border ${
                 phoneError
-                  ? "border-red-500/80 focus:border-red-500 ring-1 ring-red-500/30"
-                  : "border-white/10 focus:border-primary/60"
-              } rounded-xl px-3.5 py-2.5 text-[#E1E0CC] placeholder-gray-500 text-sm focus:outline-none transition-colors`}
+                  ? "border-red-400 focus:border-red-400 ring-1 ring-red-400/40"
+                  : "border-white/15 focus:border-white/40"
+              } rounded-xl px-3.5 py-2.5 text-white placeholder-blue-200/60 text-sm focus:outline-none transition-colors`}
             />
             {!phoneError && (
               <span className="text-[11px] text-gray-500 mt-1 block">
@@ -370,7 +370,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
 
           {/* Password */}
           <div>
-            <label className="text-xs text-gray-300 font-medium block mb-1">
+            <label className="text-xs text-[#EAF2FF] font-medium block mb-1">
               Password
             </label>
             <div className="relative">
@@ -380,12 +380,12 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-3.5 py-2.5 pr-10 text-[#E1E0CC] placeholder-gray-500 text-sm focus:outline-none focus:border-primary/60 transition-colors"
+                className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-3.5 py-2.5 pr-10 text-white placeholder-blue-200/60 text-sm focus:outline-none focus:border-white/40 transition-colors"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-200 hover:text-white"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -393,20 +393,20 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
             </div>
 
             {/* Password checklist */}
-            <div className="grid grid-cols-2 gap-1.5 mt-2 p-2.5 rounded-lg bg-white/[0.02] border border-white/5 text-[11px]">
-              <span className={`flex items-center gap-1.5 ${hasMinLength ? "text-emerald-400" : "text-gray-500"}`}>
+            <div className="grid grid-cols-2 gap-1.5 mt-2 p-2.5 rounded-lg bg-white/5 border border-white/10 text-[11px]">
+              <span className={`flex items-center gap-1.5 ${hasMinLength ? "text-emerald-300" : "text-blue-200/60"}`}>
                 <Check className={`w-3.5 h-3.5 ${hasMinLength ? "opacity-100" : "opacity-30"}`} />
                 8+ characters
               </span>
-              <span className={`flex items-center gap-1.5 ${hasUpper ? "text-emerald-400" : "text-gray-500"}`}>
+              <span className={`flex items-center gap-1.5 ${hasUpper ? "text-emerald-300" : "text-blue-200/60"}`}>
                 <Check className={`w-3.5 h-3.5 ${hasUpper ? "opacity-100" : "opacity-30"}`} />
                 Uppercase letter
               </span>
-              <span className={`flex items-center gap-1.5 ${hasLower ? "text-emerald-400" : "text-gray-500"}`}>
+              <span className={`flex items-center gap-1.5 ${hasLower ? "text-emerald-300" : "text-blue-200/60"}`}>
                 <Check className={`w-3.5 h-3.5 ${hasLower ? "opacity-100" : "opacity-30"}`} />
                 Lowercase letter
               </span>
-              <span className={`flex items-center gap-1.5 ${hasNumber && hasSpecial ? "text-emerald-400" : "text-gray-500"}`}>
+              <span className={`flex items-center gap-1.5 ${hasNumber && hasSpecial ? "text-emerald-300" : "text-blue-200/60"}`}>
                 <Check className={`w-3.5 h-3.5 ${hasNumber && hasSpecial ? "opacity-100" : "opacity-30"}`} />
                 Number &amp; symbol
               </span>
@@ -415,7 +415,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
 
           {/* Confirm Password */}
           <div>
-            <label className="text-xs text-gray-300 font-medium block mb-1">
+            <label className="text-xs text-[#EAF2FF] font-medium block mb-1">
               Confirm Password
             </label>
             <div className="relative">
@@ -425,33 +425,33 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-3.5 py-2.5 pr-10 text-[#E1E0CC] placeholder-gray-500 text-sm focus:outline-none focus:border-primary/60 transition-colors"
+                className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-3.5 py-2.5 pr-10 text-white placeholder-blue-200/60 text-sm focus:outline-none focus:border-white/40 transition-colors"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-200 hover:text-white"
                 aria-label={showConfirmPassword ? "Hide password" : "Show password"}
               >
                 {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
             {confirmPassword.length > 0 && !passwordsMatch && (
-              <span className="text-[11px] text-red-400 mt-1 block">Passwords do not match.</span>
+              <span className="text-[11px] text-red-300 mt-1 block">Passwords do not match.</span>
             )}
           </div>
 
           {/* Checkboxes */}
-          <div className="flex flex-col gap-2.5 my-1 pt-2 border-t border-white/5">
+          <div className="flex flex-col gap-2.5 my-1 pt-2 border-t border-white/10">
             <label className="flex items-start gap-2.5 cursor-pointer">
               <input
                 type="checkbox"
                 required
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded border-white/20 bg-[#1a1a1a] text-primary focus:ring-primary/40 cursor-pointer accent-[#C9A84C]"
+                className="mt-0.5 w-4 h-4 rounded border-white/20 bg-[#083B8A] text-primary focus:ring-primary/40 cursor-pointer accent-primary"
               />
-              <span className="text-xs text-gray-300 leading-snug select-none">
+              <span className="text-xs text-[#EAF2FF] leading-snug select-none">
                 I agree to the{" "}
                 <a
                   href="/terms"
@@ -472,9 +472,9 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                 required
                 checked={privacyAcknowledged}
                 onChange={(e) => setPrivacyAcknowledged(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded border-white/20 bg-[#1a1a1a] text-primary focus:ring-primary/40 cursor-pointer accent-[#C9A84C]"
+                className="mt-0.5 w-4 h-4 rounded border-white/20 bg-[#083B8A] text-primary focus:ring-primary/40 cursor-pointer accent-primary"
               />
-              <span className="text-xs text-gray-300 leading-snug select-none">
+              <span className="text-xs text-[#EAF2FF] leading-snug select-none">
                 I have read and agree to the{" "}
                 <a
                   href="/privacy-policy"
@@ -494,10 +494,10 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full mt-2 group flex items-center justify-between p-1 pl-5 pr-1 rounded-full bg-primary text-black font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-white disabled:opacity-50 transition-all cursor-pointer shadow-lg"
+            className="w-full mt-2 group flex items-center justify-between p-1 pl-5 pr-1 rounded-full bg-primary text-[#102A56] font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-white disabled:opacity-50 transition-all cursor-pointer shadow-lg"
           >
             <span>{isLoading ? "Creating..." : "Create Account"}</span>
-            <div className="bg-black rounded-full w-8 h-8 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div className="bg-[#083B8A] rounded-full w-8 h-8 flex items-center justify-center group-hover:scale-105 transition-transform">
               <Lock className="w-4 h-4 text-primary" />
             </div>
           </button>

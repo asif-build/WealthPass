@@ -112,7 +112,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ onNaviga
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "100%", opacity: 0.8 }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
-            className="w-full max-w-md h-full bg-[#101010] border-l border-white/10 flex flex-col shadow-2xl relative"
+            className="w-full max-w-md h-full bg-[#083B8A] border-l border-white/10 flex flex-col shadow-2xl relative"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top Bar */}
@@ -123,7 +123,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ onNaviga
                     Notification Center
                   </h3>
                   {unreadCount > 0 && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-primary text-black">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-primary text-[#102A56]">
                       {unreadCount} unread
                     </span>
                   )}
@@ -166,7 +166,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ onNaviga
                 onClick={() => setActiveTab("ALL")}
                 className={`px-3 py-1.5 rounded-full font-medium transition-all cursor-pointer ${
                   activeTab === "ALL"
-                    ? "bg-primary text-black"
+                    ? "bg-primary text-[#102A56]"
                     : "text-gray-400 hover:text-white bg-white/5 hover:bg-white/10"
                 }`}
               >
@@ -176,7 +176,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ onNaviga
                 onClick={() => setActiveTab("UNREAD")}
                 className={`px-3 py-1.5 rounded-full font-medium transition-all cursor-pointer ${
                   activeTab === "UNREAD"
-                    ? "bg-primary text-black"
+                    ? "bg-primary text-[#102A56]"
                     : "text-gray-400 hover:text-white bg-white/5 hover:bg-white/10"
                 }`}
               >
@@ -186,7 +186,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ onNaviga
                 onClick={() => setActiveTab("ACTION")}
                 className={`px-3 py-1.5 rounded-full font-medium transition-all cursor-pointer ${
                   activeTab === "ACTION"
-                    ? "bg-primary text-black"
+                    ? "bg-primary text-[#102A56]"
                     : "text-gray-400 hover:text-white bg-white/5 hover:bg-white/10"
                 }`}
               >
@@ -223,8 +223,8 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ onNaviga
                     }}
                     className={`group p-4 rounded-2xl border transition-all cursor-pointer relative ${
                       notif.is_read
-                        ? "bg-[#141414] border-white/5 hover:border-white/15 opacity-80 hover:opacity-100"
-                        : "bg-[#1a1a1a] border-primary/30 shadow-lg hover:border-primary/50"
+                        ? "bg-[#0646AD] border-white/5 hover:border-white/15 opacity-80 hover:opacity-100"
+                        : "bg-[#0646AD] border-primary/30 shadow-lg hover:border-primary/50"
                     }`}
                   >
                     {/* Unread indicator dot */}

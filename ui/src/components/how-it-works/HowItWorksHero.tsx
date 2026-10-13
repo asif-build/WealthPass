@@ -39,7 +39,7 @@ export const HowItWorksHero: React.FC<HowItWorksHeroProps> = ({
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-normal tracking-tight text-[#E1E0CC] leading-[1.05] mb-6"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-normal tracking-tight text-white leading-[1.05] mb-6"
             >
               {title}
             </motion.h1>
@@ -61,11 +61,11 @@ export const HowItWorksHero: React.FC<HowItWorksHeroProps> = ({
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:max-w-md lg:pb-3"
           >
-            <div className="bg-[#121212] p-6 rounded-2xl border border-white/5 shadow-xl">
-              <span className="text-[10px] uppercase tracking-widest text-primary/60 font-semibold block mb-2">
+            <div className="bg-[#0646AD] p-6 rounded-2xl border border-white/10 shadow-xl">
+              <span className="text-[10px] uppercase tracking-widest text-primary/80 font-semibold block mb-2">
                 Overview & Context
               </span>
-              <p className="text-sm sm:text-base text-gray-200 leading-relaxed font-light">
+              <p className="text-sm sm:text-base text-[#EAF2FF] leading-relaxed font-light">
                 {supportingText}
               </p>
             </div>

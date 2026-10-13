@@ -169,22 +169,22 @@ export function RelationshipVerification({
   };
 
   return (
-    <div className="min-h-screen bg-black text-[#E1E0CC] font-['Almarai'] selection:bg-white/20 selection:text-white">
+    <div className="min-h-screen bg-[#0755C9] text-white font-['Almarai'] selection:bg-white/20 selection:text-white">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-black/80 backdrop-blur-md border-b border-white/10 px-6 py-4">
+      <header className="sticky top-0 z-40 bg-[#083B8A]/85 backdrop-blur-md border-b border-white/10 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
               onClick={onBack}
-              className="text-xs text-white/50 hover:text-[#E1E0CC] transition-colors flex items-center gap-1.5 group cursor-pointer"
+              className="text-xs text-white/70 hover:text-white transition-colors flex items-center gap-1.5 group cursor-pointer"
             >
-              <span className="group-hover:text-white/80">← Identity</span>
+              <span className="group-hover:text-white">← Identity</span>
             </button>
             <span className="text-white/20">/</span>
-            <span className="text-sm text-[#E1E0CC] font-medium tracking-wide">Relationship Verification</span>
+            <span className="text-sm text-white font-medium tracking-wide">Relationship Verification</span>
           </div>
 
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-300 text-xs font-mono">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-amber-400/40 bg-amber-500/20 text-amber-200 text-xs font-mono">
             <span>State Machine: {currentStatus}</span>
           </div>
         </div>
@@ -198,22 +198,22 @@ export function RelationshipVerification({
           transition={{ duration: 0.5 }}
           className="text-center max-w-2xl mx-auto mb-10"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono tracking-widest uppercase text-white/60 mb-4">
-            <Users className="w-3.5 h-3.5 text-[#DEDBC8]" /> Statutory Succession Protocol
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-mono tracking-widest uppercase text-white mb-4">
+            <Users className="w-3.5 h-3.5 text-primary" /> Statutory Succession Protocol
           </div>
-          <h1 className="text-3xl sm:text-5xl font-light tracking-tight text-[#E1E0CC] mb-4">
-            Claimant–Deceased <span className="font-['Instrument_Serif'] italic text-white">Relationship</span>
+          <h1 className="text-3xl sm:text-5xl font-light tracking-tight text-white mb-4">
+            Claimant–Deceased <span className="font-['Instrument_Serif'] italic text-[#EAF2FF]">Relationship</span>
           </h1>
-          <p className="text-white/60 text-sm sm:text-base leading-relaxed">
+          <p className="text-[#EAF2FF] text-sm sm:text-base leading-relaxed">
             Record kinship declarations, review statutory evidence checklists, and upload civil registry documents.
           </p>
         </motion.div>
 
         {/* 7-Stage Status Machine Progress Track */}
-        <div className="mb-10 p-5 rounded-2xl bg-[#0e0e0e] border border-white/10">
-          <div className="text-xs font-mono uppercase tracking-widest text-white/50 mb-3 flex items-center justify-between">
+        <div className="mb-10 p-5 rounded-2xl bg-[#0646AD] border border-white/10">
+          <div className="text-xs font-mono uppercase tracking-widest text-[#EAF2FF]/80 mb-3 flex items-center justify-between">
             <span>Relationship Status Machine</span>
-            <span className="text-amber-400">Current: {currentStatus}</span>
+            <span className="text-amber-300">Current: {currentStatus}</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 text-[10px] font-mono">
             {STATUS_STEPS.map((step, idx) => {
@@ -224,13 +224,13 @@ export function RelationshipVerification({
                   key={step}
                   className={`p-2 rounded-lg border text-center transition-colors ${
                     isCurrent
-                      ? "border-amber-400/80 bg-amber-500/15 text-amber-300 font-semibold"
+                      ? "border-amber-300 bg-amber-500/25 text-amber-200 font-semibold"
                       : isPassed
-                      ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-400"
-                      : "border-white/5 bg-black/40 text-white/30"
+                      ? "border-emerald-400/40 bg-emerald-500/15 text-emerald-300"
+                      : "border-white/10 bg-[#083B8A] text-white/50"
                   }`}
                 >
-                  <div className="text-[9px] text-white/40 mb-0.5">0{idx + 1}</div>
+                  <div className="text-[9px] text-[#EAF2FF]/60 mb-0.5">0{idx + 1}</div>
                   <div className="truncate">{step.replace("_", " ")}</div>
                 </div>
               );
@@ -241,39 +241,39 @@ export function RelationshipVerification({
         {/* Form Container */}
         <div className="space-y-8">
           {/* Section 1: Declaration */}
-          <div className="bg-[#0e0e0e] border border-white/10 rounded-2xl p-6 sm:p-8 space-y-6">
-            <h2 className="text-base font-medium text-[#E1E0CC] flex items-center gap-2">
-              <Users className="w-4 h-4 text-[#DEDBC8]" /> 1. Claimant Kinship Declaration
+          <div className="bg-[#0646AD] border border-white/10 rounded-2xl p-6 sm:p-8 space-y-6">
+            <h2 className="text-base font-medium text-white flex items-center gap-2">
+              <Users className="w-4 h-4 text-primary" /> 1. Claimant Kinship Declaration
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-mono uppercase tracking-widest text-white/60 mb-2">
+                <label className="block text-xs font-mono uppercase tracking-widest text-[#EAF2FF] mb-2">
                   Claimant Legal Name
                 </label>
                 <input
                   type="text"
                   value={claimantName}
                   onChange={(e) => setClaimantName(e.target.value)}
-                  className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-sm text-[#E1E0CC] outline-none focus:border-white/40"
+                  className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-white/40"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-widest text-white/60 mb-2">
+                <label className="block text-xs font-mono uppercase tracking-widest text-[#EAF2FF] mb-2">
                   Deceased Person Legal Name
                 </label>
                 <input
                   type="text"
                   value={deceasedName}
                   onChange={(e) => setDeceasedName(e.target.value)}
-                  className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-sm text-[#E1E0CC] outline-none focus:border-white/40"
+                  className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-white/40"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-mono uppercase tracking-widest text-white/60 mb-3">
+              <label className="block text-xs font-mono uppercase tracking-widest text-[#EAF2FF] mb-3">
                 Claimant's Relationship to Deceased Person
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -284,17 +284,17 @@ export function RelationshipVerification({
                     onClick={() => setSelectedRelationship(opt.id)}
                     className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
                       selectedRelationship === opt.id
-                        ? "border-[#E1E0CC] bg-white/5"
-                        : "border-white/10 bg-black/40 hover:border-white/20"
+                        ? "border-primary bg-white/10"
+                        : "border-white/10 bg-[#083B8A] hover:border-white/20"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-xs text-[#E1E0CC]">{opt.label}</span>
-                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-white/60">
+                      <span className="font-medium text-xs text-white">{opt.label}</span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-blue-200">
                         {opt.heirClass.split(" ")[0]}
                       </span>
                     </div>
-                    <p className="text-[11px] text-white/50 line-clamp-2">{opt.desc}</p>
+                    <p className="text-[11px] text-blue-100 line-clamp-2">{opt.desc}</p>
                   </button>
                 ))}
               </div>
@@ -302,17 +302,17 @@ export function RelationshipVerification({
           </div>
 
           {/* Section 2: Statutory Evidence Upload & OCR Assessment */}
-          <div className="bg-[#0e0e0e] border border-white/10 rounded-2xl p-6 sm:p-8 space-y-6">
-            <h2 className="text-base font-medium text-[#E1E0CC] flex items-center gap-2">
-              <FileCheck className="w-4 h-4 text-[#DEDBC8]" /> 2. Statutory Evidence Upload &amp; Field Check
+          <div className="bg-[#0646AD] border border-white/10 rounded-2xl p-6 sm:p-8 space-y-6">
+            <h2 className="text-base font-medium text-white flex items-center gap-2">
+              <FileCheck className="w-4 h-4 text-primary" /> 2. Statutory Evidence Upload &amp; Field Check
             </h2>
-            <p className="text-xs text-white/60 leading-relaxed">
+            <p className="text-xs text-[#EAF2FF] leading-relaxed">
               Upload the civil registration Death Certificate or primary kinship proof. Our system extracts text and runs field consistency checks against your declaration.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-mono uppercase tracking-widest text-white/60 mb-2">
+                <label className="block text-xs font-mono uppercase tracking-widest text-[#EAF2FF] mb-2">
                   Death Certificate Number
                 </label>
                 <input
@@ -320,12 +320,12 @@ export function RelationshipVerification({
                   value={certNo}
                   onChange={(e) => setCertNo(e.target.value)}
                   placeholder="e.g. MUM-2023-998877"
-                  className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-sm text-[#E1E0CC] outline-none focus:border-white/40"
+                  className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-white/40"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-widest text-white/60 mb-2">
+                <label className="block text-xs font-mono uppercase tracking-widest text-[#EAF2FF] mb-2">
                   Upload Document (PDF / PNG / JPG, max 5MB)
                 </label>
                 <input
@@ -342,9 +342,9 @@ export function RelationshipVerification({
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploadingEvidence}
-                  className="w-full py-3 px-4 rounded-xl border border-dashed border-white/20 bg-black/40 hover:bg-white/5 text-xs text-white/80 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full py-3 px-4 rounded-xl border border-dashed border-white/20 bg-[#083B8A] hover:bg-white/10 text-xs text-white transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
-                  <Upload className="w-4 h-4 text-[#E1E0CC]" />
+                  <Upload className="w-4 h-4 text-primary" />
                   {isUploadingEvidence
                     ? "Extracting OCR & Checking Fields..."
                     : uploadFile
@@ -355,7 +355,7 @@ export function RelationshipVerification({
             </div>
 
             {uploadError && (
-              <div className="p-3.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-xs flex items-center gap-2">
+              <div className="p-3.5 rounded-lg bg-red-500/20 border border-red-400/40 text-red-200 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 {uploadError}
               </div>
@@ -366,42 +366,42 @@ export function RelationshipVerification({
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-5 rounded-xl bg-black/60 border border-white/15 space-y-4"
+                className="p-5 rounded-xl bg-[#083B8A] border border-white/15 space-y-4"
               >
                 <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                  <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
+                  <div className="flex items-center gap-2 text-xs font-mono text-emerald-300">
                     <Check className="w-4 h-4" />
                     <span>EVIDENCE STORED: {evidenceResult.document?.filename}</span>
                   </div>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-400/30">
                     Verdict: {evidenceResult.document?.consistency_assessment?.assessment_verdict}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
-                  <div className="p-3 rounded-lg bg-white/[0.02] border border-white/5">
-                    <div className="text-white/40 text-[10px]">Deceased Name</div>
-                    <div className={evidenceResult.document?.consistency_assessment?.matches_deceased_name ? "text-emerald-400 font-semibold" : "text-amber-400"}>
+                  <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+                    <div className="text-blue-200 text-[10px]">Deceased Name</div>
+                    <div className={evidenceResult.document?.consistency_assessment?.matches_deceased_name ? "text-emerald-300 font-semibold" : "text-amber-300"}>
                       {evidenceResult.document?.consistency_assessment?.matches_deceased_name ? "✓ MATCHED" : "UNCONFIRMED"}
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-white/[0.02] border border-white/5">
-                    <div className="text-white/40 text-[10px]">Certificate Number</div>
-                    <div className={evidenceResult.document?.consistency_assessment?.matches_certificate_no ? "text-emerald-400 font-semibold" : "text-amber-400"}>
+                  <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+                    <div className="text-blue-200 text-[10px]">Certificate Number</div>
+                    <div className={evidenceResult.document?.consistency_assessment?.matches_certificate_no ? "text-emerald-300 font-semibold" : "text-amber-300"}>
                       {evidenceResult.document?.consistency_assessment?.matches_certificate_no ? "✓ MATCHED" : "UNCONFIRMED"}
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-white/[0.02] border border-white/5">
-                    <div className="text-white/40 text-[10px]">Civil Header</div>
-                    <div className={evidenceResult.document?.consistency_assessment?.has_death_certificate_header ? "text-emerald-400 font-semibold" : "text-amber-400"}>
+                  <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+                    <div className="text-blue-200 text-[10px]">Civil Header</div>
+                    <div className={evidenceResult.document?.consistency_assessment?.has_death_certificate_header ? "text-emerald-300 font-semibold" : "text-amber-300"}>
                       {evidenceResult.document?.consistency_assessment?.has_death_certificate_header ? "✓ DETECTED" : "NOT DETECTED"}
                     </div>
                   </div>
                 </div>
 
-                <p className="text-[11px] text-white/50 italic leading-relaxed pt-2 border-t border-white/5">
+                <p className="text-[11px] text-blue-100 italic leading-relaxed pt-2 border-t border-white/10">
                   "Notice: OCR field comparison measures document consistency. It does NOT prove legal authenticity or statutory entitlement. Final adjudication is conducted by the holding institution."
                 </p>
               </motion.div>
@@ -409,28 +409,28 @@ export function RelationshipVerification({
           </div>
 
           {/* Section 3: Informed Consent & Discovery Action */}
-          <div className="bg-[#0e0e0e] border border-white/10 rounded-2xl p-6 sm:p-8 space-y-6">
-            <h2 className="text-base font-medium text-[#E1E0CC] flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[#DEDBC8]" /> 3. Asset Discovery Informed Consent
+          <div className="bg-[#0646AD] border border-white/10 rounded-2xl p-6 sm:p-8 space-y-6">
+            <h2 className="text-base font-medium text-white flex items-center gap-2">
+              <Shield className="w-4 h-4 text-primary" /> 3. Asset Discovery Informed Consent
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs leading-relaxed">
-              <div className="p-4 rounded-xl bg-emerald-500/[0.03] border border-emerald-500/20 space-y-1.5">
-                <div className="font-mono text-emerald-400 font-semibold flex items-center gap-1.5">
+              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-400/30 space-y-1.5">
+                <div className="font-mono text-emerald-300 font-semibold flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5" /> What WealthPass Will Do:
                 </div>
-                <ul className="space-y-1 text-white/80">
+                <ul className="space-y-1 text-white">
                   <li>✓ Query statutory discovery channels (UDGAM, Bima Bharosa, MF Central, IEPF)</li>
                   <li>✓ Compare permitted identifiers against official records</li>
                   <li>✓ Provide official process guides for manual recovery</li>
                 </ul>
               </div>
 
-              <div className="p-4 rounded-xl bg-red-500/[0.03] border border-red-500/20 space-y-1.5">
-                <div className="font-mono text-red-400 font-semibold flex items-center gap-1.5">
+              <div className="p-4 rounded-xl bg-red-500/10 border border-red-400/30 space-y-1.5">
+                <div className="font-mono text-red-300 font-semibold flex items-center gap-1.5">
                   <XCircle className="w-3.5 h-3.5" /> What WealthPass Will NOT Do:
                 </div>
-                <ul className="space-y-1 text-white/80">
+                <ul className="space-y-1 text-white">
                   <li>✕ Fabricate fake bank deposits, folios, or balances</li>
                   <li>✕ Store full 12-digit Aadhaar or biometrics</li>
                   <li>✕ Grant automatic claim settlement (institution decides)</li>
@@ -443,9 +443,9 @@ export function RelationshipVerification({
                 type="checkbox"
                 checked={discoveryConsent}
                 onChange={(e) => setDiscoveryConsent(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded bg-black border-white/20 text-white focus:ring-0 cursor-pointer accent-[#E1E0CC]"
+                className="mt-0.5 w-4 h-4 rounded bg-[#083B8A] border-white/20 text-white focus:ring-0 cursor-pointer accent-primary"
               />
-              <span className="text-sm text-white/90 leading-relaxed font-medium">
+              <span className="text-sm text-white leading-relaxed font-medium">
                 I GRANT INFORMED CONSENT for WealthPass to query statutory discovery channels using declared identifiers.
               </span>
             </label>
@@ -470,7 +470,7 @@ export function RelationshipVerification({
                 <button
                   type="button"
                   onClick={onBack}
-                  className="text-xs text-white/40 hover:text-white transition-colors cursor-pointer"
+                  className="text-xs text-blue-200 hover:text-white transition-colors cursor-pointer"
                 >
                   ← Back to Identity
                 </button>
@@ -479,7 +479,7 @@ export function RelationshipVerification({
                   type="button"
                   onClick={handleSubmit}
                   disabled={!discoveryConsent}
-                  className="w-full sm:w-auto py-3.5 px-8 rounded-xl bg-[#E1E0CC] hover:bg-white text-black font-medium text-sm transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="w-full sm:w-auto py-3.5 px-8 rounded-xl bg-primary hover:bg-white text-[#102A56] font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <span>Record Kinship &amp; Search Statutory Sources</span>
                   <ArrowRight className="w-4 h-4" />

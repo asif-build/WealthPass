@@ -148,22 +148,22 @@ export function ClaimPreparationView({
   };
 
   return (
-    <div className="min-h-screen bg-black text-[#E1E0CC] font-['Almarai'] selection:bg-white/20 selection:text-white">
+    <div className="min-h-screen bg-[#0755C9] text-white font-['Almarai'] selection:bg-white/20 selection:text-white">
       {/* Top Header */}
-      <header className="sticky top-0 z-40 bg-black/85 backdrop-blur-md border-b border-white/10 px-6 py-4">
+      <header className="sticky top-0 z-40 bg-[#083B8A]/85 backdrop-blur-md border-b border-white/10 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
               onClick={onNavigateDiscovery}
-              className="text-xs text-white/50 hover:text-[#E1E0CC] transition-colors flex items-center gap-1.5 group cursor-pointer"
+              className="text-xs text-white/70 hover:text-white transition-colors flex items-center gap-1.5 group cursor-pointer"
             >
-              <span className="group-hover:text-white/80">← Discovery</span>
+              <span className="group-hover:text-white">← Discovery</span>
             </button>
             <span className="text-white/20">/</span>
-            <span className="text-sm text-[#E1E0CC] font-medium tracking-wide">Claim Preparation Dossier</span>
+            <span className="text-sm text-white font-medium tracking-wide">Claim Preparation Dossier</span>
           </div>
 
-          <div className="text-xs font-mono text-emerald-400 flex items-center gap-1.5">
+          <div className="text-xs font-mono text-emerald-300 flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5" />
             TOKEN: {verificationResult.reference}
           </div>
@@ -178,33 +178,33 @@ export function ClaimPreparationView({
           transition={{ duration: 0.5 }}
           className="text-center max-w-2xl mx-auto"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono tracking-widest uppercase text-white/60 mb-3">
-            <FileText className="w-3.5 h-3.5 text-[#DEDBC8]" /> Institutional Claim Gateway
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-mono tracking-widest uppercase text-white mb-3">
+            <FileText className="w-3.5 h-3.5 text-primary" /> Institutional Claim Gateway
           </div>
-          <h1 className="text-3xl sm:text-5xl font-light tracking-tight text-[#E1E0CC] mb-3">
-            Claim <span className="font-['Instrument_Serif'] italic text-white">Preparation</span>
+          <h1 className="text-3xl sm:text-5xl font-light tracking-tight text-white mb-3">
+            Claim <span className="font-['Instrument_Serif'] italic text-[#EAF2FF]">Preparation</span>
           </h1>
-          <p className="text-white/60 text-sm sm:text-base leading-relaxed">
+          <p className="text-[#EAF2FF] text-sm sm:text-base leading-relaxed">
             Organizing required documents and decision paths before institutional submission. WealthPass does not hold your funds—we prepare you for official recovery.
           </p>
         </motion.div>
 
         {/* Selected Asset Header Card */}
-        <div className="bg-[#0e0e0e] border border-white/10 rounded-2xl p-6 sm:p-8">
+        <div className="bg-[#0646AD] border border-white/10 rounded-2xl p-6 sm:p-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-blue-200">
                 Selected Potential Asset
               </span>
               <h2 className="text-xl font-medium text-white mt-0.5">{asset.institution}</h2>
-              <p className="text-xs text-white/60 mt-0.5">{asset.assetType} — Source: {asset.sourceName}</p>
+              <p className="text-xs text-blue-100 mt-0.5">{asset.assetType} — Source: {asset.sourceName}</p>
             </div>
 
             <div className="sm:text-right">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-white/40 block">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-blue-200 block">
                 Estimated Pool
               </span>
-              <span className="text-2xl font-['Instrument_Serif'] text-white">
+              <span className="text-2xl font-['Instrument_Serif'] text-primary">
                 {asset.potentialValue}
               </span>
             </div>
@@ -212,22 +212,22 @@ export function ClaimPreparationView({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 text-xs">
             <div>
-              <span className="text-white/40 font-mono uppercase block mb-1">Claimant Name</span>
+              <span className="text-blue-200 font-mono uppercase block mb-1">Claimant Name</span>
               <span className="text-white font-medium">{relationshipData.claimantName}</span>
             </div>
             <div>
-              <span className="text-white/40 font-mono uppercase block mb-1">Declared Relationship</span>
-              <span className="text-[#DEDBC8] font-medium">{relationshipData.relationship} of {relationshipData.deceasedName}</span>
+              <span className="text-blue-200 font-mono uppercase block mb-1">Declared Relationship</span>
+              <span className="text-primary font-medium">{relationshipData.relationship} of {relationshipData.deceasedName}</span>
             </div>
             <div>
-              <span className="text-white/40 font-mono uppercase block mb-1">Evidence Status</span>
-              <span className="text-amber-400 font-mono">Evidence Submitted</span>
+              <span className="text-blue-200 font-mono uppercase block mb-1">Evidence Status</span>
+              <span className="text-amber-300 font-mono">Evidence Submitted</span>
             </div>
           </div>
         </div>
 
         {/* Claim Status Pipeline (Part 23) */}
-        <div className="bg-[#0e0e0e] border border-white/10 rounded-2xl p-6 sm:p-8">
+        <div className="bg-[#0646AD] border border-white/10 rounded-2xl p-6 sm:p-8">
           <h3 className="text-xs font-mono uppercase tracking-widest text-white/50 mb-6">
             Institutional Recovery Pipeline
           </h3>
@@ -244,16 +244,16 @@ export function ClaimPreparationView({
                 key={idx}
                 className={`p-3.5 rounded-xl border flex flex-col justify-between h-24 ${
                   p.status === "completed"
-                    ? "bg-emerald-500/[0.05] border-emerald-500/30 text-white"
+                    ? "bg-emerald-500/20 border-emerald-400/30 text-white"
                     : p.status === "current"
-                    ? "bg-white/[0.06] border-white/30 text-white"
-                    : "bg-black/40 border-white/5 text-white/40"
+                    ? "bg-[#083B8A] border-white/30 text-white"
+                    : "bg-[#083B8A]/60 border-white/5 text-blue-200"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-['Instrument_Serif'] text-base italic text-[#DEDBC8]">{p.step}</span>
-                  {p.status === "completed" && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
-                  {p.status === "current" && <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />}
+                  <span className="font-['Instrument_Serif'] text-base italic text-primary">{p.step}</span>
+                  {p.status === "completed" && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />}
+                  {p.status === "current" && <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse" />}
                 </div>
                 <div className="font-medium text-[11px] leading-tight">{p.label}</div>
               </div>
@@ -262,12 +262,12 @@ export function ClaimPreparationView({
         </div>
 
         {/* Document Checklist (Part 23) */}
-        <div className="bg-[#0e0e0e] border border-white/10 rounded-2xl p-6 sm:p-8">
+        <div className="bg-[#0646AD] border border-white/10 rounded-2xl p-6 sm:p-8">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xs font-mono uppercase tracking-widest text-white/50">
+            <h3 className="text-xs font-mono uppercase tracking-widest text-[#EAF2FF]/80">
               Document Checklist & Requirements
             </h3>
-            <span className="text-xs text-white/40 font-mono">
+            <span className="text-xs text-blue-200 font-mono">
               Click item to toggle status
             </span>
           </div>
@@ -277,14 +277,14 @@ export function ClaimPreparationView({
               <div
                 key={item.id}
                 onClick={() => toggleCheck(item.id)}
-                className="p-4 rounded-xl bg-black/50 border border-white/10 hover:border-white/20 transition-all flex items-start justify-between gap-4 cursor-pointer"
+                className="p-4 rounded-xl bg-[#083B8A] border border-white/10 hover:border-white/20 transition-all flex items-start justify-between gap-4 cursor-pointer"
               >
                 <div className="flex items-start gap-3">
                   <button
                     type="button"
                     className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
                       item.status === "COMPLETED"
-                        ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
+                        ? "bg-emerald-500/30 border-emerald-400/60 text-emerald-300"
                         : "border-white/20 text-transparent"
                     }`}
                   >
@@ -292,16 +292,16 @@ export function ClaimPreparationView({
                   </button>
                   <div>
                     <div className="text-sm font-medium text-white">{item.name}</div>
-                    <div className="text-xs text-white/50 mt-0.5">{item.description}</div>
+                    <div className="text-xs text-blue-100 mt-0.5">{item.description}</div>
                   </div>
                 </div>
 
                 <span className={`px-2.5 py-0.5 rounded text-[10px] font-mono border shrink-0 ${
                   item.status === "COMPLETED"
-                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
+                    ? "bg-emerald-500/20 border-emerald-400/30 text-emerald-300"
                     : item.status === "IN_PROGRESS"
-                    ? "bg-amber-500/10 border-amber-500/30 text-amber-300"
-                    : "bg-white/5 border-white/10 text-white/40"
+                    ? "bg-amber-500/20 border-amber-400/30 text-amber-200"
+                    : "bg-white/10 border-white/15 text-blue-200"
                 }`}>
                   {item.status}
                 </span>
@@ -310,7 +310,7 @@ export function ClaimPreparationView({
           </div>
 
           <div className="pt-6 border-t border-white/10 mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-xs text-white/50">
+            <div className="text-xs text-blue-100">
               {dossierGenerated
                 ? "✓ Recovery dossier compiled with pre-filled forms."
                 : "Assemble pre-filled submission pack for the custodian institution."}
@@ -326,9 +326,9 @@ export function ClaimPreparationView({
                   handleGenerateDossier();
                 }
               }}
-              className="w-full sm:w-auto py-2.5 px-5 rounded-xl bg-white/10 hover:bg-white/20 text-[#E1E0CC] border border-white/15 text-xs font-medium transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full sm:w-auto py-2.5 px-5 rounded-xl bg-white/15 hover:bg-white/25 text-white border border-white/20 text-xs font-medium transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-3.5 h-3.5 text-primary" />
               {dossierGenerated ? "View Completed Claim Dossier" : "Generate Pre-Filled Dossier Pack"}
             </button>
           </div>
@@ -369,8 +369,8 @@ export function ClaimPreparationView({
         )}
 
         {/* Legal Disclaimer */}
-        <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/10 text-xs text-white/60 leading-relaxed text-center">
-          <strong className="text-white/80">Statutory Notice: </strong>
+        <div className="p-5 rounded-2xl bg-[#083B8A] border border-white/10 text-xs text-blue-100 leading-relaxed text-center">
+          <strong className="text-white">Statutory Notice: </strong>
           WealthPass provides recovery preparation and document automation. Final adjudication of entitlement is exclusively performed by the custodian institution ({asset.institution}) in compliance with applicable law.
         </div>
 
@@ -379,7 +379,7 @@ export function ClaimPreparationView({
           <button
             type="button"
             onClick={onNavigateDiscovery}
-            className="text-xs text-white/50 hover:text-white transition-colors cursor-pointer"
+            className="text-xs text-blue-200 hover:text-white transition-colors cursor-pointer"
           >
             ← Back to Discovered Assets
           </button>
@@ -387,7 +387,7 @@ export function ClaimPreparationView({
           <button
             type="button"
             onClick={onNavigateHome}
-            className="w-full sm:w-auto py-3 px-6 rounded-xl bg-[#E1E0CC] hover:bg-white text-black font-medium text-xs transition-all shadow-md cursor-pointer"
+            className="w-full sm:w-auto py-3 px-6 rounded-xl bg-primary hover:bg-white text-[#102A56] font-semibold text-xs transition-all shadow-md cursor-pointer"
           >
             Return to WealthPass Home
           </button>

@@ -411,12 +411,12 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
   // =========================================================================
   if (submittedCase) {
     return (
-      <div className="min-h-screen bg-[#0c0c0c] text-[#E1E0CC] selection:bg-primary selection:text-black py-12 px-4 sm:px-6">
+      <div className="min-h-screen bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56] py-12 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto">
           <BorderGlow
             edgeSensitivity={30}
             glowColor="40 80 80"
-            backgroundColor="#120F17"
+            backgroundColor="#0646AD"
             borderRadius={28}
             glowRadius={40}
             glowIntensity={1.0}
@@ -435,43 +435,43 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                 </div>
               </div>
 
-              <span className="text-[11px] font-mono tracking-widest text-[#777777] uppercase block mb-1">
+              <span className="text-[11px] font-mono tracking-widest text-[#EAF2FF] uppercase block mb-1">
                 Official Case Intake Registered
               </span>
-              <h1 className="text-2xl sm:text-3xl font-normal sm:font-medium text-[#F1EEDC] tracking-tight mb-3">
+              <h1 className="text-2xl sm:text-3xl font-normal sm:font-medium text-white tracking-tight mb-3">
                 Claim Submitted
               </h1>
-              <p className="text-[#A4A4A4] text-xs sm:text-sm max-w-lg mx-auto leading-relaxed mb-8">
-                Your asset discovery dossier for <strong className="text-[#F1EEDC]">{submittedCase.deceased_name}</strong> has been logged in our secure registry and queued for statutory checking across official regulatory repositories.
+              <p className="text-[#EAF2FF] text-xs sm:text-sm max-w-lg mx-auto leading-relaxed mb-8">
+                Your asset discovery dossier for <strong className="text-white">{submittedCase.deceased_name}</strong> has been logged in our secure registry and queued for statutory checking across official regulatory repositories.
               </p>
 
-              <div className="w-full bg-[#080808] border border-[#202020] rounded-2xl p-6 text-left max-w-xl mx-auto mb-8 space-y-3 font-mono text-xs">
-                <div className="flex justify-between items-center pb-2 border-b border-[#202020]">
-                  <span className="text-[#777777]">Case Reference:</span>
-                  <span className="text-[#E5E0C9] font-bold">WP-CASE-{submittedCase.id.slice(0, 8).toUpperCase()}</span>
+              <div className="w-full bg-[#083B8A] border border-white/10 rounded-2xl p-6 text-left max-w-xl mx-auto mb-8 space-y-3 font-mono text-xs">
+                <div className="flex justify-between items-center pb-2 border-b border-white/10">
+                  <span className="text-[#EAF2FF]">Case Reference:</span>
+                  <span className="text-white font-bold">WP-CASE-{submittedCase.id.slice(0, 8).toUpperCase()}</span>
                 </div>
-                <div className="flex justify-between items-center pb-2 border-b border-[#202020]">
-                  <span className="text-[#777777]">Deceased Person:</span>
-                  <span className="text-[#F1EEDC]">{submittedCase.deceased_name}</span>
+                <div className="flex justify-between items-center pb-2 border-b border-white/10">
+                  <span className="text-[#EAF2FF]">Deceased Person:</span>
+                  <span className="text-white">{submittedCase.deceased_name}</span>
                 </div>
-                <div className="flex justify-between items-center pb-2 border-b border-[#202020]">
-                  <span className="text-[#777777]">Claimant:</span>
-                  <span className="text-[#F1EEDC]">{submittedCase.claimant_name} ({submittedCase.relation})</span>
+                <div className="flex justify-between items-center pb-2 border-b border-white/10">
+                  <span className="text-[#EAF2FF]">Claimant:</span>
+                  <span className="text-white">{submittedCase.claimant_name} ({submittedCase.relation})</span>
                 </div>
-                <div className="flex justify-between items-center pb-2 border-b border-[#202020]">
-                  <span className="text-[#777777]">Verification State:</span>
+                <div className="flex justify-between items-center pb-2 border-b border-white/10">
+                  <span className="text-[#EAF2FF]">Verification State:</span>
                   <span className="px-2 py-0.5 rounded text-[10px] bg-[#142132] text-[#8CB4E2] border border-[#223954]">
                     UNDER_REVIEW
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[#777777]">Statutory Registries:</span>
-                  <span className="text-[#A4A4A4]">RBI UDGAM, IRDAI, SEBI, IEPF</span>
+                  <span className="text-[#EAF2FF]">Statutory Registries:</span>
+                  <span className="text-white">RBI UDGAM, IRDAI, SEBI, IEPF</span>
                 </div>
               </div>
 
-              <div className="w-full p-4 rounded-xl bg-[#2D2106]/40 border border-[#523C0A] text-left max-w-xl mx-auto mb-8 text-xs text-[#E0B252] leading-relaxed">
-                <strong className="block mb-1 text-[#E0B252] font-semibold">Separation of Verification &amp; Statutory Process</strong>
+              <div className="w-full p-4 rounded-xl bg-[#083B8A]/80 border border-amber-400/30 text-left max-w-xl mx-auto mb-8 text-xs text-amber-200 leading-relaxed">
+                <strong className="block mb-1 text-amber-300 font-semibold">Separation of Verification &amp; Statutory Process</strong>
                 Creating a discovery case initiates official procedural guidance and checks. It does not automatically guarantee that assets exist, nor does it replace the statutory adjudication conducted by custodian banks and authorities.
               </div>
 
@@ -480,7 +480,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                   href={`/print-forms/${submittedCase.id}/`}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-6 py-2.5 rounded-full bg-[#E5E0C9] text-[#080808] font-semibold text-xs sm:text-sm hover:bg-[#F1EEDC] transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2"
+                  className="px-6 py-2.5 rounded-full bg-[#E5E0C9] text-[#102A56] font-semibold text-xs sm:text-sm hover:bg-[#F1EEDC] transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2"
                 >
                   <FileText className="w-4 h-4" />
                   <span>View Claim Dossier</span>
@@ -488,7 +488,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                 <button
                   type="button"
                   onClick={() => onNavigate("/dashboard")}
-                  className="px-6 py-2.5 rounded-full border border-[#303030] bg-[#171717] hover:bg-[#202020] text-xs sm:text-sm text-[#A4A4A4] hover:text-[#F1EEDC] transition-colors cursor-pointer"
+                  className="px-6 py-2.5 rounded-full border border-white/20 bg-[#083B8A] hover:bg-[#0755C9] text-xs sm:text-sm text-white hover:text-white transition-colors cursor-pointer"
                 >
                   Back to Dashboard
                 </button>
@@ -501,7 +501,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
   }
 
   return (
-    <div className="min-h-screen bg-[#0c0c0c] text-[#E1E0CC] selection:bg-primary selection:text-black py-8 px-4 sm:px-6">
+    <div className="min-h-screen bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56] py-8 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
         {/* TOP BAR / NAVIGATION */}
         <div className="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
@@ -569,7 +569,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                     <div
                       className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono font-semibold ${
                         isActive
-                          ? "bg-primary text-black"
+                          ? "bg-primary text-[#102A56]"
                           : isPast
                           ? "bg-emerald-950 text-emerald-400 border border-emerald-500/40"
                           : "bg-white/10 text-gray-400"
@@ -607,7 +607,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
         <BorderGlow
           edgeSensitivity={30}
           glowColor="40 80 80"
-          backgroundColor="#120F17"
+          backgroundColor="#0646AD"
           borderRadius={24}
           glowRadius={40}
           glowIntensity={1.0}
@@ -648,7 +648,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                       value={deceasedName}
                       onChange={(e) => setDeceasedName(e.target.value)}
                       placeholder="e.g. Late Ramesh Chandra Sharma"
-                      className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-[#E1E0CC] placeholder-gray-500 focus:outline-none focus:border-primary/60 transition-colors"
+                      className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-blue-200/60 focus:outline-none focus:border-primary/60 transition-colors"
                     />
                     <span className="text-[11px] text-gray-500 mt-1 block">
                       Must match the name printed on death certificate or government records.
@@ -666,7 +666,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                         disabled={dateOfDeathUnknown}
                         value={dateOfDeath}
                         onChange={(e) => setDateOfDeath(e.target.value)}
-                        className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-[#E1E0CC] placeholder-gray-500 focus:outline-none focus:border-primary/60 transition-colors disabled:opacity-40"
+                        className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-blue-200/60 focus:outline-none focus:border-primary/60 transition-colors disabled:opacity-40"
                       />
                       <label className="flex items-center gap-2 mt-2 cursor-pointer">
                         <input
@@ -692,7 +692,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                       <select
                         value={lastKnownState}
                         onChange={(e) => setLastKnownState(e.target.value)}
-                        className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-3 py-2.5 text-sm text-[#E1E0CC] focus:outline-none focus:border-primary/60 transition-colors"
+                        className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-primary/60 transition-colors"
                       >
                         <option value="">Select State / UT (Optional)</option>
                         {INDIAN_STATES.map((s) => (
@@ -724,7 +724,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                       value={deceasedPan}
                       onChange={(e) => setDeceasedPan(e.target.value.toUpperCase())}
                       placeholder="e.g. ABCDE1234F"
-                      className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-2.5 text-sm font-mono text-[#E1E0CC] placeholder-gray-500 focus:outline-none focus:border-primary/60 uppercase disabled:opacity-40 transition-colors"
+                      className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-2.5 text-sm font-mono text-white placeholder-blue-200/60 focus:outline-none focus:border-primary/60 uppercase disabled:opacity-40 transition-colors"
                     />
                     <div className="flex items-center justify-between">
                       <label className="flex items-center gap-2 cursor-pointer">
@@ -762,7 +762,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                         value={deathCertNo}
                         onChange={(e) => setCaseCertNo(e.target.value)}
                         placeholder="Certificate / Registration Number (e.g. MCGM/2023/88912)"
-                        className="flex-1 bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-[#E1E0CC] placeholder-gray-500 focus:outline-none focus:border-primary/60 transition-colors"
+                        className="flex-1 bg-[#083B8A] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-blue-200/60 focus:outline-none focus:border-primary/60 transition-colors"
                       />
                       <input
                         type="file"
@@ -789,7 +789,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                     {uploadedDocuments.filter(d => d.document_type === "DEATH_CERTIFICATE").map((doc) => (
                       <div
                         key={doc.id}
-                        className="p-3.5 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between gap-3 text-xs"
+                        className="p-3.5 rounded-xl bg-[#083B8A] border border-white/10 flex items-center justify-between gap-3 text-xs"
                       >
                         <div className="flex items-center gap-2.5 overflow-hidden">
                           <FileText className="w-4 h-4 text-primary shrink-0" />
@@ -851,7 +851,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                       value={claimantName}
                       onChange={(e) => setClaimantName(e.target.value)}
                       placeholder="e.g. Arun Mehta"
-                      className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-[#E1E0CC] placeholder-gray-500 focus:outline-none focus:border-primary/60 transition-colors"
+                      className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-blue-200/60 focus:outline-none focus:border-primary/60 transition-colors"
                     />
                     <span className="text-[11px] text-gray-500 mt-1 block">
                       Pre-filled from your authenticated WealthPass profile. Confirm or correct for formal filings.
@@ -870,7 +870,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                         value={claimantPhone}
                         onChange={(e) => setClaimantPhone(e.target.value)}
                         placeholder="+91 98765 43210"
-                        className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-[#E1E0CC] placeholder-gray-500 focus:outline-none focus:border-primary/60 transition-colors"
+                        className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-blue-200/60 focus:outline-none focus:border-primary/60 transition-colors"
                       />
                       <span className="text-[11px] text-gray-500 mt-1 block">
                         Used for secure OTP updates and bank liaison.
@@ -886,7 +886,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                         value={claimantEmail}
                         onChange={(e) => setClaimantEmail(e.target.value)}
                         placeholder="you@example.com"
-                        className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-[#E1E0CC] placeholder-gray-500 focus:outline-none focus:border-primary/60 transition-colors"
+                        className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-blue-200/60 focus:outline-none focus:border-primary/60 transition-colors"
                       />
                       <span className="text-[11px] text-gray-500 mt-1 block">
                         Dossier packets and status reports will be dispatched here.
@@ -902,7 +902,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                     <select
                       value={relation}
                       onChange={(e) => setRelation(e.target.value)}
-                      className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-3 py-2.5 text-sm text-[#E1E0CC] focus:outline-none focus:border-primary/60 transition-colors"
+                      className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-primary/60 transition-colors"
                     >
                       <option value="Son">Son (Class 1 Legal Heir)</option>
                       <option value="Daughter">Daughter (Class 1 Legal Heir)</option>
@@ -936,7 +936,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                       value={claimantNotes}
                       onChange={(e) => setClaimantNotes(e.target.value)}
                       placeholder="Mention known bank branches, policy numbers, or family circumstances..."
-                      className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#E1E0CC] placeholder-gray-500 focus:outline-none focus:border-primary/60 transition-colors"
+                      className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white placeholder-blue-200/60 focus:outline-none focus:border-primary/60 transition-colors"
                     />
                   </div>
                 </div>
@@ -995,7 +995,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                 {/* Upload Slots */}
                 <div className="space-y-4">
                   {/* Slot 1: Primary Kinship Document */}
-                  <div className="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2">
+                  <div className="p-4 rounded-xl bg-[#083B8A] border border-white/10 space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium text-white">
                         Primary Kinship Evidence (Birth / Marriage Certificate)
@@ -1024,7 +1024,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                   </div>
 
                   {/* Slot 2: Succession / Legal Heir / Court Order */}
-                  <div className="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2">
+                  <div className="p-4 rounded-xl bg-[#083B8A] border border-white/10 space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium text-white">
                         Succession / Legal Heir Certificate / Nomination Record
@@ -1061,7 +1061,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                       {uploadedDocuments.map((doc) => (
                         <div
                           key={doc.id}
-                          className="p-3.5 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between gap-3 text-xs"
+                          className="p-3.5 rounded-xl bg-[#083B8A] border border-white/10 flex items-center justify-between gap-3 text-xs"
                         >
                           <div className="flex items-center gap-2.5 overflow-hidden">
                             <FileText className="w-4 h-4 text-primary shrink-0" />
@@ -1200,7 +1200,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                 {/* Review Cards */}
                 <div className="space-y-4">
                   {/* Card 1: Deceased Person */}
-                  <div className="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2 text-xs">
+                  <div className="p-4 rounded-xl bg-[#083B8A] border border-white/10 space-y-2 text-xs">
                     <div className="flex items-center justify-between pb-2 border-b border-white/10">
                       <span className="font-semibold text-white uppercase tracking-wider text-[11px]">
                         Deceased Person Details
@@ -1242,7 +1242,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                   </div>
 
                   {/* Card 2: Claimant Details */}
-                  <div className="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2 text-xs">
+                  <div className="p-4 rounded-xl bg-[#083B8A] border border-white/10 space-y-2 text-xs">
                     <div className="flex items-center justify-between pb-2 border-b border-white/10">
                       <span className="font-semibold text-white uppercase tracking-wider text-[11px]">
                         Claimant &amp; Kinship
@@ -1276,7 +1276,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                   </div>
 
                   {/* Card 3: Evidence Documents */}
-                  <div className="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2 text-xs">
+                  <div className="p-4 rounded-xl bg-[#083B8A] border border-white/10 space-y-2 text-xs">
                     <div className="flex items-center justify-between pb-2 border-b border-white/10">
                       <span className="font-semibold text-white uppercase tracking-wider text-[11px]">
                         Uploaded Evidence ({uploadedDocuments.length})
@@ -1308,7 +1308,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                   </div>
 
                   {/* Card 4: Categories */}
-                  <div className="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2 text-xs">
+                  <div className="p-4 rounded-xl bg-[#083B8A] border border-white/10 space-y-2 text-xs">
                     <div className="flex items-center justify-between pb-2 border-b border-white/10">
                       <span className="font-semibold text-white uppercase tracking-wider text-[11px]">
                         Target Asset Categories ({selectedCategories.length})
@@ -1371,7 +1371,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="px-6 py-2.5 rounded-full bg-primary text-black font-semibold text-xs uppercase tracking-wider hover:bg-white transition-all cursor-pointer flex items-center gap-2 shadow-lg"
+                    className="px-6 py-2.5 rounded-full bg-primary text-[#102A56] font-semibold text-xs uppercase tracking-wider hover:bg-white transition-all cursor-pointer flex items-center gap-2 shadow-lg"
                   >
                     <span>Continue to Step {currentStep + 1}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -1381,7 +1381,7 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
                     type="button"
                     onClick={handleSubmitFinal}
                     disabled={isSubmitting || !statutoryConsent}
-                    className="px-7 py-2.5 rounded-full bg-primary text-black font-semibold text-xs uppercase tracking-wider hover:bg-white disabled:opacity-50 transition-all cursor-pointer flex items-center gap-2 shadow-lg shadow-primary/20"
+                    className="px-7 py-2.5 rounded-full bg-primary text-[#102A56] font-semibold text-xs uppercase tracking-wider hover:bg-white disabled:opacity-50 transition-all cursor-pointer flex items-center gap-2 shadow-lg shadow-primary/20"
                   >
                     {isSubmitting ? (
                       <>

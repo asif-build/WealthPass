@@ -76,20 +76,20 @@ export const VerifyEmailPage: React.FC<VerifyEmailPageProps> = ({ onNavigate }) 
   };
 
   return (
-    <div className="min-h-screen bg-black text-[#E1E0CC] flex flex-col justify-center items-center px-4 py-16 selection:bg-primary selection:text-black">
-      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-[#1d1a13]/30 via-transparent to-transparent" />
+    <div className="min-h-screen bg-[#0755C9] text-white flex flex-col justify-center items-center px-4 py-16 selection:bg-primary selection:text-[#102A56]">
+      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent" />
 
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-[#121212] border border-white/10 rounded-3xl p-8 sm:p-10 shadow-2xl text-center relative z-10"
+        className="w-full max-w-md bg-[#0646AD] border border-white/15 rounded-3xl p-8 sm:p-10 shadow-2xl text-center relative z-10"
       >
 
         {status === "loading" && (
           <div className="py-8 flex flex-col items-center">
             <RefreshCw className="w-10 h-10 text-primary animate-spin mb-4" />
             <h2 className="text-xl font-medium text-white mb-2">Verifying your email...</h2>
-            <p className="text-gray-400 text-xs">
+            <p className="text-[#EAF2FF] text-xs">
               Please wait a moment while we verify your link.
             </p>
           </div>
@@ -103,15 +103,15 @@ export const VerifyEmailPage: React.FC<VerifyEmailPageProps> = ({ onNavigate }) 
             <h2 className="text-2xl font-medium text-white mb-2">
               Email verified!
             </h2>
-            <p className="text-gray-300 text-xs sm:text-sm leading-relaxed mb-8">
+            <p className="text-[#EAF2FF] text-xs sm:text-sm leading-relaxed mb-8">
               Your email address has been verified. You can now sign in to your account.
             </p>
             <button
               onClick={() => onNavigate("/login")}
-              className="group w-full flex items-center justify-between p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-black font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-white transition-all cursor-pointer shadow-lg"
+              className="group w-full flex items-center justify-between p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-[#102A56] font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-white transition-all cursor-pointer shadow-lg"
             >
               <span>Sign In to Your Account</span>
-              <div className="bg-black rounded-full w-9 h-9 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <div className="bg-[#083B8A] rounded-full w-9 h-9 flex items-center justify-center group-hover:scale-105 transition-transform">
                 <ArrowRight className="w-4 h-4 text-primary" />
               </div>
             </button>
@@ -123,18 +123,18 @@ export const VerifyEmailPage: React.FC<VerifyEmailPageProps> = ({ onNavigate }) 
             <div className="w-16 h-16 rounded-full bg-red-950/40 border border-red-500/40 flex items-center justify-center mb-6 text-red-400">
               <AlertCircle className="w-8 h-8" />
             </div>
-            <span className="text-red-400 text-[10px] tracking-[0.2em] uppercase font-semibold block mb-1">
+            <span className="text-red-300 text-[10px] tracking-[0.2em] uppercase font-semibold block mb-1">
               Verification Issue
             </span>
             <h2 className="text-xl font-medium text-white mb-3">
               Link Expired or Invalid
             </h2>
-            <p className="text-gray-300 text-xs leading-relaxed mb-6">
+            <p className="text-[#EAF2FF] text-xs leading-relaxed mb-6">
               {errorMessage}
             </p>
 
             <form onSubmit={handleResend} className="w-full flex flex-col gap-3 pt-4 border-t border-white/10">
-              <span className="text-xs text-gray-400 text-left">
+              <span className="text-xs text-blue-200 text-left">
                 Enter your email address to receive a fresh verification link:
               </span>
               <input
@@ -143,12 +143,12 @@ export const VerifyEmailPage: React.FC<VerifyEmailPageProps> = ({ onNavigate }) 
                 value={resendEmail}
                 onChange={(e) => setResendEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#E1E0CC] placeholder-gray-500 focus:outline-none focus:border-primary/60 transition-colors"
+                className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-4 py-2.5 text-xs text-white placeholder-blue-200/60 focus:outline-none focus:border-white/40 transition-colors"
               />
               <button
                 type="submit"
                 disabled={isResending}
-                className="w-full py-2.5 px-4 rounded-full bg-white/10 hover:bg-white/20 text-xs text-white font-medium transition-colors cursor-pointer"
+                className="w-full py-2.5 px-4 rounded-full bg-white/15 hover:bg-white/25 text-xs text-white font-medium transition-colors cursor-pointer"
               >
                 {isResending ? "Sending..." : "Request New Verification Link"}
               </button>
@@ -174,13 +174,13 @@ export const VerifyEmailPage: React.FC<VerifyEmailPageProps> = ({ onNavigate }) 
 
         {status === "input" && (
           <div className="py-4 flex flex-col items-center">
-            <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-primary">
+            <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 flex items-center justify-center mb-6 text-primary">
               <Mail className="w-8 h-8" />
             </div>
             <h2 className="text-xl font-medium text-white mb-3">
               Email Verification
             </h2>
-            <p className="text-gray-400 text-xs leading-relaxed mb-6">
+            <p className="text-[#EAF2FF] text-xs leading-relaxed mb-6">
               If you received a verification link by email, please click the link directly from your email inbox.
             </p>
             <form onSubmit={handleResend} className="w-full flex flex-col gap-3">
@@ -190,12 +190,12 @@ export const VerifyEmailPage: React.FC<VerifyEmailPageProps> = ({ onNavigate }) 
                 value={resendEmail}
                 onChange={(e) => setResendEmail(e.target.value)}
                 placeholder="Enter your registered email address"
-                className="w-full bg-[#1c1c1c] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#E1E0CC] placeholder-gray-500 focus:outline-none focus:border-primary/60 transition-colors"
+                className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-4 py-2.5 text-xs text-white placeholder-blue-200/60 focus:outline-none focus:border-white/40 transition-colors"
               />
               <button
                 type="submit"
                 disabled={isResending}
-                className="w-full py-2.5 px-4 rounded-full bg-primary text-black font-semibold text-xs uppercase tracking-wider hover:bg-white transition-all cursor-pointer"
+                className="w-full py-2.5 px-4 rounded-full bg-primary text-[#102A56] font-semibold text-xs uppercase tracking-wider hover:bg-white transition-all cursor-pointer"
               >
                 {isResending ? "Sending..." : "Resend Verification Email"}
               </button>

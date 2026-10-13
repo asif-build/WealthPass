@@ -11,13 +11,13 @@ export const AuthSplitLayout: React.FC<AuthSplitLayoutProps> = ({
   onNavigate,
 }) => {
   return (
-    <div className="min-h-screen w-full bg-[#0a0a0a] text-[#E1E0CC] flex flex-col justify-between items-center px-4 py-6 sm:py-10 font-['Almarai'] selection:bg-primary selection:text-black">
+    <div className="min-h-screen w-full bg-[#0755C9] text-white flex flex-col justify-between items-center px-4 py-6 sm:py-10 font-['Almarai'] selection:bg-primary selection:text-[#102A56]">
       
       {/* Minimal Top Navigation (No Logo) */}
       <header className="w-full max-w-md flex items-center justify-between mb-4 sm:mb-6">
         <button
           onClick={() => onNavigate("/")}
-          className="group flex items-center gap-2 text-xs uppercase tracking-wider text-gray-400 hover:text-white transition-colors cursor-pointer"
+          className="group flex items-center gap-2 text-xs uppercase tracking-wider text-blue-200 hover:text-white transition-colors cursor-pointer"
           aria-label="Back to home"
         >
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />

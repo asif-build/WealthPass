@@ -107,7 +107,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
         <BorderGlow
           edgeSensitivity={30}
           glowColor="40 80 80"
-          backgroundColor="#120F17"
+          backgroundColor="#0646AD"
           borderRadius={24}
           glowRadius={40}
           glowIntensity={1.0}
@@ -122,7 +122,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           <h1 className="text-2xl font-medium text-white tracking-tight">
             Welcome back
           </h1>
-          <p className="text-gray-400 text-xs sm:text-sm mt-1">
+          <p className="text-[#EAF2FF] text-xs sm:text-sm mt-1">
             Sign in to continue to your account.
           </p>
         </div>
@@ -144,7 +144,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   {isResending ? "Sending link..." : "Resend verification email &rarr;"}
                 </button>
                 {resendStatus && (
-                  <p className="text-[11px] text-gray-300 mt-1">{resendStatus}</p>
+                  <p className="text-[11px] text-[#EAF2FF] mt-1">{resendStatus}</p>
                 )}
               </div>
             )}
@@ -154,7 +154,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Email Address */}
           <div>
-            <label className="text-xs text-gray-300 font-medium block mb-1">
+            <label className="text-xs text-[#EAF2FF] font-medium block mb-1">
               Email Address
             </label>
             <input
@@ -163,14 +163,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-3.5 py-2.5 text-[#E1E0CC] placeholder-gray-500 text-sm focus:outline-none focus:border-primary/60 transition-colors"
+              className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-3.5 py-2.5 text-white placeholder-blue-200/60 text-sm focus:outline-none focus:border-white/40 transition-colors"
             />
           </div>
 
           {/* Password */}
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label className="text-xs text-gray-300 font-medium">
+              <label className="text-xs text-[#EAF2FF] font-medium">
                 Password
               </label>
               <a
@@ -191,12 +191,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-3.5 py-2.5 pr-10 text-[#E1E0CC] placeholder-gray-500 text-sm focus:outline-none focus:border-primary/60 transition-colors"
+                className="w-full bg-[#083B8A] border border-white/15 rounded-xl px-3.5 py-2.5 pr-10 text-white placeholder-blue-200/60 text-sm focus:outline-none focus:border-white/40 transition-colors"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-200 hover:text-white"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -211,9 +211,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded border-white/20 bg-[#1a1a1a] text-primary focus:ring-primary/40 cursor-pointer accent-[#C9A84C]"
+                className="w-4 h-4 rounded border-white/20 bg-[#083B8A] text-primary focus:ring-primary/40 cursor-pointer accent-primary"
               />
-              <span className="text-xs text-gray-400 select-none">Remember me</span>
+              <span className="text-xs text-[#EAF2FF] select-none">Remember me</span>
             </label>
           </div>
 
@@ -221,10 +221,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full mt-1 group flex items-center justify-between p-1 pl-5 pr-1 rounded-full bg-primary text-black font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-white disabled:opacity-50 transition-all cursor-pointer shadow-lg"
+            className="w-full mt-1 group flex items-center justify-between p-1 pl-5 pr-1 rounded-full bg-primary text-[#102A56] font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-white disabled:opacity-50 transition-all cursor-pointer shadow-lg"
           >
             <span>{isLoading ? "Signing in..." : "Sign In"}</span>
-            <div className="bg-black rounded-full w-8 h-8 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div className="bg-[#083B8A] rounded-full w-8 h-8 flex items-center justify-center group-hover:scale-105 transition-transform">
               <ArrowRight className="w-4 h-4 text-primary" />
             </div>
           </button>

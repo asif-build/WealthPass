@@ -4,6 +4,8 @@ import { Check, ArrowRight } from "lucide-react";
 import { WordsPullUpMultiStyle } from "./WordsPullUpMultiStyle";
 import vaultCoinsWebp from "../assets/security-vault-coins.webp";
 import vaultCoinsPng from "../assets/security-vault-coins.png";
+import blueVerifiedBadgeWebp from "../assets/blue-verified-badge.webp";
+import blueVerifiedBadgePng from "../assets/blue-verified-badge.png";
 
 interface FeaturesSectionProps {
   onNavigate?: (path: string) => void;
@@ -18,7 +20,7 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) 
   ];
 
   const heading2 = [
-    { text: "RBI-grounded, 256-bit encrypted, and completely transparent.", className: "text-[#DEDBC8] font-medium" }
+    { text: "RBI-grounded, 256-bit encrypted, and completely transparent.", className: "text-[#EAF2FF] font-medium" }
   ];
 
   const containerVariants = {
@@ -63,7 +65,7 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) 
   ];
 
   return (
-    <section id="features" className="min-h-screen bg-black py-24 px-4 md:px-6 relative overflow-hidden flex flex-col justify-center">
+    <section id="features" className="min-h-screen bg-[#0755C9] py-24 px-4 md:px-6 relative overflow-hidden flex flex-col justify-center">
       {/* Subtle .bg-noise overlay */}
       <div className="absolute inset-0 bg-noise opacity-[0.15] pointer-events-none z-0" />
       
@@ -90,30 +92,47 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) 
           {/* Card 1: Security Vault */}
           <motion.div
             variants={cardVariants}
-            className="lg:h-[480px] h-[350px] rounded-3xl overflow-hidden relative group border border-white/5 shadow-xl bg-black"
+            className="lg:h-[480px] h-[350px] rounded-3xl overflow-hidden relative group border border-white/10 shadow-xl bg-[#083B8A]"
           >
-            {/* Scoped CSS animation for seamless 7-second weightless float */}
+            {/* Scoped CSS animation for continuous 3D weightless floating coins loop */}
             <style>{`
               @keyframes wpFloatingCoinsLoop {
                 0% {
-                  transform: translateY(0px) rotate(0deg) scale(1);
+                  transform: perspective(1000px) translate3d(0, 0px, 0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
+                  filter: drop-shadow(0 16px 28px rgba(36, 104, 232, 0.35)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
                 }
                 25% {
-                  transform: translateY(-5px) rotate(0.8deg) scale(1.008);
+                  transform: perspective(1000px) translate3d(2px, -14px, 0) rotateX(3deg) rotateY(-2.5deg) rotateZ(1.5deg) scale(1.025);
+                  filter: drop-shadow(0 26px 38px rgba(52, 120, 246, 0.5)) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
                 }
                 50% {
-                  transform: translateY(-10px) rotate(-0.5deg) scale(1.015);
+                  transform: perspective(1000px) translate3d(0, -24px, 0) rotateX(0deg) rotateY(3deg) rotateZ(-1.2deg) scale(1.04);
+                  filter: drop-shadow(0 32px 48px rgba(65, 140, 255, 0.65)) drop-shadow(0 0 24px rgba(225, 224, 204, 0.2));
                 }
                 75% {
-                  transform: translateY(-4px) rotate(-1.2deg) scale(1.006);
+                  transform: perspective(1000px) translate3d(-2px, -11px, 0) rotateX(-2.5deg) rotateY(-1.5deg) rotateZ(-2deg) scale(1.02);
+                  filter: drop-shadow(0 24px 36px rgba(36, 104, 232, 0.45)) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6));
                 }
                 100% {
-                  transform: translateY(0px) rotate(0deg) scale(1);
+                  transform: perspective(1000px) translate3d(0, 0px, 0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
+                  filter: drop-shadow(0 16px 28px rgba(36, 104, 232, 0.35)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
+                }
+              }
+
+              @keyframes wpAuraPulse {
+                0%, 100% {
+                  opacity: 0.25;
+                  transform: scale(0.85) translate3d(0, 5px, 0);
+                }
+                50% {
+                  opacity: 0.55;
+                  transform: scale(1.2) translate3d(0, -12px, 0);
                 }
               }
 
               @media (prefers-reduced-motion: reduce) {
-                .wp-floating-coins-cluster {
+                .wp-floating-coins-cluster,
+                .wp-floating-coins-aura {
                   animation: none !important;
                   transform: none !important;
                 }
@@ -122,34 +141,49 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) 
 
             {/* 3D Floating Indian Currency Coins Composition */}
             <div className="absolute inset-0 pb-20 flex items-center justify-center p-4 overflow-hidden pointer-events-none">
+              {/* Ambient vault backlight glow pulsing in rhythm with the coins */}
               <div
-                className="wp-floating-coins-cluster w-full h-full max-w-[270px] sm:max-w-[300px] lg:max-w-[320px] flex items-center justify-center"
+                className="wp-floating-coins-aura absolute w-[220px] h-[220px] rounded-full bg-gradient-to-tr from-primary/30 to-blue-500/20 blur-[50px] pointer-events-none"
                 style={{
-                  animation: "wpFloatingCoinsLoop 7s ease-in-out infinite",
-                  willChange: "transform",
+                  animation: "wpAuraPulse 4.5s ease-in-out infinite",
+                  willChange: "transform, opacity",
+                }}
+              />
+
+              <div
+                className="wp-floating-coins-cluster w-full h-full max-w-[270px] sm:max-w-[300px] lg:max-w-[320px] flex items-center justify-center relative z-10"
+                style={{
+                  animation: "wpFloatingCoinsLoop 4.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite",
+                  willChange: "transform, filter",
                 }}
               >
                 <picture className="w-full h-full flex items-center justify-center">
-                  <source srcSet={vaultCoinsWebp} type="image/webp" />
+                  <source srcSet={vaultCoinsWebp || "/static/assets/security-vault-coins.webp"} type="image/webp" />
                   <img
-                    src={vaultCoinsPng}
+                    src={vaultCoinsPng || "/static/assets/security-vault-coins.png"}
                     alt="Floating 3D Indian Rupee Currency Coins"
-                    className="w-full h-full object-contain object-center select-none drop-shadow-[0_20px_40px_rgba(36,104,232,0.25)] transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-contain object-center select-none transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                     decoding="async"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      if (!img.src.endsWith("/static/assets/security-vault-coins.png")) {
+                        img.src = "/static/assets/security-vault-coins.png";
+                      }
+                    }}
                   />
                 </picture>
               </div>
             </div>
 
             {/* Dark gradient overlay for bottom text contrast */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#083B8A]/95 via-[#083B8A]/40 to-transparent z-10 pointer-events-none" />
             
             <div className="absolute bottom-6 left-6 right-6 z-20">
-              <span className="text-xs text-[#E1E0CC] uppercase tracking-widest block mb-2 font-medium">
+              <span className="text-xs text-[#EAF2FF] uppercase tracking-widest block mb-2 font-medium">
                 Security Vault
               </span>
-              <p className="text-lg md:text-xl font-medium text-[#E1E0CC]">
+              <p className="text-lg md:text-xl font-medium text-white">
                 Your family's secure vault.
               </p>
             </div>
@@ -158,28 +192,39 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) 
           {/* Card 2: Storyboard Card */}
           <motion.div
             variants={cardVariants}
-            className="lg:h-[480px] min-h-[380px] bg-[#212121] rounded-3xl p-6 sm:p-8 flex flex-col justify-between border border-white/5 shadow-xl relative group"
+            className="lg:h-[480px] min-h-[380px] bg-[#0646AD] rounded-3xl p-6 sm:p-8 flex flex-col justify-between border border-white/10 shadow-xl relative group"
           >
             <div>
               {/* Card Header (Icon, Number, Title) */}
               <div className="flex justify-between items-start mb-6">
-                <img
-                  src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260405_171918_4a5edc79-d78f-4637-ac8b-53c43c220606.png&w=1280&q=85"
-                  alt="Search icon"
-                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover bg-white/5 border border-white/10"
-                />
+                <picture className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shrink-0">
+                  <source srcSet={blueVerifiedBadgeWebp || "/static/assets/blue-verified-badge.webp"} type="image/webp" />
+                  <img
+                    src={blueVerifiedBadgePng || "/static/assets/blue-verified-badge.png"}
+                    alt="Verified badge"
+                    className="w-full h-full object-contain select-none drop-shadow-[0_4px_14px_rgba(36,104,232,0.5)] transition-transform duration-300 group-hover:scale-110"
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      if (!img.src.endsWith("/static/assets/blue-verified-badge.png")) {
+                        img.src = "/static/assets/blue-verified-badge.png";
+                      }
+                    }}
+                  />
+                </picture>
                 <span className="font-serif italic text-primary/70 text-2xl font-semibold select-none">
                   01
                 </span>
               </div>
-              <h4 className="text-lg sm:text-xl font-medium text-[#E1E0CC] mb-4">
+              <h4 className="text-lg sm:text-xl font-medium text-white mb-4">
                 Verify & Match.
               </h4>
 
               {/* Checklist */}
               <ul className="flex flex-col gap-3">
                 {card2Items.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-200">
+                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-[#EAF2FF]">
                     <Check className="w-4 h-4 text-[#DEDBC8] shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
@@ -210,28 +255,39 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) 
           {/* Card 3: Critiques Card */}
           <motion.div
             variants={cardVariants}
-            className="lg:h-[480px] min-h-[380px] bg-[#212121] rounded-3xl p-6 sm:p-8 flex flex-col justify-between border border-white/5 shadow-xl relative group"
+            className="lg:h-[480px] min-h-[380px] bg-[#0646AD] rounded-3xl p-6 sm:p-8 flex flex-col justify-between border border-white/10 shadow-xl relative group"
           >
             <div>
               {/* Card Header (Icon, Number, Title) */}
               <div className="flex justify-between items-start mb-6">
-                <img
-                  src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260405_171741_ed9845ab-f5b2-4018-8ce7-07cc01823522.png&w=1280&q=85"
-                  alt="Claims icon"
-                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover bg-white/5 border border-white/10"
-                />
+                <picture className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shrink-0">
+                  <source srcSet={blueVerifiedBadgeWebp || "/static/assets/blue-verified-badge.webp"} type="image/webp" />
+                  <img
+                    src={blueVerifiedBadgePng || "/static/assets/blue-verified-badge.png"}
+                    alt="Verified badge"
+                    className="w-full h-full object-contain select-none drop-shadow-[0_4px_14px_rgba(36,104,232,0.5)] transition-transform duration-300 group-hover:scale-110"
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      if (!img.src.endsWith("/static/assets/blue-verified-badge.png")) {
+                        img.src = "/static/assets/blue-verified-badge.png";
+                      }
+                    }}
+                  />
+                </picture>
                 <span className="font-serif italic text-primary/70 text-2xl font-semibold select-none">
                   02
                 </span>
               </div>
-              <h4 className="text-lg sm:text-xl font-medium text-[#E1E0CC] mb-4">
+              <h4 className="text-lg sm:text-xl font-medium text-white mb-4">
                 Claim Preparation.
               </h4>
 
               {/* Checklist */}
               <ul className="flex flex-col gap-3">
                 {card3Items.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-200">
+                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-[#EAF2FF]">
                     <Check className="w-4 h-4 text-[#DEDBC8] shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
@@ -262,28 +318,39 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) 
           {/* Card 4: Immersion Capsule Card */}
           <motion.div
             variants={cardVariants}
-            className="lg:h-[480px] min-h-[380px] bg-[#212121] rounded-3xl p-6 sm:p-8 flex flex-col justify-between border border-white/5 shadow-xl relative group"
+            className="lg:h-[480px] min-h-[380px] bg-[#0646AD] rounded-3xl p-6 sm:p-8 flex flex-col justify-between border border-white/10 shadow-xl relative group"
           >
             <div>
               {/* Card Header (Icon, Number, Title) */}
               <div className="flex justify-between items-start mb-6">
-                <img
-                  src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260405_171809_f56666dc-c099-4778-ad82-9ad4f209567b.png&w=1280&q=85"
-                  alt="Liquidity icon"
-                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover bg-white/5 border border-white/10"
-                />
+                <picture className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shrink-0">
+                  <source srcSet={blueVerifiedBadgeWebp || "/static/assets/blue-verified-badge.webp"} type="image/webp" />
+                  <img
+                    src={blueVerifiedBadgePng || "/static/assets/blue-verified-badge.png"}
+                    alt="Verified badge"
+                    className="w-full h-full object-contain select-none drop-shadow-[0_4px_14px_rgba(36,104,232,0.5)] transition-transform duration-300 group-hover:scale-110"
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      if (!img.src.endsWith("/static/assets/blue-verified-badge.png")) {
+                        img.src = "/static/assets/blue-verified-badge.png";
+                      }
+                    }}
+                  />
+                </picture>
                 <span className="font-serif italic text-primary/70 text-2xl font-semibold select-none">
                   03
                 </span>
               </div>
-              <h4 className="text-lg sm:text-xl font-medium text-[#E1E0CC] mb-4">
+              <h4 className="text-lg sm:text-xl font-medium text-white mb-4">
                 Instant Liquidity.
               </h4>
 
               {/* Checklist */}
               <ul className="flex flex-col gap-3">
                 {card4Items.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-200">
+                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-[#EAF2FF]">
                     <Check className="w-4 h-4 text-[#DEDBC8] shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>

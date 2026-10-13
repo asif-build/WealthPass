@@ -55,7 +55,7 @@ export const NotificationPreferencesModal: React.FC<PreferencesModalProps> = ({
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          className="bg-[#121212] border border-white/10 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+          className="bg-[#0646AD] border border-white/10 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto"
         >
           {/* Header */}
           <div className="flex items-center justify-between pb-4 border-b border-white/10">
@@ -237,7 +237,7 @@ export const NotificationPreferencesModal: React.FC<PreferencesModalProps> = ({
                 {!preferences.web_push_enabled ? (
                   <button
                     onClick={handleEnableWebPush}
-                    className="px-4 py-1.5 rounded-full bg-primary text-black text-xs font-semibold hover:bg-white transition-all cursor-pointer"
+                    className="px-4 py-1.5 rounded-full bg-primary text-[#102A56] text-xs font-semibold hover:bg-white transition-all cursor-pointer"
                   >
                     Enable Browser Push
                   </button>

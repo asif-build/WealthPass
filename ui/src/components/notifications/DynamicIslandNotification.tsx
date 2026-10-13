@@ -114,7 +114,7 @@ export const DynamicIslandNotification: React.FC<DynamicIslandNotificationProps>
               onDismiss();
             }
           }}
-          className={`pointer-events-auto max-w-md w-full rounded-2xl bg-[#121212]/95 backdrop-blur-xl border ${theme.border} shadow-2xl p-4 flex flex-col gap-2.5 overflow-hidden relative cursor-default`}
+          className={`pointer-events-auto max-w-md w-full rounded-2xl bg-[#083B8A]/95 backdrop-blur-xl border ${theme.border} shadow-2xl p-4 flex flex-col gap-2.5 overflow-hidden relative cursor-default`}
           role="alert"
           aria-live="polite"
         >

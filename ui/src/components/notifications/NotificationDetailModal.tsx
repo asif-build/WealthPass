@@ -61,7 +61,7 @@ export const NotificationDetailModal: React.FC<DetailModalProps> = ({
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          className="bg-[#121212] border border-white/10 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative"
+          className="bg-[#0646AD] border border-white/10 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative"
         >
           {/* Header */}
           <div className="flex items-center justify-between pb-4 border-b border-white/10">
@@ -139,7 +139,7 @@ export const NotificationDetailModal: React.FC<DetailModalProps> = ({
             {notification.safe_internal_route ? (
               <button
                 onClick={handleAction}
-                className="flex items-center gap-2 px-5 py-2 rounded-full bg-primary text-black text-xs font-semibold hover:bg-white transition-all cursor-pointer"
+                className="flex items-center gap-2 px-5 py-2 rounded-full bg-primary text-[#102A56] text-xs font-semibold hover:bg-white transition-all cursor-pointer"
               >
                 <span>{notification.action_label || "Proceed to Route"}</span>
                 <ArrowRight className="w-3.5 h-3.5" />

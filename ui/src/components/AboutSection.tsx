@@ -35,7 +35,7 @@ export const AboutSection = () => {
   const headingSegments = [
     { text: "We are WealthPass, ", className: "font-semibold text-white" },
     { text: "a secure platform. ", className: "italic font-serif text-primary font-bold" },
-    { text: "We help nominees and legal heirs claim unclaimed assets.", className: "font-semibold text-[#F4F7FC]" },
+    { text: "We help nominees and legal heirs claim unclaimed assets.", className: "font-semibold text-[#EAF2FF]" },
   ];
 
   const bodyText =
@@ -44,8 +44,8 @@ export const AboutSection = () => {
   const characters = bodyText.split("");
 
   return (
-    <section id="about" className="py-20 md:py-32 px-4 md:px-6 bg-black flex justify-center items-center">
-      <div className="w-full max-w-6xl bg-[#121212] rounded-[2rem] p-8 sm:p-12 md:p-20 text-center flex flex-col items-center justify-center border border-white/10 shadow-2xl relative overflow-hidden">
+    <section id="about" className="py-20 md:py-32 px-4 md:px-6 bg-[#0755C9] flex justify-center items-center">
+      <div className="w-full max-w-6xl bg-[#0646AD] rounded-[2rem] p-8 sm:p-12 md:p-20 text-center flex flex-col items-center justify-center border border-white/10 shadow-2xl relative overflow-hidden">
         {/* Subtle accent light inside card */}
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[300px] sm:w-[500px] h-[200px] bg-primary/15 rounded-full blur-[100px] pointer-events-none" />
         

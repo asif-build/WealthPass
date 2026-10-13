@@ -173,7 +173,7 @@ export function GreenAIEnergySection({ onNavigateEnergy }: GreenAIEnergySectionP
 
         {/* Live Stat Badges */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
-          <div className="p-5 rounded-2xl bg-[#121212] border border-emerald-500/30 relative">
+          <div className="p-5 rounded-2xl bg-[#0646AD] border border-emerald-500/30 relative">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest font-semibold">
                 Energy Reduction
@@ -190,7 +190,7 @@ export function GreenAIEnergySection({ onNavigateEnergy }: GreenAIEnergySectionP
             </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-[#121212] border border-white/10 relative">
+          <div className="p-5 rounded-2xl bg-[#0646AD] border border-white/10 relative">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono text-primary uppercase tracking-widest font-semibold">
                 Wall-Clock Latency
@@ -207,7 +207,7 @@ export function GreenAIEnergySection({ onNavigateEnergy }: GreenAIEnergySectionP
             </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-[#121212] border border-white/10 relative">
+          <div className="p-5 rounded-2xl bg-[#0646AD] border border-white/10 relative">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest font-semibold">
                 CO2e Abated
@@ -224,7 +224,7 @@ export function GreenAIEnergySection({ onNavigateEnergy }: GreenAIEnergySectionP
             </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-[#121212] border border-amber-500/30 relative">
+          <div className="p-5 rounded-2xl bg-[#0646AD] border border-amber-500/30 relative">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest font-semibold">
                 Discovered Assets
@@ -245,7 +245,7 @@ export function GreenAIEnergySection({ onNavigateEnergy }: GreenAIEnergySectionP
         {/* Dynamic Visualizations Area */}
         {activeTab === "comparison" ? (
           /* TAB 1: BEFORE & AFTER COMPARISON GRAPH */
-          <div className="p-6 sm:p-8 rounded-[2rem] bg-[#101010] border border-white/10 shadow-2xl">
+          <div className="p-6 sm:p-8 rounded-[2rem] bg-[#0646AD] border border-white/10 shadow-2xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-white/10 gap-3">
               <div>
                 <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
@@ -397,7 +397,7 @@ export function GreenAIEnergySection({ onNavigateEnergy }: GreenAIEnergySectionP
           </div>
         ) : (
           /* TAB 2: DYNAMIC PIE / DONUT CHART OF DISCOVERED ASSETS & SOURCES */
-          <div className="p-6 sm:p-8 rounded-[2rem] bg-[#101010] border border-white/10 shadow-2xl">
+          <div className="p-6 sm:p-8 rounded-[2rem] bg-[#0646AD] border border-white/10 shadow-2xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-white/10 gap-3">
               <div>
                 <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">

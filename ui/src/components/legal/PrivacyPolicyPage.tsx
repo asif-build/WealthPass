@@ -7,21 +7,21 @@ interface PrivacyPolicyPageProps {
 
 export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate }) => {
   return (
-    <div className="min-h-screen bg-black text-[#E1E0CC] selection:bg-primary selection:text-black">
+    <div className="min-h-screen bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56]">
       {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-black/85 backdrop-blur-md border-b border-white/10 px-6 py-4">
+      <header className="sticky top-0 z-40 bg-[#083B8A]/85 backdrop-blur-md border-b border-white/10 px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => onNavigate("/")}
-              className="flex items-center gap-2 text-xs uppercase tracking-wider text-gray-400 hover:text-white transition-colors cursor-pointer"
+              className="flex items-center gap-2 text-xs uppercase tracking-wider text-blue-200 hover:text-white transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back</span>
             </button>
           </div>
 
-          <div className="flex items-center gap-3 text-xs text-gray-400">
+          <div className="flex items-center gap-3 text-xs text-blue-200">
             <span>DPDP Aligned</span>
             <span>•</span>
             <span>Version 1.0 (October 2026)</span>
@@ -30,7 +30,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
       </header>
 
       {/* Hero Banner */}
-      <section className="px-6 pt-16 pb-12 border-b border-white/5 bg-[#0a0a0a]">
+      <section className="px-6 pt-16 pb-12 border-b border-white/10 bg-[#0646AD]">
         <div className="max-w-4xl mx-auto">
           <span className="text-primary text-[10px] sm:text-xs tracking-[0.2em] uppercase font-semibold block mb-3">
             Data Protection &amp; Privacy
@@ -38,12 +38,12 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
           <h1 className="text-3xl sm:text-5xl font-medium text-white tracking-tight mb-4 leading-tight">
             Privacy Policy
           </h1>
-          <p className="text-gray-300 text-sm sm:text-base leading-relaxed max-w-3xl">
+          <p className="text-[#EAF2FF] text-sm sm:text-base leading-relaxed max-w-3xl">
             This Privacy Policy details how WealthPass collects, uses, stores, and protects personal data in strict compliance with the Digital Personal Data Protection Act, 2023 (DPDP) and industry-leading cryptographic standards.
           </p>
 
           {/* Privacy Guarantee Box */}
-          <div className="mt-8 p-5 rounded-2xl bg-[#121212] border border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+          <div className="mt-8 p-5 rounded-2xl bg-[#083B8A] border border-white/15 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
             <div className="flex items-start gap-3">
               <EyeOff className="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <div>
@@ -277,11 +277,11 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
           <h2 className="text-xl sm:text-2xl font-medium text-white tracking-tight flex items-center gap-2">
             <span className="text-primary text-base font-mono">18.</span> Contact Information &amp; Grievance Redressal
           </h2>
-          <div className="p-5 rounded-2xl bg-[#121212] border border-white/10 text-xs sm:text-sm space-y-2">
+          <div className="p-5 rounded-2xl bg-[#0646AD] border border-white/10 text-xs sm:text-sm space-y-2 text-[#EAF2FF]">
             <p className="font-medium text-white">Data Protection Officer / Grievance Officer</p>
             <p>WealthPass Technologies Pvt. Ltd.</p>
             <p>Official Dedicated Support Email: <a href="mailto:wealthpass.official@gmail.com" className="text-primary hover:underline">wealthpass.official@gmail.com</a></p>
-            <p className="text-gray-500 text-xs pt-2">
+            <p className="text-blue-200 text-xs pt-2">
               For any privacy concerns, consent withdrawal, or grievance redressal, please write to our dedicated support address. Inquiries are formally acknowledged within 24 hours.
             </p>
           </div>
@@ -289,7 +289,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-10 px-6 bg-[#0a0a0a] text-center text-xs text-gray-500">
+      <footer className="border-t border-white/10 py-10 px-6 bg-[#083B8A] text-center text-xs text-blue-200">
         <p>&copy; {new Date().getFullYear()} WealthPass Technologies Pvt. Ltd. All rights reserved.</p>
       </footer>
     </div>

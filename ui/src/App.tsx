@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Mail, Instagram, Twitter, Linkedin, CheckCircle } from "lucide-react";
+import { ArrowRight, Mail, CheckCircle } from "lucide-react";
 import { WordsPullUp } from "./components/WordsPullUp";
 import { AboutSection } from "./components/AboutSection";
 import { FeaturesSection } from "./components/FeaturesSection";
 import { LegalSection } from "./components/LegalSection";
+import { MegaNavbar } from "./components/navigation/MegaNavbar";
 import { HowItWorksNavbar } from "./components/how-it-works/HowItWorksNavbar";
 import { VerifyMatchPage } from "./components/how-it-works/VerifyMatchPage";
 import { ClaimPreparationPage } from "./components/how-it-works/ClaimPreparationPage";
 import { InstantLiquidityPage } from "./components/how-it-works/InstantLiquidityPage";
 import { VerifyPage } from "./components/verification/VerifyPage";
 import { RelationshipVerification } from "./components/verification/RelationshipVerification";
-import { DiscoverAssetsPage } from "./components/discovery/DiscoverAssetsPage";
 import { SourcesPage } from "./components/sources/SourcesPage";
 import { ClaimPreparationView } from "./components/claim/ClaimPreparationView";
 import { RegisterPage } from "./components/auth/RegisterPage";
@@ -31,7 +31,6 @@ import { NotificationProvider, useNotifications } from "./components/notificatio
 import { DynamicIslandNotification } from "./components/notifications/DynamicIslandNotification";
 import { NotificationCenter } from "./components/notifications/NotificationCenter";
 import { EnergyDashboardPage } from "./components/energy/EnergyDashboardPage";
-import { GreenAIEnergySection } from "./components/energy/GreenAIEnergySection";
 
 const VALID_PATHS = [
   "/how-it-works/verify-match",
@@ -260,13 +259,6 @@ function App() {
     setContactMessage("");
   };
 
-  const navItems = [
-    { name: "Security Process", href: "#about" },
-    { name: "Legal Mandate", href: "#legal" },
-    { name: "Green AI Energy", href: "/energy" },
-    { name: "Inquiries", href: "#inquiries" },
-  ];
-
   const customEase = [0.16, 1, 0.3, 1] as any;
 
   const fadeUpVariants = {
@@ -284,7 +276,7 @@ function App() {
 
   // Reusable footer shared between homepage and How-It-Works views
   const renderFooter = () => (
-    <footer id="inquiries" className="relative pt-24 pb-16 px-6 sm:px-8 border-t border-white/10 bg-[#0a0a0a]">
+    <footer id="inquiries" className="relative pt-24 pb-16 px-6 sm:px-8 border-t border-white/10 bg-[#083B8A]">
       <div className="w-full max-w-7xl mx-auto z-10 relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
           {/* Left Info Column */}
@@ -293,10 +285,10 @@ function App() {
               <span className="text-primary text-[10px] sm:text-xs uppercase tracking-[0.2em] mb-4 block font-medium">
                 Connect
               </span>
-              <h3 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#E1E0CC] mb-6 leading-none">
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-white mb-6 leading-none">
                 Let's secure your family's inheritance.
               </h3>
-              <p className="text-gray-200 text-sm sm:text-base leading-relaxed max-w-md mb-8">
+              <p className="text-[#EAF2FF] text-sm sm:text-base leading-relaxed max-w-md mb-8">
                 Have a claim, a question, or need assistance recovering family wealth? Reach out to our advisors directly. We are here to bring closure to your search.
               </p>
             </div>
@@ -305,51 +297,28 @@ function App() {
             <div className="flex flex-col gap-4 mt-8">
               <a
                 href="mailto:wealthpass.official@gmail.com"
-                className="flex items-center gap-3 text-[#E1E0CC] hover:text-white transition-colors text-sm sm:text-base"
+                className="flex items-center gap-3 text-white hover:text-primary transition-colors text-sm sm:text-base"
               >
                 <Mail className="w-5 h-5 text-primary" />
                 <span>wealthpass.official@gmail.com</span>
               </a>
-              <div className="flex gap-4 mt-4">
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-gray-300 hover:text-[#E1E0CC] hover:border-white/20 transition-all"
-                  aria-label="Instagram"
-                >
-                  <Instagram className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-gray-300 hover:text-[#E1E0CC] hover:border-white/20 transition-all"
-                  aria-label="Twitter"
-                >
-                  <Twitter className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-gray-300 hover:text-[#E1E0CC] hover:border-white/20 transition-all"
-                  aria-label="LinkedIn"
-                >
-                  <Linkedin className="w-4 h-4" />
-                </a>
-              </div>
             </div>
           </div>
 
           {/* Right Contact Form Column */}
-          <div className="bg-[#121212] p-8 md:p-12 rounded-[2rem] border border-white/5 shadow-2xl">
+          <div className="bg-[#0646AD] p-8 md:p-12 rounded-[2rem] border border-white/10 shadow-2xl">
             {contactSubmitted ? (
               <div className="flex flex-col items-center justify-center py-8 text-center gap-4">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary mb-2">
                   <CheckCircle className="w-8 h-8" />
                 </div>
-                <h4 className="text-2xl font-medium text-[#E1E0CC]">Inquiry Sent!</h4>
-                <p className="text-gray-200 text-sm max-w-sm leading-relaxed">
-                  Thank you, <span className="text-[#E1E0CC] font-medium">{submittedName}</span>! Your inquiry has been submitted and your email client has opened to send to <span className="text-primary font-medium">wealthpass.official@gmail.com</span>. We will get back to you within 24 hours.
+                <h4 className="text-2xl font-medium text-white">Inquiry Sent!</h4>
+                <p className="text-[#EAF2FF] text-sm max-w-sm leading-relaxed">
+                  Thank you, <span className="text-white font-medium">{submittedName}</span>! Your inquiry has been submitted and your email client has opened to send to <span className="text-primary font-medium">wealthpass.official@gmail.com</span>. We will get back to you within 24 hours.
                 </p>
                 <button
                   onClick={() => setContactSubmitted(false)}
-                  className="mt-4 px-6 py-2.5 rounded-full border border-white/10 text-xs uppercase tracking-widest text-gray-300 hover:text-white hover:border-white/30 transition-all cursor-pointer"
+                  className="mt-4 px-6 py-2.5 rounded-full border border-white/10 text-xs uppercase tracking-widest text-[#EAF2FF] hover:text-white hover:border-white/30 transition-all cursor-pointer"
                 >
                   Send Another Message
                 </button>
@@ -357,7 +326,7 @@ function App() {
             ) : (
               <form onSubmit={handleContactSubmit} className="flex flex-col gap-6">
                 <div>
-                  <label className="text-xs uppercase tracking-widest text-gray-200 block mb-2 font-medium">
+                  <label className="text-xs uppercase tracking-widest text-[#EAF2FF] block mb-2 font-medium">
                     Your Name
                   </label>
                   <input
@@ -366,11 +335,11 @@ function App() {
                     value={contactName}
                     onChange={(e) => setContactName(e.target.value)}
                     placeholder="Enter your name"
-                    className="w-full bg-[#1c1c1c] border border-white/5 rounded-xl px-4 py-3 text-[#E1E0CC] placeholder-gray-400 focus:outline-none focus:border-primary/50 text-sm transition-colors"
+                    className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-blue-200/60 focus:outline-none focus:border-white/40 text-sm transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="text-xs uppercase tracking-widest text-gray-200 block mb-2 font-medium">
+                  <label className="text-xs uppercase tracking-widest text-[#EAF2FF] block mb-2 font-medium">
                     Email Address
                   </label>
                   <input
@@ -379,11 +348,11 @@ function App() {
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full bg-[#1c1c1c] border border-white/5 rounded-xl px-4 py-3 text-[#E1E0CC] placeholder-gray-400 focus:outline-none focus:border-primary/50 text-sm transition-colors"
+                    className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-blue-200/60 focus:outline-none focus:border-white/40 text-sm transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="text-xs uppercase tracking-widest text-gray-200 block mb-2 font-medium">
+                  <label className="text-xs uppercase tracking-widest text-[#EAF2FF] block mb-2 font-medium">
                     Message
                   </label>
                   <textarea
@@ -392,16 +361,16 @@ function App() {
                     value={contactMessage}
                     onChange={(e) => setContactMessage(e.target.value)}
                     placeholder="How can we help? Tell us what you are looking for..."
-                    className="w-full bg-[#1c1c1c] border border-white/5 rounded-xl px-4 py-3 text-[#E1E0CC] placeholder-gray-400 focus:outline-none focus:border-primary/50 text-sm transition-colors resize-none"
+                    className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-blue-200/60 focus:outline-none focus:border-white/40 text-sm transition-colors resize-none"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full group flex items-center justify-between p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-black font-medium transition-all duration-300 text-sm sm:text-base hover:bg-white disabled:opacity-50 cursor-pointer"
+                  className="w-full group flex items-center justify-between p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-[#102A56] font-medium transition-all duration-300 text-sm sm:text-base hover:bg-white disabled:opacity-50 cursor-pointer"
                 >
                   <span>{isSubmitting ? "Sending..." : "Send Message"}</span>
-                  <div className="bg-black rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="bg-[#083B8A] rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                 </button>
@@ -410,7 +379,7 @@ function App() {
           </div>
         </div>
 
-        <div className="border-t border-white/5 mt-16 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+        <div className="border-t border-white/10 mt-16 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-blue-200/70">
           <p>© {new Date().getFullYear()} WealthPass Technologies Pvt. Ltd. All rights reserved.</p>
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <a
@@ -419,7 +388,7 @@ function App() {
                 e.preventDefault();
                 handleNavigate("/terms");
               }}
-              className="text-gray-400 hover:text-primary transition-colors cursor-pointer"
+              className="text-blue-200/70 hover:text-white transition-colors cursor-pointer"
             >
               Terms &amp; Conditions
             </a>
@@ -430,7 +399,7 @@ function App() {
                 e.preventDefault();
                 handleNavigate("/privacy-policy");
               }}
-              className="text-gray-400 hover:text-primary transition-colors cursor-pointer"
+              className="text-blue-200/70 hover:text-white transition-colors cursor-pointer"
             >
               Privacy Policy
             </a>
@@ -447,7 +416,7 @@ function App() {
     // ROUTE 1: CARD 01 - VERIFY & MATCH
     if (currentPath === "/how-it-works/verify-match") {
     return (
-      <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
+      <div className="bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56] min-h-screen">
         <HowItWorksNavbar currentPath={currentPath} onNavigate={handleNavigate} />
         <main>
           <VerifyMatchPage onNavigate={handleNavigate} />
@@ -460,7 +429,7 @@ function App() {
   // ROUTE 2: CARD 02 - CLAIM PREPARATION
   if (currentPath === "/how-it-works/claim-preparation") {
     return (
-      <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
+      <div className="bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56] min-h-screen">
         <HowItWorksNavbar currentPath={currentPath} onNavigate={handleNavigate} />
         <main>
           <ClaimPreparationPage onNavigate={handleNavigate} />
@@ -473,7 +442,7 @@ function App() {
   // ROUTE 3: CARD 03 - INSTANT LIQUIDITY
   if (currentPath === "/how-it-works/instant-liquidity") {
     return (
-      <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
+      <div className="bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56] min-h-screen">
         <HowItWorksNavbar currentPath={currentPath} onNavigate={handleNavigate} />
         <main>
           <InstantLiquidityPage onNavigate={handleNavigate} />
@@ -486,7 +455,7 @@ function App() {
   // ROUTE 4: PRIVACY-PRESERVING IDENTITY VERIFICATION (/verify)
   if (currentPath === "/verify") {
     return (
-      <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
+      <div className="bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56] min-h-screen">
         <VerifyPage
           onVerificationComplete={(res) => {
             setVerificationResult(res);
@@ -502,12 +471,12 @@ function App() {
   // ROUTE 5: CLAIMANT RELATIONSHIP & EVIDENCE (/relationship)
   if (currentPath === "/relationship") {
     return (
-      <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
+      <div className="bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56] min-h-screen">
         <RelationshipVerification
           verificationResult={verificationResult}
           onProceedToDiscovery={(relData) => {
             setRelationshipData(relData);
-            handleNavigate("/discover-assets");
+            handleNavigate("/claim");
           }}
           onBack={() => handleNavigate("/verify")}
         />
@@ -516,29 +485,10 @@ function App() {
     );
   }
 
-  // ROUTE 6: MULTI-SOURCE ASSET DISCOVERY DASHBOARD (/discover-assets)
-  if (currentPath === "/discover-assets") {
-    return (
-      <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
-        <DiscoverAssetsPage
-          verificationResult={verificationResult}
-          relationshipData={relationshipData}
-          onSelectAssetForClaim={(asset) => {
-            setSelectedAsset(asset);
-            handleNavigate("/claim");
-          }}
-          onNavigateSources={() => handleNavigate("/sources")}
-          onNavigateHome={() => handleNavigate("/")}
-        />
-        {renderFooter()}
-      </div>
-    );
-  }
-
-  // ROUTE 7: SOURCE TRANSPARENCY REGISTRY (/sources)
+  // ROUTE 6: SOURCE TRANSPARENCY REGISTRY (/sources)
   if (currentPath === "/sources") {
     return (
-      <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
+      <div className="bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56] min-h-screen">
         <SourcesPage
           onNavigateHome={() => handleNavigate("/")}
           onNavigateVerify={() => handleNavigate("/verify")}
@@ -551,22 +501,22 @@ function App() {
   // ROUTE: GREEN AI DOCUMENT INTELLIGENCE & ENERGY TELEMETRY (/energy)
   if (currentPath === "/energy" || currentPath === "/document-intelligence") {
     return (
-      <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
+      <div className="bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56] min-h-screen">
         <EnergyDashboardPage onNavigateHome={() => handleNavigate("/")} />
         {renderFooter()}
       </div>
     );
   }
 
-  // ROUTE 8: CLAIM PREPARATION DOSSIER (/claim)
-  if (currentPath === "/claim") {
+  // ROUTE 7: CLAIM PREPARATION DOSSIER (/claim, /discover-assets)
+  if (currentPath === "/claim" || currentPath === "/discover-assets") {
     return (
-      <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
+      <div className="bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56] min-h-screen">
         <ClaimPreparationView
           selectedAsset={selectedAsset}
           verificationResult={verificationResult}
           relationshipData={relationshipData}
-          onNavigateDiscovery={() => handleNavigate("/discover-assets")}
+          onNavigateDiscovery={() => handleNavigate("/verify")}
           onNavigateHome={() => handleNavigate("/")}
         />
         {renderFooter()}
@@ -620,10 +570,10 @@ function App() {
   if (currentPath === "/dashboard" || currentPath === "/settings") {
     if (isAuthLoading) {
       return (
-        <div className="min-h-screen bg-black text-[#E1E0CC] flex items-center justify-center">
+        <div className="min-h-screen bg-[#0755C9] text-white flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
             <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            <span className="text-xs font-mono text-gray-400">Verifying session clearance...</span>
+            <span className="text-xs font-mono text-blue-200">Verifying session clearance...</span>
           </div>
         </div>
       );
@@ -656,10 +606,10 @@ function App() {
   if (currentPath === "/assets/discover") {
     if (isAuthLoading) {
       return (
-        <div className="min-h-screen bg-black text-[#E1E0CC] flex items-center justify-center">
+        <div className="min-h-screen bg-[#0755C9] text-white flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
             <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            <span className="text-xs font-mono text-gray-400">Verifying session clearance...</span>
+            <span className="text-xs font-mono text-blue-200">Verifying session clearance...</span>
           </div>
         </div>
       );
@@ -692,10 +642,10 @@ function App() {
 
   // DEFAULT ROUTE: HOMEPAGE (Preserved exactly as existing)
   return (
-    <div className="bg-black text-[#E1E0CC] selection:bg-primary selection:text-black min-h-screen">
+    <div className="bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56] min-h-screen">
       {/* SECTION 1: HERO */}
       <section className="h-screen w-full p-4 md:p-6 relative box-border overflow-hidden">
-        <div className="w-full h-full rounded-2xl md:rounded-[2rem] overflow-hidden relative border border-white/5">
+        <div className="w-full h-full rounded-2xl md:rounded-[2rem] overflow-hidden relative border border-white/10">
           {/* Background Video */}
           <video
             src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4"
@@ -710,55 +660,10 @@ function App() {
           <div className="absolute inset-0 noise-overlay opacity-[0.7] mix-blend-overlay pointer-events-none z-10" />
 
           {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/75 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0755C9]/40 via-transparent to-[#0755C9]/85 z-10" />
 
-          {/* Navbar */}
-          <nav className="absolute top-0 left-1/2 -translate-x-1/2 z-30 w-auto">
-            <div className="bg-black rounded-b-2xl md:rounded-b-3xl px-5 py-2.5 md:px-8 md:py-3.5 flex items-center justify-center gap-4 sm:gap-6 md:gap-8 border-x border-b border-white/5 shadow-2xl">
-              {navItems.map((item, idx) => (
-                <a
-                  key={idx}
-                  href={item.href}
-                  className="text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase transition-colors duration-300"
-                  style={{
-                    color: "#E1E0CC",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "#ffffff";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = "#E1E0CC";
-                  }}
-                >
-                  {item.name}
-                </a>
-              ))}
-              <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
-              {currentUser ? (
-                <a
-                  href="/dashboard"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavigate("/dashboard");
-                  }}
-                  className="text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase text-primary hover:text-white transition-colors"
-                >
-                  Dashboard
-                </a>
-              ) : (
-                <a
-                  href="/login"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavigate("/login");
-                  }}
-                  className="text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase text-primary hover:text-white transition-colors"
-                >
-                  Sign In
-                </a>
-              )}
-            </div>
-          </nav>
+          {/* Directional Hover Mega Navbar */}
+          <MegaNavbar onNavigate={handleNavigate} currentUser={currentUser} />
 
           {/* Hero Content (bottom-aligned) */}
           <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 md:p-12 lg:p-16 z-20">
@@ -768,7 +673,7 @@ function App() {
                 <WordsPullUp
                   text="WealthPass"
                   showAsterisk={true}
-                  className="text-[14vw] sm:text-[13vw] md:text-[11vw] lg:text-[9.5vw] xl:text-[9vw] 2xl:text-[8.5vw] font-medium leading-[0.85] tracking-[-0.07em] text-[#E1E0CC] justify-start"
+                  className="text-[14vw] sm:text-[13vw] md:text-[11vw] lg:text-[9.5vw] xl:text-[9vw] 2xl:text-[8.5vw] font-medium leading-[0.85] tracking-[-0.07em] text-white justify-start"
                 />
               </div>
 
@@ -794,10 +699,10 @@ function App() {
                     e.preventDefault();
                     handleNavigate(currentUser ? "/dashboard" : "/register");
                   }}
-                  className="group flex items-center gap-2 hover:gap-3 p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-black font-semibold transition-all duration-300 text-sm sm:text-base hover:bg-white cursor-pointer shadow-lg shadow-primary/20"
+                  className="group flex items-center gap-2 hover:gap-3 p-1.5 pl-6 pr-1.5 rounded-full bg-primary text-[#102A56] font-semibold transition-all duration-300 text-sm sm:text-base hover:bg-white cursor-pointer shadow-lg shadow-black/20"
                 >
                   <span>Get Started</span>
-                  <div className="bg-black rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="bg-[#083B8A] rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                 </motion.a>
@@ -812,9 +717,6 @@ function App() {
 
       {/* Features Section (Interactive 4-Card Section) */}
       <FeaturesSection onNavigate={handleNavigate} />
-
-      {/* Real-time Dynamic Green AI Energy & Asset Discovery Section */}
-      <GreenAIEnergySection onNavigateEnergy={() => handleNavigate("/energy")} />
 
       {/* Legal Section */}
       <LegalSection />

@@ -49,9 +49,9 @@ export const ClaimCompletionModal: React.FC<ClaimCompletionModalProps> = ({
     : "Your claim information is ready for final review. Check your details and follow the next steps for submitting your claim to the relevant institution.";
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#000000]/85 backdrop-blur-md flex items-center justify-center p-4 selection:bg-[#E5E0C9] selection:text-[#080808]">
+    <div className="fixed inset-0 z-50 bg-[#083B8A]/80 backdrop-blur-md flex items-center justify-center p-4 selection:bg-primary selection:text-[#102A56]">
       <div
-        className="w-full max-w-lg bg-[#111111] border border-[#292929] rounded-3xl p-8 sm:p-12 shadow-2xl relative text-center flex flex-col items-center"
+        className="w-full max-w-lg bg-[#0646AD] border border-white/20 rounded-3xl p-8 sm:p-12 shadow-2xl relative text-center flex flex-col items-center"
         role="dialog"
         aria-modal="true"
         aria-labelledby="claim-completion-title"
@@ -59,7 +59,7 @@ export const ClaimCompletionModal: React.FC<ClaimCompletionModalProps> = ({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-[#A4A4A4] hover:text-[#F1EEDC] p-1.5 rounded-full hover:bg-[#171717] transition-colors cursor-pointer"
+          className="absolute top-5 right-5 text-blue-200 hover:text-white p-1.5 rounded-full hover:bg-white/10 transition-colors cursor-pointer"
           aria-label="Close dialog"
         >
           <X className="w-5 h-5" />
@@ -78,29 +78,29 @@ export const ClaimCompletionModal: React.FC<ClaimCompletionModalProps> = ({
         {/* 2. Completion Title */}
         <h2
           id="claim-completion-title"
-          className="text-2xl sm:text-3xl font-normal sm:font-medium text-[#F1EEDC] tracking-tight mb-3"
+          className="text-2xl sm:text-3xl font-medium text-white tracking-tight mb-3"
         >
           {title}
         </h2>
 
         {/* 3. Supporting Description */}
-        <p className="text-xs sm:text-sm text-[#A4A4A4] leading-relaxed max-w-md mx-auto mb-6">
+        <p className="text-xs sm:text-sm text-[#EAF2FF] leading-relaxed max-w-md mx-auto mb-6">
           {description}
         </p>
 
         {/* Optional Metadata Box (Zero fake data) */}
         {(caseReference || institutionName) && (
-          <div className="w-full bg-[#080808] border border-[#202020] rounded-xl p-3.5 mb-6 text-xs text-left space-y-1.5 font-mono">
+          <div className="w-full bg-[#083B8A] border border-white/15 rounded-xl p-3.5 mb-6 text-xs text-left space-y-1.5 font-mono">
             {caseReference && (
               <div className="flex justify-between items-center">
-                <span className="text-[#777777]">Case Reference:</span>
-                <span className="text-[#E5E0C9] font-medium">{caseReference}</span>
+                <span className="text-blue-200">Case Reference:</span>
+                <span className="text-primary font-medium">{caseReference}</span>
               </div>
             )}
             {institutionName && (
               <div className="flex justify-between items-center">
-                <span className="text-[#777777]">Custodian Institution:</span>
-                <span className="text-[#F1EEDC]">{institutionName}</span>
+                <span className="text-blue-200">Custodian Institution:</span>
+                <span className="text-white">{institutionName}</span>
               </div>
             )}
           </div>
@@ -113,7 +113,7 @@ export const ClaimCompletionModal: React.FC<ClaimCompletionModalProps> = ({
               href={claimUrl}
               target="_blank"
               rel="noreferrer"
-              className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#E5E0C9] text-[#080808] font-semibold text-xs sm:text-sm hover:bg-[#F1EEDC] transition-all cursor-pointer flex items-center justify-center gap-2 shadow-sm"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-primary text-[#102A56] font-semibold text-xs sm:text-sm hover:bg-white transition-all cursor-pointer flex items-center justify-center gap-2 shadow-sm"
             >
               <Download className="w-4 h-4" />
               <span>View Claim</span>
@@ -122,7 +122,7 @@ export const ClaimCompletionModal: React.FC<ClaimCompletionModalProps> = ({
             <button
               type="button"
               onClick={onViewClaim}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#E5E0C9] text-[#080808] font-semibold text-xs sm:text-sm hover:bg-[#F1EEDC] transition-all cursor-pointer flex items-center justify-center gap-2 shadow-sm"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-primary text-[#102A56] font-semibold text-xs sm:text-sm hover:bg-white transition-all cursor-pointer flex items-center justify-center gap-2 shadow-sm"
             >
               <ArrowRight className="w-4 h-4" />
               <span>View Claim</span>
@@ -132,7 +132,7 @@ export const ClaimCompletionModal: React.FC<ClaimCompletionModalProps> = ({
           <button
             type="button"
             onClick={onBackToDashboard}
-            className="w-full sm:w-auto px-6 py-2.5 rounded-full border border-[#303030] bg-[#171717] hover:bg-[#202020] text-[#A4A4A4] hover:text-[#F1EEDC] font-medium text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-6 py-2.5 rounded-full border border-white/20 bg-[#083B8A] hover:bg-white/15 text-[#EAF2FF] hover:text-white font-medium text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-2"
           >
             <Briefcase className="w-4 h-4" />
             <span>Back to Dashboard</span>

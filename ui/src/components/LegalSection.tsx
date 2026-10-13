@@ -13,7 +13,7 @@ export const LegalSection = () => {
   ];
 
   const heading2 = [
-    { text: "RBI Master Directions 2025, IRDAI guidelines, and IEPF claim protocols.", className: "text-[#DEDBC8] font-medium" }
+    { text: "RBI Master Directions 2025, IRDAI guidelines, and IEPF claim protocols.", className: "text-[#EAF2FF] font-medium" }
   ];
 
   const containerVariants = {
@@ -86,7 +86,7 @@ export const LegalSection = () => {
   };
 
   return (
-    <section id="legal" className="py-24 px-4 md:px-6 bg-black relative overflow-hidden flex flex-col justify-center border-t border-white/5">
+    <section id="legal" className="py-24 px-4 md:px-6 bg-[#0755C9] relative overflow-hidden flex flex-col justify-center border-t border-white/10">
       {/* Background overlay noise */}
       <div className="absolute inset-0 bg-noise opacity-[0.05] pointer-events-none z-0" />
       
@@ -122,7 +122,7 @@ export const LegalSection = () => {
                 <motion.article
                   key={idx}
                   variants={cardVariants}
-                  className="bg-[#101010] border border-white/5 rounded-[2rem] p-7 sm:p-8 flex flex-col justify-between min-h-[290px] lg:min-h-[300px] relative group shrink-0 w-[82vw] sm:w-[320px] lg:w-auto snap-center select-none transition-all duration-300 hover:border-white/10"
+                  className="bg-[#0646AD] border border-white/10 rounded-[2rem] p-7 sm:p-8 flex flex-col justify-between min-h-[290px] lg:min-h-[300px] relative group shrink-0 w-[82vw] sm:w-[320px] lg:w-auto snap-center select-none transition-all duration-300 hover:border-white/20 shadow-xl"
                 >
                   {/* Subtle hover indicator */}
                   <div className="absolute inset-0 bg-primary/[0.015] rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -151,19 +151,19 @@ export const LegalSection = () => {
                       </div>
 
                       {/* Title */}
-                      <h4 className="text-base sm:text-lg font-medium text-[#E1E0CC] mb-2.5 group-hover:text-primary transition-colors">
+                      <h4 className="text-base sm:text-lg font-medium text-white mb-2.5 group-hover:text-primary transition-colors">
                         {item.title}
                       </h4>
 
                       {/* Description */}
-                      <p className="text-gray-300 text-xs sm:text-sm leading-relaxed">
+                      <p className="text-[#EAF2FF] text-xs sm:text-sm leading-relaxed">
                         {item.description}
                       </p>
                     </div>
 
                     {/* Institution Full Name Footer */}
                     <div className="pt-6 border-t border-white/[0.04] mt-4">
-                      <span className="text-[10px] uppercase tracking-wider text-gray-500 font-medium line-clamp-1">
+                      <span className="text-[10px] uppercase tracking-wider text-blue-200/70 font-medium line-clamp-1">
                         {item.institution}
                       </span>
                     </div>
@@ -190,7 +190,7 @@ export const LegalSection = () => {
         </div>
 
         {/* Subtle Informational Disclaimer */}
-        <p className="text-center text-[11px] sm:text-xs text-gray-400 max-w-xl mx-auto mt-10 md:mt-14 font-normal leading-relaxed">
+        <p className="text-center text-[11px] sm:text-xs text-[#EAF2FF]/80 max-w-xl mx-auto mt-10 md:mt-14 font-normal leading-relaxed">
           Institutional references are for informational purposes only and do not imply endorsement, partnership, or affiliation.
         </p>
       </div>

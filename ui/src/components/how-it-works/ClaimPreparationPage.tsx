@@ -10,7 +10,7 @@ interface ClaimPreparationPageProps {
 
 export const ClaimPreparationPage: React.FC<ClaimPreparationPageProps> = ({ onNavigate }) => {
   return (
-    <div className="bg-[#050505] text-[#E1E0CC] min-h-screen">
+    <div className="bg-[#0755C9] text-white min-h-screen">
       {/* HERO */}
       <HowItWorksHero
         stepNumber="02"
@@ -40,13 +40,13 @@ export const ClaimPreparationPage: React.FC<ClaimPreparationPageProps> = ({ onNa
           {/* Visual Decision Tree */}
           <div className="flex flex-col items-center gap-2 text-xs">
             {/* 1. ASSET IDENTIFIED */}
-            <div className="w-full max-w-xs bg-[#1c1c1c] p-2.5 rounded-xl border border-white/10 text-center font-medium text-[#E1E0CC]">
+            <div className="w-full max-w-xs bg-[#083B8A] p-2.5 rounded-xl border border-white/10 text-center font-medium text-white">
               ASSET IDENTIFIED
             </div>
             <ArrowDown className="w-3.5 h-3.5 text-primary/60" />
 
             {/* 2. IS A NOMINEE REGISTERED? */}
-            <div className="w-full max-w-xs bg-[#242424] p-2.5 rounded-xl border border-primary/20 text-center font-semibold text-primary">
+            <div className="w-full max-w-xs bg-[#0646AD] p-2.5 rounded-xl border border-white/20 text-center font-semibold text-white">
               IS A NOMINEE REGISTERED?
             </div>
 
@@ -54,13 +54,13 @@ export const ClaimPreparationPage: React.FC<ClaimPreparationPageProps> = ({ onNa
             <div className="w-full grid grid-cols-2 gap-3 mt-1">
               {/* Branch YES */}
               <div className="flex flex-col items-center gap-2">
-                <span className="text-[10px] uppercase font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                <span className="text-[10px] uppercase font-bold text-emerald-300 bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-400/30">
                   YES
                 </span>
-                <ArrowDown className="w-3 h-3 text-emerald-400/60" />
-                <div className="w-full bg-[#1c1c1c] p-3 rounded-xl border border-emerald-500/20 text-center">
-                  <p className="font-semibold text-emerald-400 text-xs mb-1">NOMINEE PATH</p>
-                  <p className="text-[10px] text-gray-400 leading-tight">
+                <ArrowDown className="w-3 h-3 text-emerald-300/60" />
+                <div className="w-full bg-[#083B8A] p-3 rounded-xl border border-emerald-400/30 text-center">
+                  <p className="font-semibold text-emerald-300 text-xs mb-1">NOMINEE PATH</p>
+                  <p className="text-[10px] text-blue-100 leading-tight">
                     Nominee claim form, death cert, KYC. Typically fast-track settlement.
                   </p>
                 </div>
@@ -68,13 +68,13 @@ export const ClaimPreparationPage: React.FC<ClaimPreparationPageProps> = ({ onNa
 
               {/* Branch NO */}
               <div className="flex flex-col items-center gap-2">
-                <span className="text-[10px] uppercase font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
+                <span className="text-[10px] uppercase font-bold text-amber-300 bg-amber-500/20 px-2.5 py-0.5 rounded-full border border-amber-400/30">
                   NO
                 </span>
-                <ArrowDown className="w-3 h-3 text-amber-400/60" />
-                <div className="w-full bg-[#1c1c1c] p-3 rounded-xl border border-amber-500/20 text-center">
-                  <p className="font-semibold text-amber-400 text-xs mb-1">LEGAL-HEIR / SUCCESSION</p>
-                  <p className="text-[10px] text-gray-400 leading-tight">
+                <ArrowDown className="w-3 h-3 text-amber-300/60" />
+                <div className="w-full bg-[#083B8A] p-3 rounded-xl border border-amber-400/30 text-center">
+                  <p className="font-semibold text-amber-300 text-xs mb-1">LEGAL-HEIR / SUCCESSION</p>
+                  <p className="text-[10px] text-blue-100 leading-tight">
                     Requires succession certificate, family tree NOC, or legal heir cert.
                   </p>
                 </div>
@@ -98,32 +98,32 @@ export const ClaimPreparationPage: React.FC<ClaimPreparationPageProps> = ({ onNa
           </span>
 
           <div className="flex flex-col items-center gap-2 text-xs">
-            <div className="w-full max-w-sm bg-[#1c1c1c] px-4 py-2 rounded-xl border border-white/10 text-center text-[#E1E0CC]">
+            <div className="w-full max-w-sm bg-[#083B8A] px-4 py-2 rounded-xl border border-white/10 text-center text-white">
               VERIFIED PROFILE
             </div>
             <ArrowDown className="w-3 h-3 text-primary/60" />
 
-            <div className="w-full max-w-sm bg-[#1c1c1c] px-4 py-2 rounded-xl border border-white/10 text-center text-[#E1E0CC]">
+            <div className="w-full max-w-sm bg-[#083B8A] px-4 py-2 rounded-xl border border-white/10 text-center text-white">
               RELEVANT INFORMATION
             </div>
             <ArrowDown className="w-3 h-3 text-primary/60" />
 
-            <div className="w-full max-w-sm bg-[#242424] px-4 py-2 rounded-xl border border-primary/30 text-center font-medium text-primary">
+            <div className="w-full max-w-sm bg-[#0646AD] px-4 py-2 rounded-xl border border-white/20 text-center font-medium text-white">
               FORM PRE-FILL
             </div>
             <ArrowDown className="w-3 h-3 text-primary/60" />
 
-            <div className="w-full max-w-sm bg-[#1c1c1c] px-4 py-2 rounded-xl border border-white/10 text-center text-[#E1E0CC]">
+            <div className="w-full max-w-sm bg-[#083B8A] px-4 py-2 rounded-xl border border-white/10 text-center text-white">
               USER REVIEW
             </div>
             <ArrowDown className="w-3 h-3 text-primary/60" />
 
-            <div className="w-full max-w-sm bg-primary text-black px-4 py-2 rounded-xl text-center font-semibold">
+            <div className="w-full max-w-sm bg-primary text-[#102A56] px-4 py-2 rounded-xl text-center font-semibold">
               SUBMIT
             </div>
           </div>
 
-          <p className="text-[11px] text-gray-400 text-center mt-2 italic">
+          <p className="text-[11px] text-[#EAF2FF]/80 text-center mt-2 italic">
             * Eliminates multi-day paperwork overhead and reduces rejection risk from minor clerical errors.
           </p>
         </div>
@@ -152,21 +152,21 @@ export const ClaimPreparationPage: React.FC<ClaimPreparationPageProps> = ({ onNa
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <div className="bg-[#1c1c1c] p-3 rounded-xl border border-white/5">
+            <div className="bg-[#083B8A] p-3 rounded-xl border border-white/10">
               <span className="text-[10px] font-bold text-primary block mb-1">01. Checklist Kit</span>
-              <p className="text-[11px] text-gray-300">Detailed requirements mapped to each financial institution.</p>
+              <p className="text-[11px] text-[#EAF2FF]">Detailed requirements mapped to each financial institution.</p>
             </div>
-            <div className="bg-[#1c1c1c] p-3 rounded-xl border border-white/5">
+            <div className="bg-[#083B8A] p-3 rounded-xl border border-white/10">
               <span className="text-[10px] font-bold text-primary block mb-1">02. Family NOC</span>
-              <p className="text-[11px] text-gray-300">Format for co-heir relinquishment or endorsement.</p>
+              <p className="text-[11px] text-[#EAF2FF]">Format for co-heir relinquishment or endorsement.</p>
             </div>
-            <div className="bg-[#1c1c1c] p-3 rounded-xl border border-white/5">
+            <div className="bg-[#083B8A] p-3 rounded-xl border border-white/10">
               <span className="text-[10px] font-bold text-primary block mb-1">03. Indemnity Bond</span>
-              <p className="text-[11px] text-gray-300">Standardized affidavit for non-nominated bank balances.</p>
+              <p className="text-[11px] text-[#EAF2FF]">Standardized affidavit for non-nominated bank balances.</p>
             </div>
-            <div className="bg-[#1c1c1c] p-3 rounded-xl border border-white/5">
+            <div className="bg-[#083B8A] p-3 rounded-xl border border-white/10">
               <span className="text-[10px] font-bold text-primary block mb-1">04. Submission Guide</span>
-              <p className="text-[11px] text-gray-300">Branch & postal routing details for claim submissions.</p>
+              <p className="text-[11px] text-[#EAF2FF]">Branch & postal routing details for claim submissions.</p>
             </div>
           </div>
         </div>
@@ -185,7 +185,7 @@ export const ClaimPreparationPage: React.FC<ClaimPreparationPageProps> = ({ onNa
             <span className="text-[10px] uppercase tracking-widest text-primary/70 font-semibold">
               Readiness Status Scorecard
             </span>
-            <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+            <span className="text-[10px] text-[#EAF2FF]/70 uppercase tracking-wider">
               Live Evaluation
             </span>
           </div>
@@ -193,39 +193,39 @@ export const ClaimPreparationPage: React.FC<ClaimPreparationPageProps> = ({ onNa
           {/* Premium Checklist UI */}
           <div className="flex flex-col gap-2.5">
             {/* Item 1 */}
-            <div className="bg-[#1c1c1c] px-4 py-3 rounded-xl border border-emerald-500/20 flex items-center justify-between">
+            <div className="bg-[#083B8A] px-4 py-3 rounded-xl border border-emerald-400/30 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs font-semibold text-[#E1E0CC] tracking-wider">IDENTITY</span>
+                <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+                <span className="text-xs font-semibold text-white tracking-wider">IDENTITY</span>
               </div>
-              <span className="text-xs text-emerald-400 font-medium">✓ Verified</span>
+              <span className="text-xs text-emerald-300 font-medium">✓ Verified</span>
             </div>
 
             {/* Item 2 */}
-            <div className="bg-[#1c1c1c] px-4 py-3 rounded-xl border border-emerald-500/20 flex items-center justify-between">
+            <div className="bg-[#083B8A] px-4 py-3 rounded-xl border border-emerald-400/30 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs font-semibold text-[#E1E0CC] tracking-wider">ASSET</span>
+                <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+                <span className="text-xs font-semibold text-white tracking-wider">ASSET</span>
               </div>
-              <span className="text-xs text-emerald-400 font-medium">✓ Matched</span>
+              <span className="text-xs text-emerald-300 font-medium">✓ Matched</span>
             </div>
 
             {/* Item 3 */}
-            <div className="bg-[#1c1c1c] px-4 py-3 rounded-xl border border-amber-500/20 flex items-center justify-between">
+            <div className="bg-[#083B8A] px-4 py-3 rounded-xl border border-amber-400/30 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <AlertCircle className="w-4 h-4 text-amber-400" />
-                <span className="text-xs font-semibold text-[#E1E0CC] tracking-wider">DOCUMENTS</span>
+                <AlertCircle className="w-4 h-4 text-amber-300" />
+                <span className="text-xs font-semibold text-white tracking-wider">DOCUMENTS</span>
               </div>
-              <span className="text-xs text-amber-400 font-medium">● Review required</span>
+              <span className="text-xs text-amber-300 font-medium">● Review required</span>
             </div>
 
             {/* Item 4 */}
-            <div className="bg-[#1c1c1c] px-4 py-3 rounded-xl border border-white/5 flex items-center justify-between opacity-75">
+            <div className="bg-[#083B8A] px-4 py-3 rounded-xl border border-white/10 flex items-center justify-between opacity-85">
               <div className="flex items-center gap-3">
-                <Clock className="w-4 h-4 text-gray-400" />
-                <span className="text-xs font-semibold text-gray-300 tracking-wider">CLAIM</span>
+                <Clock className="w-4 h-4 text-blue-200" />
+                <span className="text-xs font-semibold text-blue-100 tracking-wider">CLAIM</span>
               </div>
-              <span className="text-xs text-gray-400 font-medium">○ Ready after documentation</span>
+              <span className="text-xs text-blue-200 font-medium">○ Ready after documentation</span>
             </div>
           </div>
         </div>

@@ -81,7 +81,7 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0c0c0c] text-white pt-24 pb-20 px-4 sm:px-6 lg:px-8 font-sans selection:bg-amber-500/20 selection:text-amber-200">
+    <div className="min-h-screen bg-[#0755C9] text-white pt-24 pb-20 px-4 sm:px-6 lg:px-8 font-sans selection:bg-amber-500/20 selection:text-amber-200">
       <div className="max-w-6xl mx-auto space-y-12">
         
         {/* Header */}
@@ -108,7 +108,7 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
 
         {/* Target Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="p-5 rounded-2xl bg-[#141414] border border-emerald-500/30 relative overflow-hidden">
+          <div className="p-5 rounded-2xl bg-[#0646AD] border border-emerald-500/30 relative overflow-hidden">
             <div className="text-xs font-mono text-emerald-400 uppercase tracking-wider">Target 1: Energy Cut</div>
             <div className="text-3xl font-bold text-white mt-2 font-mono">
               {benchmark ? `${benchmark.comparison.energy_reduction_pct}%` : "95.2%"}
@@ -119,7 +119,7 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
             </div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-[#141414] border border-emerald-500/30 relative overflow-hidden">
+          <div className="p-5 rounded-2xl bg-[#0646AD] border border-emerald-500/30 relative overflow-hidden">
             <div className="text-xs font-mono text-emerald-400 uppercase tracking-wider">Target 2: Accuracy Delta</div>
             <div className="text-3xl font-bold text-white mt-2 font-mono">
               {benchmark ? `${benchmark.comparison.accuracy_delta_pct}%` : "0.0%"}
@@ -130,7 +130,7 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
             </div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-[#141414] border border-amber-500/20 relative overflow-hidden">
+          <div className="p-5 rounded-2xl bg-[#0646AD] border border-amber-500/20 relative overflow-hidden">
             <div className="text-xs font-mono text-amber-400 uppercase tracking-wider">Overall Accuracy</div>
             <div className="text-3xl font-bold text-white mt-2 font-mono">
               {benchmark ? `${benchmark.optimized.accuracy}%` : "100.0%"}
@@ -141,7 +141,7 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
             </div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-[#141414] border border-cyan-500/20 relative overflow-hidden">
+          <div className="p-5 rounded-2xl bg-[#0646AD] border border-cyan-500/20 relative overflow-hidden">
             <div className="text-xs font-mono text-cyan-400 uppercase tracking-wider">Escalation Rate</div>
             <div className="text-3xl font-bold text-white mt-2 font-mono">
               {benchmark ? `${benchmark.optimized.escalation_rate_pct}%` : "10.4%"}
@@ -154,7 +154,7 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
         </div>
 
         {/* Telemetry Comparison Table */}
-        <div className="rounded-2xl bg-[#121212] border border-white/10 p-6 space-y-6">
+        <div className="rounded-2xl bg-[#0646AD] border border-white/10 p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-white">Before & After Inference Benchmark</h2>
@@ -222,7 +222,7 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
 
         {/* Per-Category Matrix */}
         {benchmark?.per_category_metrics && (
-          <div className="rounded-2xl bg-[#121212] border border-white/10 p-6 space-y-4">
+          <div className="rounded-2xl bg-[#0646AD] border border-white/10 p-6 space-y-4">
             <h2 className="text-lg font-semibold text-white">Per-Category Performance (Optimized Cascade)</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {Object.entries(benchmark.per_category_metrics).map(([cat, m]: [string, any]) => (
@@ -250,7 +250,7 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
 
         {/* Real Dynamic Asset Distribution & Pie Chart */}
         {fullData?.discovered_assets && (
-          <div className="rounded-2xl bg-[#121212] border border-white/10 p-6 space-y-6">
+          <div className="rounded-2xl bg-[#0646AD] border border-white/10 p-6 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-2">
               <div>
                 <h2 className="text-lg font-semibold text-white">Live Discovered Assets Distribution</h2>
@@ -332,7 +332,7 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
         )}
 
         {/* Interactive Live Tester */}
-        <div className="rounded-2xl bg-[#121212] border border-white/10 p-6 space-y-4">
+        <div className="rounded-2xl bg-[#0646AD] border border-white/10 p-6 space-y-4">
           <div>
             <h2 className="text-lg font-semibold text-white">Interactive Document Intelligence Tester</h2>
             <p className="text-xs text-white/50 mt-0.5">Test any sample document against the live cascaded intelligence pipeline.</p>
@@ -355,7 +355,7 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
             value={testText}
             onChange={e => setTestText(e.target.value)}
             placeholder="Paste raw financial OCR text here or choose a sample above..."
-            className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-xs font-mono text-white/90 focus:outline-none focus:border-amber-500/50"
+            className="w-full bg-[#083B8A] border border-white/10 rounded-xl p-3 text-xs font-mono text-white/90 focus:outline-none focus:border-amber-500/50"
           />
 
           <button
@@ -370,7 +370,7 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-4 p-4 rounded-xl bg-black/60 border border-emerald-500/30 font-mono text-xs space-y-3"
+              className="mt-4 p-4 rounded-xl bg-[#083B8A] border border-emerald-500/30 font-mono text-xs space-y-3"
             >
               <div className="flex items-center justify-between border-b border-white/10 pb-2">
                 <span className="text-emerald-400 font-bold">Category: {testResult.document_category}</span>
@@ -384,7 +384,7 @@ export function EnergyDashboardPage({ onNavigateHome }: EnergyDashboardProps) {
               </div>
               <div>
                 <div className="text-white/40 text-[10px] uppercase">Extracted Fields (Strict Pydantic):</div>
-                <pre className="mt-1 p-2 bg-black rounded border border-white/5 overflow-x-auto text-amber-200 text-[11px]">
+                <pre className="mt-1 p-2 bg-[#083B8A] rounded border border-white/5 overflow-x-auto text-amber-200 text-[11px]">
                   {JSON.stringify(testResult.extracted_fields, null, 2)}
                 </pre>
               </div>

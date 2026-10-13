@@ -435,7 +435,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     if (cases.length === 0) {
       return {
         label: "Not required yet",
-        badgeStyle: "bg-[#171717] text-[#777777] border-[#292929]",
+        badgeStyle: "bg-[#083B8A] text-blue-200/70 border-white/10",
         subtext: "Begins when you start your first recovery case",
         actionable: false,
       };
@@ -492,11 +492,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     : "bg-[#2D2106] text-[#E0B252] border-[#523C0A]";
 
   return (
-    <div className="min-h-screen bg-[#000000] text-[#F1EEDC] selection:bg-[#E5E0C9] selection:text-[#080808]">
+    <div className="min-h-screen bg-[#0755C9] text-white selection:bg-primary selection:text-[#102A56]">
       {/* ============================================================= */}
       {/* STICKY PORTAL HEADER & NAVIGATION TABS */}
       {/* ============================================================= */}
-      <header className="sticky top-0 z-40 bg-[#000000]/90 backdrop-blur-md border-b border-[#202020] px-4 sm:px-8 py-3.5">
+      <header className="sticky top-0 z-40 bg-[#083B8A]/85 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-3.5">
         <div className="max-w-[1440px] w-full mx-auto flex items-center justify-between gap-4">
           {/* Left: Brand & Navigation Switcher */}
           <div className="flex items-center gap-4 sm:gap-6">
@@ -507,16 +507,16 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               }}
               className="text-left cursor-pointer"
             >
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#F1EEDC] block">
+              <span className="text-xs font-semibold uppercase tracking-wider text-white block">
                 WealthPass
               </span>
-              <span className="text-[10px] text-[#777777] font-mono hidden sm:inline">
+              <span className="text-[10px] text-blue-200 font-mono hidden sm:inline">
                 Asset Recovery Portal
               </span>
             </button>
 
             {/* Navigation Tabs */}
-            <nav className="flex items-center gap-1 bg-[#111111] p-1 rounded-full border border-[#292929] text-xs">
+            <nav className="flex items-center gap-1 bg-[#0646AD] p-1 rounded-full border border-white/15 text-xs">
               <button
                 onClick={() => {
                   setActiveTab("cases");
@@ -524,8 +524,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 }}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all cursor-pointer font-medium ${
                   activeTab === "cases"
-                    ? "bg-[#E5E0C9] text-[#080808] shadow-sm"
-                    : "text-[#A4A4A4] hover:text-[#F1EEDC]"
+                    ? "bg-primary text-[#102A56] shadow-sm font-semibold"
+                    : "text-blue-100 hover:text-white"
                 }`}
               >
                 <Briefcase className="w-3.5 h-3.5" />
@@ -538,8 +538,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 }}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all cursor-pointer font-medium ${
                   activeTab === "settings"
-                    ? "bg-[#E5E0C9] text-[#080808] shadow-sm"
-                    : "text-[#A4A4A4] hover:text-[#F1EEDC]"
+                    ? "bg-primary text-[#102A56] shadow-sm font-semibold"
+                    : "text-blue-100 hover:text-white"
                 }`}
               >
                 <Settings className="w-3.5 h-3.5" />
@@ -553,17 +553,17 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             <NotificationBell />
 
             <div className="text-right hidden md:block">
-              <span className="text-xs text-[#F1EEDC] font-medium block truncate max-w-[160px]">
+              <span className="text-xs text-white font-medium block truncate max-w-[160px]">
                 {user?.full_name || "Account Holder"}
               </span>
-              <span className="text-[10px] text-[#777777] block font-mono truncate max-w-[160px]">
+              <span className="text-[10px] text-blue-200 block font-mono truncate max-w-[160px]">
                 {user?.email}
               </span>
             </div>
 
             <button
               onClick={onLogout}
-              className="flex items-center gap-1.5 py-1.5 px-3.5 rounded-full border border-[#303030] bg-[#171717] hover:bg-[#202020] text-xs text-[#A4A4A4] hover:text-[#F1EEDC] transition-all cursor-pointer"
+              className="flex items-center gap-1.5 py-1.5 px-3.5 rounded-full border border-white/20 bg-[#0646AD] hover:bg-white/15 text-xs text-blue-100 hover:text-white transition-all cursor-pointer"
               title="Sign Out"
             >
               <LogOut className="w-3.5 h-3.5" />
@@ -583,29 +583,29 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           /* =========================================================== */
           <>
             {/* 1. WELCOME BANNER (Refined, no green dots, editorial typography) */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-[#111111] border border-[#292929] relative overflow-hidden">
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#0646AD] border border-white/10 relative overflow-hidden">
               <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-[#777777] text-[11px] tracking-[0.2em] uppercase font-mono">
+                    <span className="text-blue-200/70 text-[11px] tracking-[0.2em] uppercase font-mono">
                       Personal Recovery Dashboard
                     </span>
                     <span className="text-[#333333]">•</span>
-                    <span className="text-[11px] text-[#A4A4A4] font-mono">
+                    <span className="text-[11px] text-blue-100 font-mono">
                       Active
                     </span>
                   </div>
 
-                  <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-normal sm:font-medium text-[#F1EEDC] tracking-tight">
+                  <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-normal sm:font-medium text-white tracking-tight">
                     Welcome, {user?.full_name || "Valued User"}
                   </h1>
 
                   {/* Verification badges & contact info */}
-                  <div className="flex flex-wrap items-center gap-2.5 text-xs text-[#A4A4A4] pt-1">
+                  <div className="flex flex-wrap items-center gap-2.5 text-xs text-blue-100 pt-1">
                     {/* Email badge with live action if unverified */}
-                    <div className="flex items-center gap-1.5 bg-[#171717] px-3.5 py-1.5 rounded-full border border-[#292929]">
-                      <Mail className="w-3.5 h-3.5 text-[#E5E0C9]" />
-                      <span className="text-[#F1EEDC]">{user?.email}</span>
+                    <div className="flex items-center gap-1.5 bg-[#083B8A] px-3.5 py-1.5 rounded-full border border-white/10">
+                      <Mail className="w-3.5 h-3.5 text-white" />
+                      <span className="text-white">{user?.email}</span>
                       {user?.is_email_verified ? (
                         <span className="text-[#85E0A3] text-[10px] font-medium ml-1 flex items-center gap-0.5">
                           <Check className="w-3 h-3" />
@@ -614,7 +614,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                       ) : (
                         <button
                           onClick={() => onNavigate("/verify-email")}
-                          className="text-[#E0B252] hover:text-[#F1EEDC] text-[10px] font-medium ml-1 underline cursor-pointer"
+                          className="text-[#E0B252] hover:text-white text-[10px] font-medium ml-1 underline cursor-pointer"
                         >
                           Verify Email
                         </button>
@@ -622,9 +622,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                     </div>
 
                     {/* Phone badge */}
-                    <div className="flex items-center gap-1.5 bg-[#171717] px-3.5 py-1.5 rounded-full border border-[#292929]">
-                      <Phone className="w-3.5 h-3.5 text-[#E5E0C9]" />
-                      <span className="text-[#F1EEDC]">
+                    <div className="flex items-center gap-1.5 bg-[#083B8A] px-3.5 py-1.5 rounded-full border border-white/10">
+                      <Phone className="w-3.5 h-3.5 text-white" />
+                      <span className="text-white">
                         {user?.phone || "No phone added"}
                       </span>
                       {user?.is_phone_verified && (
@@ -635,7 +635,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                     </div>
 
                     {user?.created_at && (
-                      <span className="flex items-center gap-1.5 text-[#777777] font-mono text-[11px] hidden sm:flex">
+                      <span className="flex items-center gap-1.5 text-blue-200/70 font-mono text-[11px] hidden sm:flex">
                         <Clock className="w-3 h-3" />
                         Member since {new Date(user.created_at).toLocaleDateString()}
                       </span>
@@ -647,11 +647,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 <div className="shrink-0">
                   <button
                     onClick={() => onNavigate("/assets/discover")}
-                    className="group flex items-center gap-3 p-1.5 pl-6 pr-1.5 rounded-full bg-[#E5E0C9] text-[#080808] font-semibold transition-all duration-300 text-sm sm:text-base hover:bg-[#F1EEDC] cursor-pointer shadow-md"
+                    className="group flex items-center gap-3 p-1.5 pl-6 pr-1.5 rounded-full bg-[#E5E0C9] text-[#102A56] font-semibold transition-all duration-300 text-sm sm:text-base hover:bg-[#F1EEDC] cursor-pointer shadow-md"
                   >
                     <span>Find Assets</span>
-                    <div className="bg-[#080808] rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#E5E0C9]" />
+                    <div className="bg-[#083B8A] rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
                   </button>
                 </div>
@@ -670,7 +670,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 </div>
                 <button
                   onClick={() => onNavigate("/verify-email")}
-                  className="px-4 py-1.5 rounded-full bg-[#E0B252] text-[#080808] font-medium text-xs hover:bg-[#F1EEDC] transition-colors cursor-pointer shrink-0 self-start sm:self-auto"
+                  className="px-4 py-1.5 rounded-full bg-[#E0B252] text-[#102A56] font-medium text-xs hover:bg-[#F1EEDC] transition-colors cursor-pointer shrink-0 self-start sm:self-auto"
                 >
                   Verify Email
                 </button>
@@ -681,10 +681,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             <section>
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <h2 className="text-xs uppercase tracking-widest text-[#777777] font-semibold">
+                  <h2 className="text-xs uppercase tracking-widest text-blue-200/70 font-semibold">
                     Your Verification Status
                   </h2>
-                  <p className="text-xs text-[#A4A4A4] mt-0.5">
+                  <p className="text-xs text-blue-100 mt-0.5">
                     Clearance credentials required by financial institutions to process asset recovery.
                   </p>
                 </div>
@@ -696,13 +696,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   onClick={() => {
                     if (!user?.is_email_verified) onNavigate("/verify-email");
                   }}
-                  className={`p-5 rounded-2xl bg-[#111111] border border-[#292929] hover:border-[#383838] flex flex-col justify-between transition-colors ${
+                  className={`p-5 rounded-2xl bg-[#0646AD] border border-white/10 hover:border-white/20 flex flex-col justify-between transition-colors ${
                     !user?.is_email_verified ? "cursor-pointer" : ""
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-9 h-9 rounded-xl bg-[#171717] border border-[#292929] flex items-center justify-center text-[#F1EEDC]">
+                      <div className="w-9 h-9 rounded-xl bg-[#083B8A] border border-white/10 flex items-center justify-center text-white">
                         <Mail className="w-4 h-4" />
                       </div>
                       <span
@@ -715,10 +715,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                         {user?.is_email_verified ? "Verified" : "Verification required"}
                       </span>
                     </div>
-                    <h3 className="text-sm font-medium text-[#F1EEDC] mb-1">
+                    <h3 className="text-sm font-medium text-white mb-1">
                       Email Verification
                     </h3>
-                    <p className="text-xs text-[#A4A4A4] leading-relaxed">
+                    <p className="text-xs text-blue-100 leading-relaxed">
                       {user?.is_email_verified
                         ? "Active channel for case correspondence and claim packets."
                         : "Required to receive statutory case match notifications."}
@@ -737,13 +737,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   onClick={() => {
                     if (!isIdentityVerified) onNavigate("/verify");
                   }}
-                  className={`p-5 rounded-2xl bg-[#111111] border border-[#292929] hover:border-[#383838] flex flex-col justify-between transition-colors ${
+                  className={`p-5 rounded-2xl bg-[#0646AD] border border-white/10 hover:border-white/20 flex flex-col justify-between transition-colors ${
                     !isIdentityVerified ? "cursor-pointer" : ""
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-9 h-9 rounded-xl bg-[#171717] border border-[#292929] flex items-center justify-center text-[#F1EEDC]">
+                      <div className="w-9 h-9 rounded-xl bg-[#083B8A] border border-white/10 flex items-center justify-center text-white">
                         <ShieldCheck className="w-4 h-4" />
                       </div>
                       <span
@@ -752,17 +752,17 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                         {identityStatusLabel}
                       </span>
                     </div>
-                    <h3 className="text-sm font-medium text-[#F1EEDC] mb-1">
+                    <h3 className="text-sm font-medium text-white mb-1">
                       Identity Verification
                     </h3>
-                    <p className="text-xs text-[#A4A4A4] leading-relaxed">
+                    <p className="text-xs text-blue-100 leading-relaxed">
                       {isIdentityVerified
                         ? "Claimant identity authenticated. Ready for institutional filings."
                         : "Verify your legal identity prior to formal asset claim submission."}
                     </p>
                   </div>
                   {!isIdentityVerified && (
-                    <span className="text-xs text-[#E5E0C9] font-medium flex items-center gap-1 mt-4">
+                    <span className="text-xs text-white font-medium flex items-center gap-1 mt-4">
                       <span>Begin verification</span>
                       <ChevronRight className="w-3 h-3" />
                     </span>
@@ -774,13 +774,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   onClick={() => {
                     if (relStatusInfo.actionable) onNavigate("/assets/discover");
                   }}
-                  className={`p-5 rounded-2xl bg-[#111111] border border-[#292929] hover:border-[#383838] flex flex-col justify-between transition-colors ${
+                  className={`p-5 rounded-2xl bg-[#0646AD] border border-white/10 hover:border-white/20 flex flex-col justify-between transition-colors ${
                     relStatusInfo.actionable ? "cursor-pointer" : ""
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-9 h-9 rounded-xl bg-[#171717] border border-[#292929] flex items-center justify-center text-[#F1EEDC]">
+                      <div className="w-9 h-9 rounded-xl bg-[#083B8A] border border-white/10 flex items-center justify-center text-white">
                         <FileText className="w-4 h-4" />
                       </div>
                       <span
@@ -789,15 +789,15 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                         {relStatusInfo.label}
                       </span>
                     </div>
-                    <h3 className="text-sm font-medium text-[#F1EEDC] mb-1">
+                    <h3 className="text-sm font-medium text-white mb-1">
                       Relationship Evidence
                     </h3>
-                    <p className="text-xs text-[#A4A4A4] leading-relaxed">
+                    <p className="text-xs text-blue-100 leading-relaxed">
                       {relStatusInfo.subtext}
                     </p>
                   </div>
                   {relStatusInfo.actionable && (
-                    <span className="text-xs text-[#E5E0C9] font-medium flex items-center gap-1 mt-4">
+                    <span className="text-xs text-white font-medium flex items-center gap-1 mt-4">
                       <span>Upload documents</span>
                       <ChevronRight className="w-3 h-3" />
                     </span>
@@ -810,10 +810,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             <section className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-sm uppercase tracking-widest text-[#777777] font-semibold">
+                  <h2 className="text-sm uppercase tracking-widest text-blue-200/70 font-semibold">
                     Your Asset Recovery Cases
                   </h2>
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-[#171717] border border-[#292929] text-[#A4A4A4] font-medium">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-[#083B8A] border border-white/10 text-blue-100 font-medium">
                     {cases.length} {cases.length === 1 ? "Case" : "Cases"}
                   </span>
                 </div>
@@ -822,14 +822,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   <button
                     onClick={fetchCases}
                     disabled={isCasesLoading}
-                    className="p-2 rounded-xl border border-[#292929] bg-[#171717] text-[#A4A4A4] hover:text-[#F1EEDC] hover:border-[#383838] transition-all cursor-pointer"
+                    className="p-2 rounded-xl border border-white/10 bg-[#083B8A] text-blue-100 hover:text-white hover:border-white/20 transition-all cursor-pointer"
                     title="Refresh Cases"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${isCasesLoading ? "animate-spin" : ""}`} />
                   </button>
                   <button
                     onClick={() => onNavigate("/assets/discover")}
-                    className="group flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#E5E0C9] hover:bg-[#F1EEDC] text-[#080808] text-xs font-semibold transition-all cursor-pointer shadow-sm"
+                    className="group flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#E5E0C9] hover:bg-[#F1EEDC] text-[#102A56] text-xs font-semibold transition-all cursor-pointer shadow-sm"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Find Assets</span>
@@ -844,34 +844,34 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               )}
 
               {isCasesLoading && cases.length === 0 ? (
-                <div className="p-12 rounded-3xl bg-[#111111] border border-[#292929] flex flex-col items-center justify-center text-center">
+                <div className="p-12 rounded-3xl bg-[#0646AD] border border-white/10 flex flex-col items-center justify-center text-center">
                   <div className="w-8 h-8 border-2 border-[#E5E0C9] border-t-transparent rounded-full animate-spin mb-3" />
-                  <span className="text-xs text-[#A4A4A4] font-mono">
+                  <span className="text-xs text-blue-100 font-mono">
                     Loading your recovery cases...
                   </span>
                 </div>
               ) : cases.length === 0 ? (
                 /* CLEAN USER-FRIENDLY EMPTY STATE */
-                <div className="p-12 sm:p-16 rounded-3xl bg-[#111111] border border-[#292929] flex flex-col items-center text-center max-w-2xl mx-auto space-y-5">
-                  <div className="w-12 h-12 rounded-2xl bg-[#171717] border border-[#292929] flex items-center justify-center text-[#E5E0C9]">
+                <div className="p-12 sm:p-16 rounded-3xl bg-[#0646AD] border border-white/10 flex flex-col items-center text-center max-w-2xl mx-auto space-y-5">
+                  <div className="w-12 h-12 rounded-2xl bg-[#083B8A] border border-white/10 flex items-center justify-center text-white">
                     <Search className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-xl sm:text-2xl font-normal text-[#F1EEDC] mb-2">
+                    <h3 className="text-xl sm:text-2xl font-normal text-white mb-2">
                       Your family&apos;s assets deserve to be found.
                     </h3>
-                    <p className="text-[#A4A4A4] text-xs sm:text-sm leading-relaxed max-w-md mx-auto">
+                    <p className="text-blue-100 text-xs sm:text-sm leading-relaxed max-w-md mx-auto">
                       Start by telling us about the person whose assets you want to discover across official banking, insurance, and statutory registries.
                     </p>
                   </div>
                   <div className="pt-2">
                     <button
                       onClick={() => onNavigate("/assets/discover")}
-                      className="group flex items-center gap-2.5 p-1.5 pl-6 pr-1.5 rounded-full bg-[#E5E0C9] text-[#080808] font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-[#F1EEDC] transition-all cursor-pointer shadow-md"
+                      className="group flex items-center gap-2.5 p-1.5 pl-6 pr-1.5 rounded-full bg-[#E5E0C9] text-[#102A56] font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-[#F1EEDC] transition-all cursor-pointer shadow-md"
                     >
                       <span>+ Find Assets</span>
-                      <div className="bg-[#080808] rounded-full w-8 h-8 flex items-center justify-center group-hover:scale-105 transition-transform">
-                        <ArrowRight className="w-4 h-4 text-[#E5E0C9]" />
+                      <div className="bg-[#083B8A] rounded-full w-8 h-8 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <ArrowRight className="w-4 h-4 text-white" />
                       </div>
                     </button>
                   </div>
@@ -892,27 +892,27 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                     return (
                       <div
                         key={c.id}
-                        className="p-6 rounded-2xl bg-[#111111] border border-[#292929] hover:border-[#383838] transition-all flex flex-col justify-between space-y-4"
+                        className="p-6 rounded-2xl bg-[#0646AD] border border-white/10 hover:border-white/20 transition-all flex flex-col justify-between space-y-4"
                       >
                         <div>
                           {/* Case Header: Ref & Status */}
                           <div className="flex items-start justify-between gap-3 mb-2">
                             <div>
                               <div className="flex items-center gap-2 mb-1">
-                                <span className="text-[11px] font-mono uppercase text-[#777777] font-medium">
+                                <span className="text-[11px] font-mono uppercase text-blue-200/70 font-medium">
                                   CASE-{c.id.slice(0, 8).toUpperCase()}
                                 </span>
                                 <span className="text-[#333333]">•</span>
-                                <span className="text-[11px] text-[#777777] font-mono">
+                                <span className="text-[11px] text-blue-200/70 font-mono">
                                   {formattedDate}
                                 </span>
                               </div>
-                              <h3 className="text-xl font-medium text-[#F1EEDC]">
+                              <h3 className="text-xl font-medium text-white">
                                 {c.deceased_name}
                               </h3>
-                              <span className="text-xs text-[#A4A4A4]">
+                              <span className="text-xs text-blue-100">
                                 Claimed Relationship:{" "}
-                                <strong className="text-[#F1EEDC] font-medium">
+                                <strong className="text-white font-medium">
                                   {c.relation || "Legal Heir"}
                                 </strong>
                               </span>
@@ -927,35 +927,35 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                           </div>
 
                           {/* Next Required Action Box */}
-                          <div className="p-3.5 rounded-xl bg-[#080808] border border-[#202020] space-y-1 my-3 text-left">
-                            <span className="text-[10px] uppercase tracking-wider text-[#777777] font-medium block">
+                          <div className="p-3.5 rounded-xl bg-[#083B8A] border border-white/10 space-y-1 my-3 text-left">
+                            <span className="text-[10px] uppercase tracking-wider text-blue-200/70 font-medium block">
                               Next Required Action
                             </span>
-                            <p className="text-xs text-[#F1EEDC] leading-relaxed">
+                            <p className="text-xs text-white leading-relaxed">
                               {nextAction}
                             </p>
                           </div>
 
                           {/* Genuine Discovery Summary */}
                           <div className="grid grid-cols-2 gap-3 text-xs">
-                            <div className="p-3 rounded-xl bg-[#171717] border border-[#292929]">
-                              <span className="text-[10px] uppercase text-[#777777] block mb-1">
+                            <div className="p-3 rounded-xl bg-[#083B8A] border border-white/10">
+                              <span className="text-[10px] uppercase text-blue-200/70 block mb-1">
                                 Deceased PAN
                               </span>
-                              <span className="font-mono text-[#F1EEDC]">
+                              <span className="font-mono text-white">
                                 {maskPan(c.deceased_pan)}
                               </span>
                             </div>
-                            <div className="p-3 rounded-xl bg-[#171717] border border-[#292929]">
-                              <span className="text-[10px] uppercase text-[#777777] block mb-1">
+                            <div className="p-3 rounded-xl bg-[#083B8A] border border-white/10">
+                              <span className="text-[10px] uppercase text-blue-200/70 block mb-1">
                                 Discovered Matches
                               </span>
                               {hasGenuineMatches ? (
-                                <span className="font-medium text-[#E5E0C9]">
+                                <span className="font-medium text-white">
                                   ₹{Number(c.total_assets_found).toLocaleString("en-IN")} ({c.assets_count || c.assets?.length || 1} match)
                                 </span>
                               ) : (
-                                <span className="text-xs text-[#777777] italic">
+                                <span className="text-xs text-blue-200/70 italic">
                                   Scan in progress
                                 </span>
                               )}
@@ -964,20 +964,20 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                         </div>
 
                         {/* Card Actions: Continue Case or View Details */}
-                        <div className="flex flex-wrap items-center justify-between gap-3 pt-3.5 border-t border-[#202020]">
+                        <div className="flex flex-wrap items-center justify-between gap-3 pt-3.5 border-t border-white/10">
                           <button
                             onClick={() => handleSelectCase(c.id)}
-                            className="text-xs text-[#A4A4A4] hover:text-[#F1EEDC] font-medium flex items-center gap-1 transition-colors cursor-pointer"
+                            className="text-xs text-blue-100 hover:text-white font-medium flex items-center gap-1 transition-colors cursor-pointer"
                           >
                             <span>View Details</span>
-                            <ChevronRight className="w-3.5 h-3.5 text-[#E5E0C9]" />
+                            <ChevronRight className="w-3.5 h-3.5 text-white" />
                           </button>
 
                           <div className="flex items-center gap-2">
                             {c.is_draft ? (
                               <button
                                 onClick={() => onNavigate("/assets/discover")}
-                                className="px-4 py-1.5 rounded-full bg-[#E5E0C9] text-[#080808] text-xs font-semibold hover:bg-[#F1EEDC] transition-all cursor-pointer flex items-center gap-1 shadow-sm"
+                                className="px-4 py-1.5 rounded-full bg-[#E5E0C9] text-[#102A56] text-xs font-semibold hover:bg-[#F1EEDC] transition-all cursor-pointer flex items-center gap-1 shadow-sm"
                               >
                                 <span>Continue Case</span>
                                 <ArrowRight className="w-3 h-3" />
@@ -985,7 +985,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                             ) : c.status === "READY_FOR_CLAIM" ? (
                               <a
                                 href={`/results/${c.id}/`}
-                                className="px-4 py-1.5 rounded-full bg-[#E5E0C9] text-[#080808] text-xs font-semibold hover:bg-[#F1EEDC] transition-all flex items-center gap-1 shadow-sm"
+                                className="px-4 py-1.5 rounded-full bg-[#E5E0C9] text-[#102A56] text-xs font-semibold hover:bg-[#F1EEDC] transition-all flex items-center gap-1 shadow-sm"
                               >
                                 <span>Claim Steps</span>
                                 <ArrowRight className="w-3 h-3" />
@@ -995,7 +995,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                                 href={`/print-forms/${c.id}/`}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="px-3.5 py-1.5 rounded-full border border-[#292929] bg-[#171717] hover:bg-[#202020] text-xs text-[#A4A4A4] hover:text-[#F1EEDC] transition-colors flex items-center gap-1.5"
+                                className="px-3.5 py-1.5 rounded-full border border-white/10 bg-[#083B8A] hover:bg-[#0755C9] text-xs text-blue-100 hover:text-white transition-colors flex items-center gap-1.5"
                               >
                                 <FileText className="w-3 h-3" />
                                 <span>Dossier</span>
@@ -1016,12 +1016,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           /* =========================================================== */
           <div className="space-y-8">
             {/* Settings Header & Return shortcut */}
-            <div className="flex items-center justify-between border-b border-[#202020] pb-5">
+            <div className="flex items-center justify-between border-b border-white/10 pb-5">
               <div>
-                <h1 className="text-xl sm:text-2xl font-medium text-[#F1EEDC] mb-1">
+                <h1 className="text-xl sm:text-2xl font-medium text-white mb-1">
                   Account Security &amp; Settings
                 </h1>
-                <p className="text-xs text-[#A4A4A4]">
+                <p className="text-xs text-blue-100">
                   Manage your credentials, active session authorizations, and audited regulatory acceptance records.
                 </p>
               </div>
@@ -1030,29 +1030,29 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   setActiveTab("cases");
                   onNavigate("/dashboard");
                 }}
-                className="px-4 py-2 rounded-full border border-[#303030] bg-[#171717] hover:bg-[#202020] text-xs text-[#A4A4A4] hover:text-[#F1EEDC] transition-colors cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 rounded-full border border-white/10 bg-[#083B8A] hover:bg-[#0755C9] text-xs text-blue-100 hover:text-white transition-colors cursor-pointer flex items-center gap-1.5"
               >
                 <span>← Back to Cases</span>
               </button>
             </div>
 
             {/* Profile & Credentials Panel */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-[#111111] border border-[#292929] space-y-6">
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#0646AD] border border-white/10 space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <span className="text-[#777777] text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
+                  <span className="text-blue-200/70 text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
                     Credentials &amp; Authentication
                   </span>
-                  <h2 className="text-lg font-medium text-[#F1EEDC]">
+                  <h2 className="text-lg font-medium text-white">
                     Account Security
                   </h2>
-                  <p className="text-xs text-[#A4A4A4] mt-1">
+                  <p className="text-xs text-blue-100 mt-1">
                     Your password protects all private recovery documents and claimant records.
                   </p>
                 </div>
                 <button
                   onClick={() => setIsPasswordModalOpen(true)}
-                  className="px-4 py-2 rounded-full bg-[#E5E0C9] hover:bg-[#F1EEDC] text-[#080808] font-semibold text-xs uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 self-start sm:self-auto shadow-sm"
+                  className="px-4 py-2 rounded-full bg-[#E5E0C9] hover:bg-[#F1EEDC] text-[#102A56] font-semibold text-xs uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 self-start sm:self-auto shadow-sm"
                 >
                   <Lock className="w-3.5 h-3.5" />
                   <span>Change Password</span>
@@ -1060,33 +1060,33 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               </div>
 
               {/* User details summary */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-[#202020] text-xs">
-                <div className="p-3.5 rounded-xl bg-[#080808] border border-[#202020]">
-                  <span className="text-[10px] uppercase text-[#777777] block mb-1">Legal Name</span>
-                  <span className="text-[#F1EEDC] font-medium">{user?.full_name || "Valued User"}</span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-white/10 text-xs">
+                <div className="p-3.5 rounded-xl bg-[#083B8A] border border-white/10">
+                  <span className="text-[10px] uppercase text-blue-200/70 block mb-1">Legal Name</span>
+                  <span className="text-white font-medium">{user?.full_name || "Valued User"}</span>
                 </div>
-                <div className="p-3.5 rounded-xl bg-[#080808] border border-[#202020]">
-                  <span className="text-[10px] uppercase text-[#777777] block mb-1">Registered Email</span>
-                  <span className="text-[#F1EEDC] font-medium truncate block">{user?.email}</span>
+                <div className="p-3.5 rounded-xl bg-[#083B8A] border border-white/10">
+                  <span className="text-[10px] uppercase text-blue-200/70 block mb-1">Registered Email</span>
+                  <span className="text-white font-medium truncate block">{user?.email}</span>
                 </div>
-                <div className="p-3.5 rounded-xl bg-[#080808] border border-[#202020]">
-                  <span className="text-[10px] uppercase text-[#777777] block mb-1">Mobile Phone</span>
-                  <span className="text-[#F1EEDC] font-medium">{user?.phone || "Not configured"}</span>
+                <div className="p-3.5 rounded-xl bg-[#083B8A] border border-white/10">
+                  <span className="text-[10px] uppercase text-blue-200/70 block mb-1">Mobile Phone</span>
+                  <span className="text-white font-medium">{user?.phone || "Not configured"}</span>
                 </div>
               </div>
             </div>
 
             {/* Active Device Clearance & Session Management */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-[#111111] border border-[#292929] space-y-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#0646AD] border border-white/10 space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <span className="text-[#777777] text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
+                  <span className="text-blue-200/70 text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
                     Device Authorization
                   </span>
-                  <h2 className="text-lg font-medium text-[#F1EEDC]">
+                  <h2 className="text-lg font-medium text-white">
                     Active Session Management
                   </h2>
-                  <p className="text-xs text-[#A4A4A4] mt-1 max-w-xl">
+                  <p className="text-xs text-blue-100 mt-1 max-w-xl">
                     Terminate sessions across other browsers or devices. This genuinely invalidates other sessions by rotating your cryptographic session hash.
                   </p>
                 </div>
@@ -1109,20 +1109,20 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             </div>
 
             {/* Recent Security Activity Panel */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-[#111111] border border-[#292929] space-y-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#0646AD] border border-white/10 space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[#777777] text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
+                  <span className="text-blue-200/70 text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
                     Security Audit Trail
                   </span>
-                  <h2 className="text-lg font-medium text-[#F1EEDC]">
+                  <h2 className="text-lg font-medium text-white">
                     Recent Security Activity
                   </h2>
                 </div>
                 <button
                   onClick={fetchActivity}
                   disabled={isActivityLoading}
-                  className="text-xs text-[#A4A4A4] hover:text-[#F1EEDC] flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="text-xs text-blue-100 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${isActivityLoading ? "animate-spin" : ""}`} />
                   <span>Refresh</span>
@@ -1130,26 +1130,26 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               </div>
 
               {activities.length === 0 ? (
-                <p className="text-xs text-[#777777] py-4">No recent security events logged.</p>
+                <p className="text-xs text-blue-200/70 py-4">No recent security events logged.</p>
               ) : (
                 <div className="space-y-2 max-h-56 overflow-y-auto pr-2">
                   {activities.slice(0, 8).map((act) => (
                     <div
                       key={act.id}
-                      className="flex items-center justify-between p-3 rounded-xl bg-[#080808] border border-[#202020] text-xs"
+                      className="flex items-center justify-between p-3 rounded-xl bg-[#083B8A] border border-white/10 text-xs"
                     >
                       <div className="flex items-center gap-2.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#777777] shrink-0" />
-                        <span className="font-mono text-[#F1EEDC] font-medium">
+                        <span className="font-mono text-white font-medium">
                           {act.event_type.replace(/_/g, " ")}
                         </span>
                         {act.source && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#171717] text-[#A4A4A4] border border-[#292929] hidden sm:inline">
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#083B8A] text-blue-100 border border-white/10 hidden sm:inline">
                             {act.source}
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-4 text-[#777777] text-[11px] font-mono">
+                      <div className="flex items-center gap-4 text-blue-200/70 text-[11px] font-mono">
                         <span>{act.ip_address || "Client IP"}</span>
                         <span>
                           {new Date(act.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -1162,28 +1162,28 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             </div>
 
             {/* Audited Legal Acceptance Records Panel */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-[#111111] border border-[#292929] space-y-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#0646AD] border border-white/10 space-y-4">
               <div>
-                <span className="text-[#777777] text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
+                <span className="text-blue-200/70 text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
                   Compliance &amp; Governance
                 </span>
-                <h2 className="text-lg font-medium text-[#F1EEDC]">
+                <h2 className="text-lg font-medium text-white">
                   Audited Legal Acceptance Records
                 </h2>
-                <p className="text-xs text-[#A4A4A4] mt-1">
+                <p className="text-xs text-blue-100 mt-1">
                   Timestamps and policy versions formally consented to upon registration.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 text-xs">
-                <div className="p-4 rounded-xl bg-[#080808] border border-[#202020] space-y-2">
+                <div className="p-4 rounded-xl bg-[#083B8A] border border-white/10 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[#F1EEDC] font-medium">Terms &amp; Conditions</span>
-                    <span className="text-[10px] font-mono text-[#E5E0C9] font-semibold">
+                    <span className="text-white font-medium">Terms &amp; Conditions</span>
+                    <span className="text-[10px] font-mono text-white font-semibold">
                       {user?.terms_version || "v1.0"}
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#A4A4A4]">
+                  <p className="text-[11px] text-blue-100">
                     Accepted on {user?.terms_accepted_at ? new Date(user.terms_accepted_at).toLocaleString() : "Registration"}
                   </p>
                   <a
@@ -1192,21 +1192,21 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                       e.preventDefault();
                       onNavigate("/terms");
                     }}
-                    className="text-xs text-[#E5E0C9] hover:underline flex items-center gap-1 pt-1"
+                    className="text-xs text-white hover:underline flex items-center gap-1 pt-1"
                   >
                     <span>Read Terms of Service</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[#080808] border border-[#202020] space-y-2">
+                <div className="p-4 rounded-xl bg-[#083B8A] border border-white/10 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[#F1EEDC] font-medium">Privacy Policy</span>
-                    <span className="text-[10px] font-mono text-[#E5E0C9] font-semibold">
+                    <span className="text-white font-medium">Privacy Policy</span>
+                    <span className="text-[10px] font-mono text-white font-semibold">
                       {user?.privacy_version || "v1.0"}
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#A4A4A4]">
+                  <p className="text-[11px] text-blue-100">
                     Acknowledged on {user?.privacy_acknowledged_at ? new Date(user.privacy_acknowledged_at).toLocaleString() : "Registration"}
                   </p>
                   <a
@@ -1215,7 +1215,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                       e.preventDefault();
                       onNavigate("/privacy-policy");
                     }}
-                    className="text-xs text-[#E5E0C9] hover:underline flex items-center gap-1 pt-1"
+                    className="text-xs text-white hover:underline flex items-center gap-1 pt-1"
                   >
                     <span>Read Privacy Policy</span>
                     <ExternalLink className="w-3 h-3" />
@@ -1230,7 +1230,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       {/* ============================================================= */}
       {/* FOOTER: STATUTORY COMPLIANCE & LEGAL LINKS */}
       {/* ============================================================= */}
-      <footer className="border-t border-[#202020] mt-16 py-8 px-6 text-xs text-[#777777]">
+      <footer className="border-t border-white/10 mt-16 py-8 px-6 text-xs text-blue-200/70">
         <div className="max-w-[1440px] w-full mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>© {new Date().getFullYear()} WealthPass Technologies Pvt. Ltd. All rights reserved.</p>
           <div className="flex items-center gap-6">
@@ -1240,7 +1240,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 e.preventDefault();
                 onNavigate("/terms");
               }}
-              className="text-[#A4A4A4] hover:text-[#F1EEDC] transition-colors"
+              className="text-blue-100 hover:text-white transition-colors"
             >
               Terms of Service
             </a>
@@ -1251,7 +1251,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 e.preventDefault();
                 onNavigate("/privacy-policy");
               }}
-              className="text-[#A4A4A4] hover:text-[#F1EEDC] transition-colors"
+              className="text-blue-100 hover:text-white transition-colors"
             >
               Privacy Policy
             </a>
@@ -1261,7 +1261,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 setActiveTab("settings");
                 onNavigate("/settings");
               }}
-              className="text-[#A4A4A4] hover:text-[#F1EEDC] transition-colors cursor-pointer"
+              className="text-blue-100 hover:text-white transition-colors cursor-pointer"
             >
               Security Settings
             </button>
@@ -1273,86 +1273,86 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       {/* MODAL: CASE BREAKDOWN & DETAILS */}
       {/* ============================================================= */}
       {selectedCase && (
-        <div className="fixed inset-0 z-50 bg-[#000000]/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-[#111111] border border-[#292929] rounded-3xl p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-[#083B8A]/85 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl bg-[#0646AD] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedCase(null)}
-              className="absolute top-5 right-5 text-[#A4A4A4] hover:text-[#F1EEDC] p-1 rounded-full hover:bg-[#171717] transition-colors cursor-pointer"
+              className="absolute top-5 right-5 text-blue-100 hover:text-white p-1 rounded-full hover:bg-[#083B8A] transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <span className="text-[#777777] text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
+            <span className="text-blue-200/70 text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
               Case Dossier
             </span>
             <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
-              <h2 className="text-xl sm:text-2xl font-medium text-[#F1EEDC]">
+              <h2 className="text-xl sm:text-2xl font-medium text-white">
                 {selectedCase.deceased_name}
               </h2>
               <div className="text-right">
-                <span className="text-[10px] text-[#777777] uppercase tracking-wider block font-mono">Confirmed Capital</span>
-                <span className="text-sm font-semibold text-[#E5E0C9]">
+                <span className="text-[10px] text-blue-200/70 uppercase tracking-wider block font-mono">Confirmed Capital</span>
+                <span className="text-sm font-semibold text-white">
                   {selectedCase.total_assets_found > 0
                     ? `₹${Number(selectedCase.total_assets_found).toLocaleString("en-IN")}`
                     : "Pending Branch Valuation"}
                 </span>
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-3 text-xs text-[#A4A4A4] mb-6 font-mono">
+            <div className="flex flex-wrap items-center gap-3 text-xs text-blue-100 mb-6 font-mono">
               <span>PAN: {maskPan(selectedCase.deceased_pan)}</span>
               <span>•</span>
               <span>Claimant: {selectedCase.claimant_name} ({selectedCase.relation || "Legal Heir"})</span>
               <span>•</span>
-              <span className="text-[#E5E0C9] font-semibold">{selectedCase.status.replace(/_/g, " ")}</span>
+              <span className="text-white font-semibold">{selectedCase.status.replace(/_/g, " ")}</span>
             </div>
 
             {/* Discovered Assets List */}
             <div className="space-y-4 mb-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs uppercase tracking-wider text-[#777777] font-semibold">
+                <h3 className="text-xs uppercase tracking-wider text-blue-200/70 font-semibold">
                   Discovered Asset Matches ({selectedCase.assets?.length || 0})
                 </h3>
-                <span className="text-[11px] text-[#777777]">
+                <span className="text-[11px] text-blue-200/70">
                   {selectedCase.assets?.length || 0} Record(s) Logged
                 </span>
               </div>
 
               {isDetailLoading ? (
-                <div className="p-6 rounded-2xl bg-[#080808] border border-[#202020] flex items-center justify-center gap-2 text-xs text-[#A4A4A4]">
+                <div className="p-6 rounded-2xl bg-[#083B8A] border border-white/10 flex items-center justify-center gap-2 text-xs text-blue-100">
                   <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                   <span>Loading case assets...</span>
                 </div>
               ) : !selectedCase.assets || selectedCase.assets.length === 0 ? (
-                <div className="p-6 rounded-2xl bg-[#080808] border border-[#202020] text-center text-xs text-[#A4A4A4] space-y-1">
-                  <p className="text-[#F1EEDC] font-medium">No confirmed asset disbursements logged yet.</p>
-                  <p className="text-[#777777]">Statutory registry searches are actively in progress across official channels below.</p>
+                <div className="p-6 rounded-2xl bg-[#083B8A] border border-white/10 text-center text-xs text-blue-100 space-y-1">
+                  <p className="text-white font-medium">No confirmed asset disbursements logged yet.</p>
+                  <p className="text-blue-200/70">Statutory registry searches are actively in progress across official channels below.</p>
                 </div>
               ) : (
                 selectedCase.assets.map((asset) => (
                   <div
                     key={asset.id}
-                    className="p-4 rounded-xl bg-[#080808] border border-[#202020] space-y-3"
+                    className="p-4 rounded-xl bg-[#083B8A] border border-white/10 space-y-3"
                   >
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-[#F1EEDC] block">
+                          <span className="text-sm font-medium text-white block">
                             {asset.institution}
                           </span>
-                          <span className="px-1.5 py-0.5 rounded text-[10px] bg-[#171717] border border-[#292929] font-mono text-[#A4A4A4]">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] bg-[#083B8A] border border-white/10 font-mono text-blue-100">
                             {asset.verification_status || "UNVERIFIED"}
                           </span>
                         </div>
-                        <span className="text-xs text-[#A4A4A4]">{asset.situation_label}</span>
+                        <span className="text-xs text-blue-100">{asset.situation_label}</span>
                         {asset.masked_reference && (
-                          <span className="text-[11px] font-mono text-[#777777] block mt-0.5">
+                          <span className="text-[11px] font-mono text-blue-200/70 block mt-0.5">
                             Ref: {asset.masked_reference}
                           </span>
                         )}
                       </div>
                       <div className="text-right">
                         {asset.amount > 0 && !asset.is_amount_undisclosed ? (
-                          <span className="text-sm font-semibold text-[#E5E0C9]">
+                          <span className="text-sm font-semibold text-white">
                             ₹{Number(asset.amount).toLocaleString("en-IN")}
                           </span>
                         ) : (
@@ -1363,14 +1363,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                       </div>
                     </div>
 
-                    <p className="text-xs text-[#A4A4A4] leading-relaxed">
+                    <p className="text-xs text-blue-100 leading-relaxed">
                       {asset.message}
                     </p>
 
                     {asset.documents_needed && asset.documents_needed.length > 0 && (
-                      <div className="text-[11px] text-[#A4A4A4] pt-2 border-t border-[#202020]">
-                        <strong className="text-[#F1EEDC] block mb-1">Required Documents:</strong>
-                        <ul className="list-disc list-inside space-y-0.5 text-[#A4A4A4]">
+                      <div className="text-[11px] text-blue-100 pt-2 border-t border-white/10">
+                        <strong className="text-white block mb-1">Required Documents:</strong>
+                        <ul className="list-disc list-inside space-y-0.5 text-blue-100">
                           {asset.documents_needed.map((doc, idx) => (
                             <li key={idx}>{doc}</li>
                           ))}
@@ -1383,12 +1383,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             </div>
 
             {/* Statutory Discovery Channels & Jobs */}
-            <div className="space-y-3 mb-6 pt-4 border-t border-[#202020]">
+            <div className="space-y-3 mb-6 pt-4 border-t border-white/10">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs uppercase tracking-wider text-[#777777] font-semibold">
+                <h3 className="text-xs uppercase tracking-wider text-blue-200/70 font-semibold">
                   Statutory Discovery Registries ({selectedCase.source_jobs?.length || 0})
                 </h3>
-                <span className="text-[10px] text-[#777777] font-mono">
+                <span className="text-[10px] text-blue-200/70 font-mono">
                   Official Channels
                 </span>
               </div>
@@ -1398,18 +1398,18 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   {selectedCase.source_jobs.map((job) => (
                     <div
                       key={job.id}
-                      className="p-3.5 rounded-xl bg-[#080808] border border-[#202020] flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                      className="p-3.5 rounded-xl bg-[#083B8A] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                     >
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-medium text-[#F1EEDC]">
+                          <span className="text-xs font-medium text-white">
                             {job.provider_name || job.source_id}
                           </span>
-                          <span className="text-[10px] text-[#777777] font-mono">
+                          <span className="text-[10px] text-blue-200/70 font-mono">
                             ({job.asset_category})
                           </span>
                         </div>
-                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#A4A4A4]">
+                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-blue-100">
                           <span
                             className={`px-2 py-0.5 rounded text-[10px] font-mono ${
                               job.status === "COMPLETED"
@@ -1423,7 +1423,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                           </span>
 
                           {job.external_reference_number && (
-                            <span className="font-mono text-[#E5E0C9]">
+                            <span className="font-mono text-white">
                               Ref: {job.external_reference_number}
                             </span>
                           )}
@@ -1433,7 +1433,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                               href={job.external_portal_url}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-[#A4A4A4] hover:text-[#F1EEDC] underline underline-offset-2"
+                              className="text-blue-100 hover:text-white underline underline-offset-2"
                             >
                               Official Portal ↗
                             </a>
@@ -1444,7 +1444,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                               href={job.consent_url}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-[#E0B252] hover:text-[#F1EEDC] underline underline-offset-2"
+                              className="text-[#E0B252] hover:text-white underline underline-offset-2"
                             >
                               Approve AA Consent ↗
                             </a>
@@ -1458,7 +1458,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                             type="button"
                             onClick={() => handleCheckSetuStatus(selectedCase.id)}
                             disabled={isCheckingSetu}
-                            className="px-2.5 py-1 rounded-full bg-[#171717] hover:bg-[#202020] border border-[#292929] text-[11px] text-[#F1EEDC] transition-colors cursor-pointer disabled:opacity-50"
+                            className="px-2.5 py-1 rounded-full bg-[#083B8A] hover:bg-[#0755C9] border border-white/10 text-[11px] text-white transition-colors cursor-pointer disabled:opacity-50"
                           >
                             {isCheckingSetu ? "Checking..." : "Check AA Status"}
                           </button>
@@ -1471,7 +1471,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                             setRecordCategory(job.asset_category);
                             setIsRecordRefModalOpen(true);
                           }}
-                          className="px-2.5 py-1 rounded-full bg-[#171717] hover:bg-[#202020] border border-[#292929] text-[11px] text-[#E5E0C9] transition-colors cursor-pointer"
+                          className="px-2.5 py-1 rounded-full bg-[#083B8A] hover:bg-[#0755C9] border border-white/10 text-[11px] text-white transition-colors cursor-pointer"
                         >
                           + Record Reference
                         </button>
@@ -1480,29 +1480,29 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   ))}
                 </div>
               ) : (
-                <div className="p-4 rounded-xl bg-[#080808] border border-[#202020] text-xs text-[#777777] text-center">
+                <div className="p-4 rounded-xl bg-[#083B8A] border border-white/10 text-xs text-blue-200/70 text-center">
                   Statutory search jobs queued for execution.
                 </div>
               )}
             </div>
 
             {/* Modal Actions */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#202020]">
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/10">
               <div className="flex items-center gap-2">
                 <a
                   href={`/print-forms/${selectedCase.id}/`}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-3.5 py-2 rounded-full border border-[#292929] bg-[#171717] hover:bg-[#202020] text-xs text-[#A4A4A4] hover:text-[#F1EEDC] transition-colors flex items-center gap-2"
+                  className="px-3.5 py-2 rounded-full border border-white/10 bg-[#083B8A] hover:bg-[#0755C9] text-xs text-blue-100 hover:text-white transition-colors flex items-center gap-2"
                 >
-                  <FileText className="w-3.5 h-3.5 text-[#E5E0C9]" />
+                  <FileText className="w-3.5 h-3.5 text-white" />
                   <span>Download Pre-filled Claim Dossier</span>
                 </a>
 
                 <button
                   type="button"
                   onClick={() => setIsRecordRefModalOpen(true)}
-                  className="px-3.5 py-2 rounded-full border border-[#292929] bg-[#171717] hover:bg-[#202020] text-xs text-[#E5E0C9] transition-colors cursor-pointer"
+                  className="px-3.5 py-2 rounded-full border border-white/10 bg-[#083B8A] hover:bg-[#0755C9] text-xs text-white transition-colors cursor-pointer"
                 >
                   + Record Reference
                 </button>
@@ -1510,7 +1510,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
               <button
                 onClick={() => setSelectedCase(null)}
-                className="px-5 py-2 rounded-full bg-[#E5E0C9] text-[#080808] font-semibold text-xs uppercase tracking-wider hover:bg-[#F1EEDC] transition-colors cursor-pointer"
+                className="px-5 py-2 rounded-full bg-[#E5E0C9] text-[#102A56] font-semibold text-xs uppercase tracking-wider hover:bg-[#F1EEDC] transition-colors cursor-pointer"
               >
                 Done
               </button>
@@ -1523,26 +1523,26 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       {/* MODAL: RECORD OFFICIAL SEARCH REFERENCE */}
       {/* ============================================================= */}
       {isRecordRefModalOpen && selectedCase && (
-        <div className="fixed inset-0 z-50 bg-[#000000]/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-lg bg-[#111111] border border-[#292929] rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-[#083B8A]/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-[#0646AD] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
             <button
               onClick={() => {
                 setIsRecordRefModalOpen(false);
                 setRecordRefError(null);
                 setRecordRefSuccess(null);
               }}
-              className="absolute top-5 right-5 text-[#A4A4A4] hover:text-[#F1EEDC] p-1 rounded-full hover:bg-[#171717] transition-colors cursor-pointer"
+              className="absolute top-5 right-5 text-blue-100 hover:text-white p-1 rounded-full hover:bg-[#083B8A] transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <span className="text-[#777777] text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
+            <span className="text-blue-200/70 text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
               Official Registry Record
             </span>
-            <h2 className="text-lg sm:text-xl font-medium text-[#F1EEDC] mb-1">
+            <h2 className="text-lg sm:text-xl font-medium text-white mb-1">
               Record External Search Reference
             </h2>
-            <p className="text-xs text-[#A4A4A4] mb-5 leading-relaxed">
+            <p className="text-xs text-blue-100 mb-5 leading-relaxed">
               Record reference code from official search (e.g. RBI UDGAM, IRDAI Bima Bharosa, SEBI MITRA, IEPF, or EPFO).
             </p>
 
@@ -1559,7 +1559,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
             <form onSubmit={handleRecordReferenceSubmit} className="space-y-4">
               <div>
-                <label className="text-xs text-[#A4A4A4] block mb-1">Discovery Source</label>
+                <label className="text-xs text-blue-100 block mb-1">Discovery Source</label>
                 <select
                   value={recordSourceId}
                   onChange={(e) => {
@@ -1573,7 +1573,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                     else if (src === "EPFO_SERVICES") setRecordCategory("PENSION_EPFO");
                     else setRecordCategory("OTHER_INVESTMENTS");
                   }}
-                  className="w-full px-3 py-2 rounded-xl bg-[#080808] border border-[#292929] text-xs text-[#F1EEDC] focus:outline-none focus:border-[#E5E0C9]"
+                  className="w-full px-3 py-2 rounded-xl bg-[#083B8A] border border-white/10 text-xs text-white focus:outline-none focus:border-white/60"
                 >
                   <option value="RBI_UDGAM">RBI UDGAM (Unclaimed Bank Deposits)</option>
                   <option value="SETU_AA_DISCOVERY">Setu Account Aggregator Gateway</option>
@@ -1586,7 +1586,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               </div>
 
               <div>
-                <label className="text-xs text-[#A4A4A4] block mb-1">Official Search Outcome</label>
+                <label className="text-xs text-blue-100 block mb-1">Official Search Outcome</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
@@ -1594,7 +1594,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                     className={`px-3 py-2 rounded-xl text-xs font-medium border text-center transition-all cursor-pointer ${
                       recordOutcome === "MATCH_FOUND"
                         ? "bg-[#132B1E] border-[#1E4D30] text-[#85E0A3]"
-                        : "bg-[#080808] border-[#292929] text-[#A4A4A4] hover:text-[#F1EEDC]"
+                        : "bg-[#083B8A] border-white/10 text-blue-100 hover:text-white"
                     }`}
                   >
                     Match Found
@@ -1605,7 +1605,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                     className={`px-3 py-2 rounded-xl text-xs font-medium border text-center transition-all cursor-pointer ${
                       recordOutcome === "NO_MATCH_FOUND"
                         ? "bg-[#1A1A1A] border-[#333333] text-[#B8B8B8]"
-                        : "bg-[#080808] border-[#292929] text-[#A4A4A4] hover:text-[#F1EEDC]"
+                        : "bg-[#083B8A] border-white/10 text-blue-100 hover:text-white"
                     }`}
                   >
                     No Matches in Registry
@@ -1614,19 +1614,19 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               </div>
 
               <div>
-                <label className="text-xs text-[#A4A4A4] block mb-1">Holding Institution Name</label>
+                <label className="text-xs text-blue-100 block mb-1">Holding Institution Name</label>
                 <input
                   type="text"
                   placeholder="e.g. State Bank of India, HDFC Bank, LIC of India"
                   value={recordInstitution}
                   onChange={(e) => setRecordInstitution(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-[#080808] border border-[#292929] text-xs text-[#F1EEDC] focus:outline-none focus:border-[#E5E0C9]"
+                  className="w-full px-3 py-2 rounded-xl bg-[#083B8A] border border-white/10 text-xs text-white focus:outline-none focus:border-white/60"
                 />
               </div>
 
               {recordOutcome === "MATCH_FOUND" && (
                 <div>
-                  <label className="text-xs text-[#A4A4A4] block mb-1">
+                  <label className="text-xs text-blue-100 block mb-1">
                     Official Reference / Acknowledgement Number *
                   </label>
                   <input
@@ -1635,26 +1635,26 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                     placeholder="e.g. UDGAM-1049281, SRN-294812, etc."
                     value={recordRefNo}
                     onChange={(e) => setRecordRefNo(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#080808] border border-[#292929] text-xs text-[#F1EEDC] font-mono focus:outline-none focus:border-[#E5E0C9]"
+                    className="w-full px-3 py-2 rounded-xl bg-[#083B8A] border border-white/10 text-xs text-white font-mono focus:outline-none focus:border-white/60"
                   />
-                  <span className="text-[10px] text-[#777777] mt-1 block">
+                  <span className="text-[10px] text-blue-200/70 mt-1 block">
                     UDGAM confirms account existence without publishing private balances. Recorded with undisclosed valuation.
                   </span>
                 </div>
               )}
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-[#202020]">
+              <div className="flex justify-end gap-2 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setIsRecordRefModalOpen(false)}
-                  className="px-4 py-2 rounded-full border border-[#292929] bg-[#171717] hover:bg-[#202020] text-xs text-[#A4A4A4] hover:text-[#F1EEDC] transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-full border border-white/10 bg-[#083B8A] hover:bg-[#0755C9] text-xs text-blue-100 hover:text-white transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isRecordingRef}
-                  className="px-5 py-2 rounded-full bg-[#E5E0C9] text-[#080808] font-semibold text-xs hover:bg-[#F1EEDC] transition-colors cursor-pointer disabled:opacity-50"
+                  className="px-5 py-2 rounded-full bg-[#E5E0C9] text-[#102A56] font-semibold text-xs hover:bg-[#F1EEDC] transition-colors cursor-pointer disabled:opacity-50"
                 >
                   {isRecordingRef ? "Recording..." : "Save Reference"}
                 </button>
@@ -1668,22 +1668,22 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       {/* MODAL: CHANGE PASSWORD */}
       {/* ============================================================= */}
       {isPasswordModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#000000]/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-[#111111] border border-[#292929] rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-[#083B8A]/85 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-[#0646AD] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
             <button
               onClick={() => setIsPasswordModalOpen(false)}
-              className="absolute top-5 right-5 text-[#A4A4A4] hover:text-[#F1EEDC] p-1 rounded-full hover:bg-[#171717] transition-colors cursor-pointer"
+              className="absolute top-5 right-5 text-blue-100 hover:text-white p-1 rounded-full hover:bg-[#083B8A] transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <span className="text-[#777777] text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
+            <span className="text-blue-200/70 text-[11px] tracking-[0.2em] uppercase font-mono block mb-1">
               Security Clearance
             </span>
-            <h2 className="text-xl font-medium text-[#F1EEDC] mb-2">
+            <h2 className="text-xl font-medium text-white mb-2">
               Update Account Password
             </h2>
-            <p className="text-[#A4A4A4] text-xs mb-6">
+            <p className="text-blue-100 text-xs mb-6">
               Changing your password will automatically invalidate all other sessions across devices.
             </p>
 
@@ -1700,7 +1700,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div>
-                <label className="text-xs text-[#A4A4A4] font-medium block mb-1.5">
+                <label className="text-xs text-blue-100 font-medium block mb-1.5">
                   Current Password
                 </label>
                 <input
@@ -1708,12 +1708,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   required
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full bg-[#080808] border border-[#292929] rounded-xl px-4 py-2.5 text-sm text-[#F1EEDC] focus:outline-none focus:border-[#E5E0C9]"
+                  className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white/60"
                 />
               </div>
 
               <div>
-                <label className="text-xs text-[#A4A4A4] font-medium block mb-1.5">
+                <label className="text-xs text-blue-100 font-medium block mb-1.5">
                   New Password (min 8 chars, mixed case, number, symbol)
                 </label>
                 <input
@@ -1721,12 +1721,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full bg-[#080808] border border-[#292929] rounded-xl px-4 py-2.5 text-sm text-[#F1EEDC] focus:outline-none focus:border-[#E5E0C9]"
+                  className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white/60"
                 />
               </div>
 
               <div>
-                <label className="text-xs text-[#A4A4A4] font-medium block mb-1.5">
+                <label className="text-xs text-blue-100 font-medium block mb-1.5">
                   Confirm New Password
                 </label>
                 <input
@@ -1734,22 +1734,22 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-[#080808] border border-[#292929] rounded-xl px-4 py-2.5 text-sm text-[#F1EEDC] focus:outline-none focus:border-[#E5E0C9]"
+                  className="w-full bg-[#083B8A] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white/60"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#202020]">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setIsPasswordModalOpen(false)}
-                  className="px-4 py-2 rounded-full border border-[#292929] bg-[#171717] hover:bg-[#202020] text-xs text-[#A4A4A4] hover:text-[#F1EEDC] transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-full border border-white/10 bg-[#083B8A] hover:bg-[#0755C9] text-xs text-blue-100 hover:text-white transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isChangingPassword}
-                  className="px-6 py-2.5 rounded-full bg-[#E5E0C9] text-[#080808] font-semibold text-xs uppercase tracking-wider hover:bg-[#F1EEDC] disabled:opacity-50 transition-all cursor-pointer flex items-center gap-2"
+                  className="px-6 py-2.5 rounded-full bg-[#E5E0C9] text-[#102A56] font-semibold text-xs uppercase tracking-wider hover:bg-[#F1EEDC] disabled:opacity-50 transition-all cursor-pointer flex items-center gap-2"
                 >
                   {isChangingPassword ? "Updating..." : "Update Password"}
                 </button>

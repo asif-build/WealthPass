@@ -123,7 +123,7 @@ export const WealthPassProcessingPanel: React.FC<WealthPassProcessingPanelProps>
 
   return (
     <div
-      className={`w-full bg-[#121212] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden transition-all text-left ${className}`}
+      className={`w-full bg-[#0646AD] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden transition-all text-left ${className}`}
       data-testid="wealthpass-processing-panel"
       data-operation={operation}
       data-status={status}

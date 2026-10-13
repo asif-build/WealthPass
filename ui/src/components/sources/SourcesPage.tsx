@@ -93,24 +93,24 @@ export function SourcesPage({ onNavigateHome, onNavigateVerify }: SourcesPagePro
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-[#E1E0CC] font-['Almarai'] selection:bg-white/20 selection:text-white">
+    <div className="min-h-screen bg-[#0755C9] text-white font-['Almarai'] selection:bg-white/20 selection:text-white">
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-black/80 backdrop-blur-md border-b border-white/10 px-6 py-4">
+      <header className="sticky top-0 z-40 bg-[#083B8A]/85 backdrop-blur-md border-b border-white/10 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
               onClick={onNavigateHome}
-              className="text-xs text-white/50 hover:text-[#E1E0CC] transition-colors flex items-center gap-1.5 group cursor-pointer"
+              className="text-xs text-white/70 hover:text-white transition-colors flex items-center gap-1.5 group cursor-pointer"
             >
-              <span className="group-hover:text-white/80">← Home</span>
+              <span className="group-hover:text-white">← Home</span>
             </button>
             <span className="text-white/20">/</span>
-            <span className="text-sm text-[#E1E0CC] font-medium tracking-wide">Source Transparency</span>
+            <span className="text-sm text-white font-medium tracking-wide">Source Transparency</span>
           </div>
 
           <button
             onClick={onNavigateVerify}
-            className="py-1.5 px-4 rounded-full bg-[#E1E0CC] hover:bg-white text-black text-xs font-medium transition-all shadow-sm cursor-pointer"
+            className="py-1.5 px-4 rounded-full bg-primary hover:bg-white text-[#102A56] text-xs font-semibold transition-all shadow-sm cursor-pointer"
           >
             Start Verification →
           </button>
@@ -125,13 +125,13 @@ export function SourcesPage({ onNavigateHome, onNavigateVerify }: SourcesPagePro
           transition={{ duration: 0.5 }}
           className="text-center max-w-3xl mx-auto"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono tracking-widest uppercase text-white/60 mb-4">
-            <FileSearch className="w-3.5 h-3.5 text-[#DEDBC8]" /> Complete Transparency Registry
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-mono tracking-widest uppercase text-white mb-4">
+            <FileSearch className="w-3.5 h-3.5 text-primary" /> Complete Transparency Registry
           </div>
-          <h1 className="text-3xl sm:text-5xl font-light tracking-tight text-[#E1E0CC] mb-4">
-            Where WealthPass <span className="font-['Instrument_Serif'] italic text-white">Looks</span>
+          <h1 className="text-3xl sm:text-5xl font-light tracking-tight text-white mb-4">
+            Where WealthPass <span className="font-['Instrument_Serif'] italic text-[#EAF2FF]">Looks</span>
           </h1>
-          <p className="text-white/60 text-sm sm:text-base leading-relaxed">
+          <p className="text-[#EAF2FF] text-sm sm:text-base leading-relaxed">
             "WealthPass does not maintain a private database of your financial life. We use supported discovery channels and guide you through institutional recovery."
           </p>
         </motion.div>
@@ -144,16 +144,16 @@ export function SourcesPage({ onNavigateHome, onNavigateVerify }: SourcesPagePro
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-[#0e0e0e] border border-white/10 rounded-2xl p-6 sm:p-8 hover:border-white/20 transition-all shadow-xl"
+              className="bg-[#0646AD] border border-white/10 rounded-2xl p-6 sm:p-8 hover:border-white/20 transition-all shadow-xl"
             >
               {/* Card Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
                 <div className="flex items-center gap-4">
-                  <span className="font-['Instrument_Serif'] text-2xl italic text-[#DEDBC8]">
+                  <span className="font-['Instrument_Serif'] text-2xl italic text-primary">
                     {src.id}
                   </span>
                   <div>
-                    <div className="text-[10px] font-mono tracking-widest uppercase text-white/40">
+                    <div className="text-[10px] font-mono tracking-widest uppercase text-blue-200">
                       {src.category}
                     </div>
                     <h2 className="text-xl font-medium text-white">{src.name}</h2>
@@ -163,8 +163,8 @@ export function SourcesPage({ onNavigateHome, onNavigateVerify }: SourcesPagePro
                 <div className="flex items-center gap-3">
                   <span className={`px-3 py-1 rounded-full text-xs font-mono border ${
                     src.integration_status === "OFFICIAL EXTERNAL DISCOVERY"
-                      ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
-                      : "bg-blue-500/10 border-blue-500/30 text-blue-300"
+                      ? "bg-emerald-500/20 border-emerald-400/30 text-emerald-300"
+                      : "bg-white/10 border-white/20 text-blue-100"
                   }`}>
                     {src.integration_status}
                   </span>
@@ -173,7 +173,7 @@ export function SourcesPage({ onNavigateHome, onNavigateVerify }: SourcesPagePro
                     href={src.official_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/20 transition-colors"
+                    className="p-2 rounded-lg border border-white/15 text-blue-200 hover:text-white hover:border-white/30 transition-colors"
                     title="Visit Official Portal"
                   >
                     <ExternalLink className="w-4 h-4" />
@@ -182,23 +182,23 @@ export function SourcesPage({ onNavigateHome, onNavigateVerify }: SourcesPagePro
               </div>
 
               {/* What it discovers */}
-              <div className="py-5 border-b border-white/5">
-                <div className="text-xs font-mono uppercase tracking-wider text-white/40 mb-1.5">
+              <div className="py-5 border-b border-white/10">
+                <div className="text-xs font-mono uppercase tracking-wider text-blue-200 mb-1.5">
                   What It Can Help Discover
                 </div>
-                <p className="text-sm text-white/80 leading-relaxed">{src.what_it_discovers}</p>
+                <p className="text-sm text-white leading-relaxed">{src.what_it_discovers}</p>
               </div>
 
               {/* Permitted Identifiers */}
-              <div className="py-5 border-b border-white/5">
-                <div className="text-xs font-mono uppercase tracking-wider text-white/40 mb-2">
+              <div className="py-5 border-b border-white/10">
+                <div className="text-xs font-mono uppercase tracking-wider text-blue-200 mb-2">
                   Permitted Discovery Identifiers
                 </div>
                 <div className="flex flex-wrap gap-2 text-xs">
                   {src.permitted_identifiers.map((ident, idx) => (
                     <span
                       key={idx}
-                      className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/10 text-white/70"
+                      className="px-2.5 py-1 rounded-md bg-[#083B8A] border border-white/10 text-white"
                     >
                       {ident}
                     </span>
@@ -208,18 +208,18 @@ export function SourcesPage({ onNavigateHome, onNavigateVerify }: SourcesPagePro
 
               {/* Data Ingestion Boundaries: What we receive vs do NOT receive */}
               <div className="pt-5 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div className="p-4 rounded-xl bg-emerald-500/[0.03] border border-emerald-500/20">
-                  <div className="font-mono text-emerald-400 font-semibold uppercase mb-1.5 flex items-center gap-1.5">
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-400/30">
+                  <div className="font-mono text-emerald-300 font-semibold uppercase mb-1.5 flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5" /> What WealthPass Receives:
                   </div>
-                  <p className="text-white/70 leading-relaxed">{src.what_wealthpass_receives}</p>
+                  <p className="text-blue-100 leading-relaxed">{src.what_wealthpass_receives}</p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-red-500/[0.03] border border-red-500/20">
-                  <div className="font-mono text-red-400 font-semibold uppercase mb-1.5 flex items-center gap-1.5">
+                <div className="p-4 rounded-xl bg-red-500/10 border border-red-400/30">
+                  <div className="font-mono text-red-300 font-semibold uppercase mb-1.5 flex items-center gap-1.5">
                     <Lock className="w-3.5 h-3.5" /> What WealthPass NEVER Receives:
                   </div>
-                  <p className="text-white/70 leading-relaxed">{src.what_wealthpass_does_not_receive}</p>
+                  <p className="text-blue-100 leading-relaxed">{src.what_wealthpass_does_not_receive}</p>
                 </div>
               </div>
             </motion.div>
@@ -227,7 +227,7 @@ export function SourcesPage({ onNavigateHome, onNavigateVerify }: SourcesPagePro
         </div>
 
         {/* Regulatory Trust Note */}
-        <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/10 text-xs text-white/60 leading-relaxed text-center max-w-3xl mx-auto space-y-2">
+        <div className="p-6 rounded-2xl bg-[#083B8A] border border-white/10 text-xs text-blue-100 leading-relaxed text-center max-w-3xl mx-auto space-y-2">
           <div className="text-white font-medium">Regulatory & Legal Note</div>
           <p>
             WealthPass is an automated discovery and recovery assistance layer. A potential match does not establish ownership or legal entitlement. WealthPass is not a bank, insurer, depository, or government body. Settlement is processed directly by the custodian institution under applicable statutory regulations.
@@ -238,7 +238,7 @@ export function SourcesPage({ onNavigateHome, onNavigateVerify }: SourcesPagePro
         <div className="text-center pt-4">
           <button
             onClick={onNavigateVerify}
-            className="py-3.5 px-8 rounded-xl bg-[#E1E0CC] hover:bg-white text-black font-medium text-sm transition-all inline-flex items-center gap-2 shadow-lg cursor-pointer"
+            className="py-3.5 px-8 rounded-xl bg-primary hover:bg-white text-[#102A56] font-semibold text-sm transition-all inline-flex items-center gap-2 shadow-lg cursor-pointer"
           >
             Start Identity Verification
             <ArrowRight className="w-4 h-4" />
