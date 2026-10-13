@@ -1727,24 +1727,26 @@ def api_user_claims(request):
 
         NotificationService.notify_discovery_initiated(request.user, session.id, deceased_name)
 
+        created_claim = {
+            'id': str(session.id),
+            'deceased_name': session.deceased_name,
+            'deceased_pan': session.deceased_pan,
+            'death_certificate_no': session.death_certificate_no,
+            'claimant_name': session.claimant_name,
+            'relation': session.relation,
+            'verification_status': session.verification_status,
+            'fraud_risk_level': session.fraud_risk_level,
+            'status': session.status,
+            'total_assets_found': float(session.total_assets_found),
+            'bridge_loan_available': float(session.bridge_loan_available),
+            'has_document': bool(session.evidence_documents.exists() or session.death_certificate_file),
+            'created_at': session.created_at.isoformat()
+        }
         return JsonResponse({
             'success': True,
             'message': 'Asset discovery case created and queued for review.',
-            'claim': {
-                'id': str(session.id),
-                'deceased_name': session.deceased_name,
-                'deceased_pan': session.deceased_pan,
-                'death_certificate_no': session.death_certificate_no,
-                'claimant_name': session.claimant_name,
-                'relation': session.relation,
-                'verification_status': session.verification_status,
-                'fraud_risk_level': session.fraud_risk_level,
-                'status': session.status,
-                'total_assets_found': float(session.total_assets_found),
-                'bridge_loan_available': float(session.bridge_loan_available),
-                'has_document': bool(session.evidence_documents.exists() or session.death_certificate_file),
-                'created_at': session.created_at.isoformat()
-            }
+            'claim': created_claim,
+            'case': created_claim
         }, status=201)
 
     # GET claims list: show non-draft cases or all user cases
@@ -1772,10 +1774,41 @@ def api_user_claims(request):
             'has_document': bool(c.evidence_documents.exists() or c.death_certificate_file),
             'assets_count': c.assets.count(),
             'source_jobs_count': c.source_jobs.count(),
-            'created_at': c.created_at.isoformat()
+            'created_at': c.created_at.isoformat(),
+            'assets': [
+                {
+                    'id': a.id,
+                    'institution': a.institution,
+                    'amount': float(a.amount),
+                    'is_amount_undisclosed': bool(a.is_amount_undisclosed or a.amount == 0),
+                    'potential_value_display': f"₹{a.amount:,.0f}" if (a.amount > 0 and not a.is_amount_undisclosed) else "Valuation Pending Branch Verification",
+                    'source_id': a.source_id,
+                    'source_reference': a.source_reference,
+                    'masked_reference': a.masked_reference,
+                    'situation_label': a.situation_label,
+                    'color': a.color,
+                    'message': a.message,
+                    'documents_needed': a.documents_needed,
+                    'next_steps': a.next_steps,
+                    'time_estimate': a.time_estimate,
+                    'loan_amount': float(a.loan_amount) if a.loan_amount else 0.0,
+                    'is_potential_match': a.is_potential_match,
+                    'institution_verified': a.institution_verified,
+                    'match_status': a.match_status,
+                    'verification_status': a.verification_status,
+                    'claim_status': a.claim_status,
+                    'official_portal_url': a.official_portal_url
+                }
+                for a in c.assets.all()
+            ]
         })
 
-    return JsonResponse({'success': True, 'claims': claim_list})
+    return JsonResponse({
+        'success': True,
+        'claims': claim_list,
+        'cases': claim_list,
+        'total_count': len(claim_list)
+    })
 
 
 def api_user_claim_detail(request, session_id):
@@ -1853,10 +1886,8 @@ def api_user_claim_detail(request, session_id):
             'last_checked_at': j.last_checked_at.isoformat(),
         })
 
-    return JsonResponse({
-        'success': True,
-        'claim': {
-            'id': str(session.id),
+    claim_detail_payload = {
+        'id': str(session.id),
             'deceased_name': session.deceased_name,
             'deceased_pan': session.deceased_pan,
             'pan_unknown': session.pan_unknown,
@@ -1910,7 +1941,11 @@ def api_user_claim_detail(request, session_id):
                 }
                 for a in session.assets.all()
             ]
-        }
+    }
+    return JsonResponse({
+        'success': True,
+        'claim': claim_detail_payload,
+        'case': claim_detail_payload
     })
 
 

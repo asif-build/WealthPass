@@ -150,12 +150,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     try {
       const res = await apiFetch<{
         success: boolean;
-        cases: ClaimCase[];
-        total_count: number;
+        cases?: ClaimCase[];
+        claims?: ClaimCase[];
+        total_count?: number;
       }>("/api/user/claims/");
 
-      if (res.ok && res.data?.cases) {
-        setCases(res.data.cases);
+      const list = res.data?.cases || res.data?.claims;
+      if (res.ok && Array.isArray(list)) {
+        setCases(list);
       } else {
         setCasesError(res.error || "Unable to load your recovery cases.");
       }
@@ -218,9 +220,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   const handleSelectCase = async (caseId: string) => {
     setIsDetailLoading(true);
     try {
-      const res = await apiFetch<{ success: boolean; claim: ClaimCase }>(`/api/user/claims/${caseId}/`);
-      if (res.ok && res.data?.claim) {
-        setSelectedCase(res.data.claim);
+      const res = await apiFetch<{ success: boolean; claim?: ClaimCase; case?: ClaimCase }>(`/api/user/claims/${caseId}/`);
+      const claimData = res.data?.case || res.data?.claim;
+      if (res.ok && claimData) {
+        setSelectedCase(claimData);
       }
     } catch {
       const local = cases.find((c) => c.id === caseId);
