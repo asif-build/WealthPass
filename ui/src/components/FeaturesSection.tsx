@@ -2,6 +2,8 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import { WordsPullUpMultiStyle } from "./WordsPullUpMultiStyle";
+import vaultCoinsWebp from "../assets/security-vault-coins.webp";
+import vaultCoinsPng from "../assets/security-vault-coins.png";
 
 interface FeaturesSectionProps {
   onNavigate?: (path: string) => void;
@@ -85,21 +87,63 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) 
           animate={isGridInView ? "visible" : "hidden"}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-3 lg:gap-2"
         >
-          {/* Card 1: Video Card */}
+          {/* Card 1: Security Vault */}
           <motion.div
             variants={cardVariants}
-            className="lg:h-[480px] h-[350px] rounded-3xl overflow-hidden relative group border border-white/5 shadow-xl"
+            className="lg:h-[480px] h-[350px] rounded-3xl overflow-hidden relative group border border-white/5 shadow-xl bg-black"
           >
-            <video
-              src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260406_133058_0504132a-0cf3-4450-a370-8ea3b05c95d4.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            {/* Dark gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10" />
+            {/* Scoped CSS animation for seamless 7-second weightless float */}
+            <style>{`
+              @keyframes wpFloatingCoinsLoop {
+                0% {
+                  transform: translateY(0px) rotate(0deg) scale(1);
+                }
+                25% {
+                  transform: translateY(-5px) rotate(0.8deg) scale(1.008);
+                }
+                50% {
+                  transform: translateY(-10px) rotate(-0.5deg) scale(1.015);
+                }
+                75% {
+                  transform: translateY(-4px) rotate(-1.2deg) scale(1.006);
+                }
+                100% {
+                  transform: translateY(0px) rotate(0deg) scale(1);
+                }
+              }
+
+              @media (prefers-reduced-motion: reduce) {
+                .wp-floating-coins-cluster {
+                  animation: none !important;
+                  transform: none !important;
+                }
+              }
+            `}</style>
+
+            {/* 3D Floating Indian Currency Coins Composition */}
+            <div className="absolute inset-0 pb-20 flex items-center justify-center p-4 overflow-hidden pointer-events-none">
+              <div
+                className="wp-floating-coins-cluster w-full h-full max-w-[270px] sm:max-w-[300px] lg:max-w-[320px] flex items-center justify-center"
+                style={{
+                  animation: "wpFloatingCoinsLoop 7s ease-in-out infinite",
+                  willChange: "transform",
+                }}
+              >
+                <picture className="w-full h-full flex items-center justify-center">
+                  <source srcSet={vaultCoinsWebp} type="image/webp" />
+                  <img
+                    src={vaultCoinsPng}
+                    alt="Floating 3D Indian Rupee Currency Coins"
+                    className="w-full h-full object-contain object-center select-none drop-shadow-[0_20px_40px_rgba(36,104,232,0.25)] transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
+              </div>
+            </div>
+
+            {/* Dark gradient overlay for bottom text contrast */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent z-10 pointer-events-none" />
             
             <div className="absolute bottom-6 left-6 right-6 z-20">
               <span className="text-xs text-[#E1E0CC] uppercase tracking-widest block mb-2 font-medium">
