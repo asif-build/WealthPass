@@ -534,7 +534,7 @@
             <span>Deceased Bank Account Number <span class="req">*</span></span>
             <span class="helper">Bank Passbook / Deposit Advice</span>
           </label>
-          <input type="text" id="field_account_number" name="account_number" class="form-control" value="{{ progress.form_data.account_number|default:current_asset.masked_reference }}" placeholder="e.g. 20491823719" onfocus="focusField('account_number')" required>
+          <input type="text" id="field_account_number" name="account_number" class="form-control" value="{% if progress.form_data.account_number %}{{ progress.form_data.account_number }}{% elif current_asset %}{{ current_asset.masked_reference }}{% endif %}" placeholder="e.g. 20491823719" onfocus="focusField('account_number')" required>
         </div>
 
         <div class="form-group">
