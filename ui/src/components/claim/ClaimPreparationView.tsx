@@ -5,6 +5,7 @@ import type { DiscoveredAssetItem } from "../../services/AssetDiscoveryEngine";
 import type { VerificationResult } from "../../services/IdentityVerificationProvider";
 import { WealthPassProcessingPanel } from "../processing/WealthPassProcessingPanel";
 import { apiFetch } from "../../services/apiClient";
+import { ClaimCompletionModal } from "./ClaimCompletionModal";
 
 interface ClaimPreparationViewProps {
   selectedAsset: DiscoveredAssetItem | null;
@@ -91,6 +92,7 @@ export function ClaimPreparationView({
   ]);
 
   const [dossierGenerated, setDossierGenerated] = useState(false);
+  const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
   const [isPreparingDossier, setIsPreparingDossier] = useState(false);
   const [prepStatus, setPrepStatus] = useState<"working" | "done" | "error">("working");
   const [prepError, setPrepError] = useState<string | null>(null);
@@ -124,6 +126,7 @@ export function ClaimPreparationView({
         }
         setPrepStatus("done");
         setDossierGenerated(true);
+        setIsCompletionModalOpen(true);
       } else {
         setPrepStatus("error");
         setPrepError(res.error || "Unable to retrieve claim guidelines from institutional gateway.");
@@ -318,7 +321,7 @@ export function ClaimPreparationView({
               disabled={isPreparingDossier && prepStatus === "working"}
               onClick={() => {
                 if (dossierGenerated) {
-                  window.open("/print-forms/default/", "_blank");
+                  setIsCompletionModalOpen(true);
                 } else {
                   handleGenerateDossier();
                 }
@@ -326,7 +329,7 @@ export function ClaimPreparationView({
               className="w-full sm:w-auto py-2.5 px-5 rounded-xl bg-white/10 hover:bg-white/20 text-[#E1E0CC] border border-white/15 text-xs font-medium transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               <Download className="w-3.5 h-3.5" />
-              {dossierGenerated ? "Download Assembled Dossier" : "Generate Pre-Filled Dossier Pack"}
+              {dossierGenerated ? "View Completed Claim Dossier" : "Generate Pre-Filled Dossier Pack"}
             </button>
           </div>
         </div>
@@ -358,6 +361,7 @@ export function ClaimPreparationView({
               onCancel={() => setIsPreparingDossier(false)}
               onContinue={() => {
                 setIsPreparingDossier(false);
+                setIsCompletionModalOpen(true);
               }}
               continueLabel="Review Assembled Dossier"
             />
@@ -389,6 +393,17 @@ export function ClaimPreparationView({
           </button>
         </div>
       </main>
+
+      {/* Claim Success / Completion Modal with Glossy Blue Verification Badge */}
+      <ClaimCompletionModal
+        isOpen={isCompletionModalOpen}
+        onClose={() => setIsCompletionModalOpen(false)}
+        type="FORM_COMPLETE"
+        caseReference={`WP-AST-${asset.id}`}
+        institutionName={asset.institution}
+        claimUrl="/print-forms/default/"
+        onBackToDashboard={onNavigateHome}
+      />
     </div>
   );
 }

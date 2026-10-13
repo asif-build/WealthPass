@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { apiFetch } from "../../services/apiClient";
 import BorderGlow from "../BorderGlow/BorderGlow";
+import { ClaimSuccessBadge } from "../claim/ClaimSuccessBadge";
 
 interface UserProfile {
   id: number;
@@ -423,63 +424,73 @@ export const AssetDiscoveryWorkflowPage: React.FC<AssetDiscoveryWorkflowPageProp
             animated={false}
             colors={["#c084fc", "#f472b6", "#38bdf8"]}
           >
-            <div className="p-8 sm:p-12 text-center">
-              <div className="w-16 h-16 rounded-full bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mx-auto mb-6 shadow-lg shadow-emerald-950/40">
-                <Check className="w-8 h-8" />
+            <div className="p-8 sm:p-12 text-center flex flex-col items-center">
+              {/* Glossy Blue Verification Badge with Raised White Checkmark */}
+              <div className="mb-6 flex items-center justify-center">
+                <div className="hidden sm:block">
+                  <ClaimSuccessBadge size={156} />
+                </div>
+                <div className="block sm:hidden">
+                  <ClaimSuccessBadge size={120} />
+                </div>
               </div>
 
-              <span className="text-[10px] font-mono tracking-widest text-primary uppercase block mb-1">
-                Case Intake Registered
+              <span className="text-[11px] font-mono tracking-widest text-[#777777] uppercase block mb-1">
+                Official Case Intake Registered
               </span>
-              <h1 className="text-2xl sm:text-3xl font-medium text-white tracking-tight mb-3">
-                Discovery Case Successfully Created
+              <h1 className="text-2xl sm:text-3xl font-normal sm:font-medium text-[#F1EEDC] tracking-tight mb-3">
+                Claim Submitted
               </h1>
-              <p className="text-gray-400 text-xs sm:text-sm max-w-lg mx-auto leading-relaxed mb-8">
-                Your asset discovery dossier for <strong className="text-white">{submittedCase.deceased_name}</strong> has been logged in our secure registry and queued for statutory checking.
+              <p className="text-[#A4A4A4] text-xs sm:text-sm max-w-lg mx-auto leading-relaxed mb-8">
+                Your asset discovery dossier for <strong className="text-[#F1EEDC]">{submittedCase.deceased_name}</strong> has been logged in our secure registry and queued for statutory checking across official regulatory repositories.
               </p>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-6 text-left max-w-xl mx-auto mb-8 space-y-3 font-mono text-xs">
-                <div className="flex justify-between items-center pb-2 border-b border-white/10">
-                  <span className="text-gray-400">Case Reference:</span>
-                  <span className="text-primary font-bold">WP-CASE-{submittedCase.id.slice(0, 8).toUpperCase()}</span>
+              <div className="w-full bg-[#080808] border border-[#202020] rounded-2xl p-6 text-left max-w-xl mx-auto mb-8 space-y-3 font-mono text-xs">
+                <div className="flex justify-between items-center pb-2 border-b border-[#202020]">
+                  <span className="text-[#777777]">Case Reference:</span>
+                  <span className="text-[#E5E0C9] font-bold">WP-CASE-{submittedCase.id.slice(0, 8).toUpperCase()}</span>
                 </div>
-                <div className="flex justify-between items-center pb-2 border-b border-white/10">
-                  <span className="text-gray-400">Deceased Person:</span>
-                  <span className="text-white">{submittedCase.deceased_name}</span>
+                <div className="flex justify-between items-center pb-2 border-b border-[#202020]">
+                  <span className="text-[#777777]">Deceased Person:</span>
+                  <span className="text-[#F1EEDC]">{submittedCase.deceased_name}</span>
                 </div>
-                <div className="flex justify-between items-center pb-2 border-b border-white/10">
-                  <span className="text-gray-400">Claimant:</span>
-                  <span className="text-white">{submittedCase.claimant_name} ({submittedCase.relation})</span>
+                <div className="flex justify-between items-center pb-2 border-b border-[#202020]">
+                  <span className="text-[#777777]">Claimant:</span>
+                  <span className="text-[#F1EEDC]">{submittedCase.claimant_name} ({submittedCase.relation})</span>
                 </div>
-                <div className="flex justify-between items-center pb-2 border-b border-white/10">
-                  <span className="text-gray-400">Verification State:</span>
-                  <span className="px-2 py-0.5 rounded text-[10px] bg-amber-950/60 text-amber-300 border border-amber-500/30">
+                <div className="flex justify-between items-center pb-2 border-b border-[#202020]">
+                  <span className="text-[#777777]">Verification State:</span>
+                  <span className="px-2 py-0.5 rounded text-[10px] bg-[#142132] text-[#8CB4E2] border border-[#223954]">
                     UNDER_REVIEW
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Statutory Registries:</span>
-                  <span className="text-gray-300">RBI UDGAM, IRDAI, SEBI, IEPF</span>
+                  <span className="text-[#777777]">Statutory Registries:</span>
+                  <span className="text-[#A4A4A4]">RBI UDGAM, IRDAI, SEBI, IEPF</span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/20 text-left max-w-xl mx-auto mb-8 text-xs text-amber-200/90 leading-relaxed">
-                <strong className="block mb-1 text-amber-300 font-semibold">Separation of Verification &amp; Statutory Process</strong>
+              <div className="w-full p-4 rounded-xl bg-[#2D2106]/40 border border-[#523C0A] text-left max-w-xl mx-auto mb-8 text-xs text-[#E0B252] leading-relaxed">
+                <strong className="block mb-1 text-[#E0B252] font-semibold">Separation of Verification &amp; Statutory Process</strong>
                 Creating a discovery case initiates official procedural guidance and checks. It does not automatically guarantee that assets exist, nor does it replace the statutory adjudication conducted by custodian banks and authorities.
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center w-full">
+                <a
+                  href={`/print-forms/${submittedCase.id}/`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-6 py-2.5 rounded-full bg-[#E5E0C9] text-[#080808] font-semibold text-xs sm:text-sm hover:bg-[#F1EEDC] transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>View Claim Dossier</span>
+                </a>
                 <button
+                  type="button"
                   onClick={() => onNavigate("/dashboard")}
-                  className="px-6 py-2.5 rounded-full bg-primary text-black font-semibold text-xs uppercase tracking-wider hover:bg-white transition-all cursor-pointer shadow-lg"
+                  className="px-6 py-2.5 rounded-full border border-[#303030] bg-[#171717] hover:bg-[#202020] text-xs sm:text-sm text-[#A4A4A4] hover:text-[#F1EEDC] transition-colors cursor-pointer"
                 >
-                  Return to Dashboard
-                </button>
-                <button
-                  onClick={() => onNavigate("/sources")}
-                  className="px-6 py-2.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 text-xs text-gray-300 hover:text-white transition-colors cursor-pointer"
-                >
-                  View Statutory Sources
+                  Back to Dashboard
                 </button>
               </div>
             </div>
